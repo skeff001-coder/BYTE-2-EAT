@@ -4,11 +4,16 @@ import OpenAI from "openai";
 const router: IRouter = Router();
 
 const GOAL_CONTEXT: Record<string, string> = {
-  balanced: "Balanced, nutritious meals for general health.",
-  "high-protein": "High-protein, gym-focused meals with 40g+ protein per meal. Prioritise chicken, eggs, fish, legumes.",
-  family: "Family-friendly portions, simple recipes kids will enjoy, no strong spices.",
-  budget: "Budget-friendly meals, use everything in the fridge, minimise waste and cost.",
-  "weight-loss": "Low-calorie, high-volume, filling meals under 500 calories. Prioritise vegetables, lean protein.",
+  "balanced":        "Balanced, nutritious meals with a variety of food groups for general health.",
+  "high-protein":    "High-protein, gym-focused meals with 40g+ protein per meal. Prioritise chicken, eggs, fish, legumes, Greek yoghurt.",
+  "calorie-deficit": "Low-calorie, high-volume, filling meals under 500 calories. Prioritise vegetables, lean protein, avoid calorie-dense ingredients.",
+  "vegetarian":      "Vegetarian meals — no meat or fish. Use eggs, dairy, legumes, tofu, cheese for protein.",
+  "vegan":           "Fully vegan meals — no animal products at all. Use legumes, tofu, tempeh, nuts, seeds, plant-based alternatives.",
+  "gluten-free":     "Strictly gluten-free meals — no wheat, barley, rye, or regular oats. Use rice, potatoes, gluten-free grains.",
+  "family":          "Family-friendly meals with simple flavours kids will enjoy. Generous portions, avoid strong spices, keep it fun.",
+  "under-20":        "All recipes and meals must be ready in under 20 minutes. Prioritise quick cooking methods — stir-fry, wraps, salads, pasta.",
+  "fakeaway":        "Takeaway-style meals made healthily at home — e.g. burgers, wraps, curries, pizza, noodles, fried rice. Comfort food vibes.",
+  "budget":          "Budget-friendly meals — use everything in the fridge, minimise waste, avoid expensive ingredients. Stretch every item.",
 };
 
 router.post("/analyze-fridge", async (req, res) => {
@@ -49,12 +54,12 @@ Return ONLY valid minified JSON with this exact shape (no markdown fences):
 
 Rules:
 - ingredients: all visible food items
-- expiringIngredients: items that appear near expiry (wilting veg, nearly empty, close-dated) — empty array if none obvious
+- expiringIngredients: items that appear near expiry (wilting veg, nearly empty, close-dated) — empty array if none obvious. Include natural-language expiry hints like "your spinach expires tomorrow" or "use your chicken tonight"
 - healthScore: integer 1-100 nutritional quality of visible ingredients
 - healthTip: ONE short actionable tip to improve the score
-- recipes: 3-5 recipes using mostly visible ingredients, tailored to the goal mode
-- mealPlan: exactly 5 days Mon-Fri, each with breakfast/lunch/dinner tailored to goal mode, using fridge ingredients plus common staples
-- shoppingList: 4-8 items needed to complete the meal plan not visible in the fridge, each with estimated GBP cost (number) and supermarket aisle (e.g. "Dairy", "Produce", "Meat", "Bakery")
+- recipes: 3-5 recipes using mostly visible ingredients, strictly tailored to the goal mode (e.g. if vegan, no meat/dairy; if under-20, all under 20 mins; if fakeaway, takeaway-style)
+- mealPlan: exactly 5 days Mon-Fri, each with breakfast/lunch/dinner tailored to the goal mode, using fridge ingredients plus common staples
+- shoppingList: 4-8 items needed to complete the meal plan not visible in the fridge, each with estimated GBP cost (number) and supermarket aisle (e.g. "Dairy", "Produce", "Meat", "Bakery", "Frozen", "Pantry")
 - estimatedSavings: estimated GBP value of meals that can be made from existing fridge contents (food waste saved), integer`,
         },
         {
