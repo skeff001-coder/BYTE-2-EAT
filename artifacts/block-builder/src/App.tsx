@@ -133,11 +133,20 @@ const MODES = [
 
 type ModeKey = (typeof MODES)[number]["key"];
 
-// ── Colour palette ────────────────────────────────────────────────────────────
-const COLORS = [
-  "#ef4444", "#f97316", "#eab308", "#22c55e",
-  "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899",
-  "#ffffff", "#94a3b8", "#92400e", "#111827",
+// ── Team colour palette ───────────────────────────────────────────────────────
+const TEAMS = [
+  { hex: "#FF0000", name: "Liverpool"   },
+  { hex: "#034694", name: "Chelsea"     },
+  { hex: "#F5F5F5", name: "Tottenham"   },
+  { hex: "#FFD700", name: "Dortmund"    },
+  { hex: "#00A651", name: "Celtic"      },
+  { hex: "#6DCFF6", name: "Man City"    },
+  { hex: "#FF6600", name: "Netherlands" },
+  { hex: "#7B2D8B", name: "Fiorentina"  },
+  { hex: "#1C1C1B", name: "Juventus"    },
+  { hex: "#0052CC", name: "Edmonton"    },
+  { hex: "#EE2737", name: "Arsenal"     },
+  { hex: "#A50044", name: "Barcelona"   },
 ];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -397,7 +406,7 @@ export default function App() {
   const [allHistory, setAllHistory] = useState<Record<ModeKey, Block[][]>>({
     atom: [[]], micro: [[]], nano: [[]], small: [[]], large: [[]], mega: [[]],
   });
-  const [selectedColor, setSelectedColor] = useState(COLORS[5]);
+  const [selectedColor, setSelectedColor] = useState(TEAMS[0].hex);
   const [eraseMode, setEraseMode] = useState(false);
 
   const mode = MODES.find((m) => m.key === activeMode)!;
@@ -579,21 +588,40 @@ export default function App() {
         </div>
 
         {!eraseMode && (
-          <div style={{ display: "flex", gap: 7, justifyContent: "center", flexWrap: "wrap" }}>
-            {COLORS.map((c) => (
-              <button
-                key={c}
-                onClick={() => setSelectedColor(c)}
-                style={{
-                  width: 34, height: 34, borderRadius: "50%", background: c,
-                  border: selectedColor === c ? "3px solid white" : "3px solid rgba(255,255,255,0.1)",
-                  boxShadow: selectedColor === c ? `0 0 0 2px ${c}99, 0 0 14px ${c}88` : "none",
-                  cursor: "pointer",
-                  transform: selectedColor === c ? "scale(1.28)" : "scale(1)",
-                  transition: "all 0.15s", flexShrink: 0,
-                }}
-              />
-            ))}
+          <div style={{ display: "flex", gap: 6, justifyContent: "center", flexWrap: "wrap" }}>
+            {TEAMS.map(({ hex, name }) => {
+              const active = selectedColor === hex;
+              return (
+                <button
+                  key={hex}
+                  onClick={() => setSelectedColor(hex)}
+                  title={name}
+                  style={{
+                    display: "flex", flexDirection: "column", alignItems: "center",
+                    gap: 3, background: "none", border: "none", cursor: "pointer",
+                    padding: 0, flexShrink: 0,
+                  }}
+                >
+                  <div style={{
+                    width: 32, height: 32, borderRadius: "50%", background: hex,
+                    border: active ? "3px solid white" : "2px solid rgba(255,255,255,0.15)",
+                    boxShadow: active ? `0 0 0 2px ${hex}99, 0 0 16px ${hex}aa` : "none",
+                    transform: active ? "scale(1.3)" : "scale(1)",
+                    transition: "all 0.15s",
+                    outline: hex === "#F5F5F5" || hex === "#1C1C1B" ? "1px solid rgba(255,255,255,0.2)" : "none",
+                    outlineOffset: -2,
+                  }} />
+                  <span style={{
+                    fontSize: 7.5, color: active ? "white" : "rgba(255,255,255,0.45)",
+                    fontWeight: 700, letterSpacing: 0.1,
+                    maxWidth: 36, textAlign: "center", lineHeight: 1.2,
+                    transition: "color 0.15s",
+                  }}>
+                    {name}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         )}
 
