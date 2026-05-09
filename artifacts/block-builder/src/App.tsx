@@ -133,28 +133,29 @@ const MODES = [
 
 type ModeKey = (typeof MODES)[number]["key"];
 
-// ── Premier League 2024/25 team colours ──────────────────────────────────────
+// ── Premier League 2024/25 team colours + official badges ────────────────────
+const PL = "https://resources.premierleague.com/premierleague/badges";
 const TEAMS = [
-  { hex: "#FF0000", name: "Liverpool"    },  // vibrant red
-  { hex: "#EF0107", name: "Arsenal"      },  // gunners red
-  { hex: "#FF2222", name: "Man Utd"      },  // bright crimson
-  { hex: "#FF3B30", name: "Nottm Forest" },  // garibaldi red
-  { hex: "#E30013", name: "Bournemouth"  },  // cherry red
-  { hex: "#FF1928", name: "Southampton"  },  // saints red
-  { hex: "#D0021B", name: "Brentford"    },  // bees red
-  { hex: "#C4122E", name: "Crystal Pal." },  // eagles red
-  { hex: "#6DCFF6", name: "Man City"     },  // sky blue
-  { hex: "#005BBB", name: "Chelsea"      },  // stamford blue
-  { hex: "#0057FF", name: "Brighton"     },  // electric blue
-  { hex: "#0047AB", name: "Everton"      },  // royal blue
-  { hex: "#003FDB", name: "Leicester"    },  // foxes blue
-  { hex: "#3A78D4", name: "Ipswich"      },  // town blue
-  { hex: "#888888", name: "Fulham"       },  // grey/silver
-  { hex: "#FDB913", name: "Wolves"       },  // gold
-  { hex: "#CC3366", name: "West Ham"     },  // bright claret
-  { hex: "#9B1C31", name: "Aston Villa"  },  // claret
-  { hex: "#1C1C1B", name: "Newcastle"    },  // black
-  { hex: "#F0F0F0", name: "Tottenham"    },  // white / lilywhite
+  { hex: "#FF0000", name: "Liverpool",    logo: `${PL}/t14.png`  },
+  { hex: "#EF0107", name: "Arsenal",      logo: `${PL}/t3.png`   },
+  { hex: "#DA291C", name: "Man Utd",      logo: `${PL}/t1.png`   },
+  { hex: "#FF3B30", name: "Nottm Forest", logo: `${PL}/t17.png`  },
+  { hex: "#E30013", name: "Bournemouth",  logo: `${PL}/t91.png`  },
+  { hex: "#D71920", name: "Southampton",  logo: `${PL}/t20.png`  },
+  { hex: "#D0021B", name: "Brentford",    logo: `${PL}/t94.png`  },
+  { hex: "#C4122E", name: "Crystal Pal", logo: `${PL}/t31.png`  },
+  { hex: "#6DCFF6", name: "Man City",     logo: `${PL}/t43.png`  },
+  { hex: "#005BBB", name: "Chelsea",      logo: `${PL}/t8.png`   },
+  { hex: "#0057FF", name: "Brighton",     logo: `${PL}/t36.png`  },
+  { hex: "#0047AB", name: "Everton",      logo: `${PL}/t11.png`  },
+  { hex: "#003FDB", name: "Leicester",    logo: `${PL}/t13.png`  },
+  { hex: "#3A78D4", name: "Ipswich",      logo: `${PL}/t40.png`  },
+  { hex: "#888888", name: "Fulham",       logo: `${PL}/t54.png`  },
+  { hex: "#FDB913", name: "Wolves",       logo: `${PL}/t39.png`  },
+  { hex: "#CC3366", name: "West Ham",     logo: `${PL}/t21.png`  },
+  { hex: "#9B1C31", name: "Aston Villa",  logo: `${PL}/t7.png`   },
+  { hex: "#1C1C1B", name: "Newcastle",    logo: `${PL}/t4.png`   },
+  { hex: "#F0F0F0", name: "Tottenham",    logo: `${PL}/t6.png`   },
 ];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -596,8 +597,8 @@ export default function App() {
         </div>
 
         {!eraseMode && (
-          <div style={{ display: "flex", gap: 5, justifyContent: "center", flexWrap: "wrap", maxWidth: 380, margin: "0 auto" }}>
-            {TEAMS.map(({ hex, name }) => {
+          <div style={{ display: "flex", gap: 4, justifyContent: "center", flexWrap: "wrap", maxWidth: 400, margin: "0 auto" }}>
+            {TEAMS.map(({ hex, name, logo }) => {
               const active = selectedColor === hex;
               const isLight = hex === "#F0F0F0" || hex === "#F5F5F5";
               const isDark  = hex === "#1C1C1B";
@@ -612,13 +613,29 @@ export default function App() {
                     padding: 0, flexShrink: 0, width: 36,
                   }}
                 >
+                  {/* Circle with team colour + badge */}
                   <div style={{
-                    width: 26, height: 26, borderRadius: "50%", background: hex,
+                    width: 34, height: 34, borderRadius: "50%", background: hex,
                     border: active ? "2.5px solid white" : isLight || isDark ? "1.5px solid rgba(255,255,255,0.35)" : "1.5px solid rgba(255,255,255,0.12)",
-                    boxShadow: active ? `0 0 0 2px ${hex}99, 0 0 14px ${hex}cc` : "none",
-                    transform: active ? "scale(1.28)" : "scale(1)",
+                    boxShadow: active ? `0 0 0 2px ${hex}99, 0 0 16px ${hex}cc` : "none",
+                    transform: active ? "scale(1.25)" : "scale(1)",
                     transition: "all 0.15s",
-                  }} />
+                    position: "relative",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    overflow: "hidden",
+                  }}>
+                    <img
+                      src={logo}
+                      alt={name}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                      style={{
+                        width: 26, height: 26,
+                        objectFit: "contain",
+                        filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))",
+                        flexShrink: 0,
+                      }}
+                    />
+                  </div>
                   <span style={{
                     fontSize: 6.5, color: active ? "white" : "rgba(255,255,255,0.4)",
                     fontWeight: 700, letterSpacing: 0.1,
