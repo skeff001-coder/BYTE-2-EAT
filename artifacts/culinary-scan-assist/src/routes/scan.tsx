@@ -6,6 +6,8 @@ import type { AnalysisResult } from "@/lib/analyze-fridge";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { useScanCredits } from "@/lib/use-scan-credits";
+import { PaywallModal } from "@/components/paywall-modal";
 
 export const Route = createFileRoute("/scan")({
   component: ScanPage,
@@ -56,6 +58,9 @@ function ScanPage() {
   const router = useRouter();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
+  const { credits, canScan, consumeCredit, purchasePlan } = useScanCredits();
+  const [showPaywall, setShowPaywall] = useState(false);
+
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -131,7 +136,12 @@ function ScanPage() {
 
   const submit = async () => {
     if (!imageDataUrl) return;
+    if (!canScan) {
+      setShowPaywall(true);
+      return;
+    }
     setStage("loading");
+    consumeCredit();
     try {
       const res = await analyzeFridge(imageDataUrl);
       setResult(res);
@@ -179,17 +189,44 @@ function ScanPage() {
     setNewIngredient("");
   };
 
+  const creditLabel =
+    credits === -1 ? "Unlimited" : credits === 1 ? "1 scan left" : credits === 0 ? "No scans left" : `${credits} scans left`;
+
   return (
     <main className="min-h-screen bg-background">
-      <header className="flex items-center gap-3 px-5 pt-6 pb-4">
+      {showPaywall && (
+        <PaywallModal
+          onClose={() => setShowPaywall(false)}
+          onPurchase={(plan) => {
+            purchasePlan(plan);
+            setShowPaywall(false);
+          }}
+        />
+      )}
+
+      <header className="flex items-center justify-between px-5 pt-6 pb-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.navigate({ to: "/" })}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground"
+            aria-label="Back"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <h1 className="text-lg font-bold text-foreground">Scan My Fridge</h1>
+        </div>
         <button
-          onClick={() => router.navigate({ to: "/" })}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground"
-          aria-label="Back"
+          onClick={() => !canScan && setShowPaywall(true)}
+          className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${
+            credits === 0
+              ? "bg-red-100 text-red-600 ring-1 ring-red-200"
+              : credits === -1
+              ? "bg-primary/10 text-primary"
+              : "bg-accent text-accent-foreground"
+          }`}
         >
-          <ArrowLeft className="h-5 w-5" />
+          {creditLabel}
         </button>
-        <h1 className="text-lg font-bold text-foreground">Scan My Fridge</h1>
       </header>
 
       {stage === "camera" && (
@@ -385,6 +422,16 @@ function ScanPage() {
           >
             <RefreshCw className="h-4 w-4" /> Scan again
           </button>
+
+          {!canScan && (
+            <button
+              onClick={() => setShowPaywall(true)}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-semibold text-primary-foreground"
+              style={{ background: "var(--gradient-primary)" }}
+            >
+              <Sparkles className="h-4 w-4" /> Get more scans
+            </button>
+          )}
         </div>
       )}
     </main>

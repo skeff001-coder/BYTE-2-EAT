@@ -4,6 +4,8 @@ import { useState } from "react";
 import { trendingRecipes } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
+import { useScanCredits } from "@/lib/use-scan-credits";
+import { PaywallModal } from "@/components/paywall-modal";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -11,17 +13,47 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const [query, setQuery] = useState("");
+  const [showPaywall, setShowPaywall] = useState(false);
   const navigate = useNavigate();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
+  const { credits, canScan, purchasePlan } = useScanCredits();
   const q = query.trim().toLowerCase();
   const filtered = q
     ? trendingRecipes.filter(
         (r) => r.title.toLowerCase().includes(q) || r.tag.toLowerCase().includes(q),
       )
     : trendingRecipes;
+
+  const handleScanPress = () => {
+    if (canScan) {
+      navigate({ to: "/scan" });
+    } else {
+      setShowPaywall(true);
+    }
+  };
+
+  const creditLabel =
+    credits === -1
+      ? "Unlimited scans"
+      : credits === 1
+      ? "1 free scan remaining"
+      : credits === 0
+      ? "No scans left"
+      : `${credits} scans remaining`;
+
   return (
     <main className="min-h-screen bg-background pb-12">
+      {showPaywall && (
+        <PaywallModal
+          onClose={() => setShowPaywall(false)}
+          onPurchase={(plan) => {
+            purchasePlan(plan);
+            setShowPaywall(false);
+          }}
+        />
+      )}
+
       <header className="px-6 pt-10 pb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-primary">
@@ -76,20 +108,23 @@ function Home() {
       </header>
 
       <section className="px-6">
-        <Link
-          to="/scan"
+        <button
+          onClick={handleScanPress}
           className="group relative flex w-full items-center justify-between overflow-hidden rounded-3xl p-6 text-primary-foreground transition-transform active:scale-[0.98]"
           style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-soft)" }}
         >
-          <div>
+          <div className="text-left">
             <div className="text-xs font-medium uppercase tracking-wider opacity-90">Tap to start</div>
             <div className="mt-1 text-2xl font-bold">Scan My Fridge</div>
             <div className="mt-1 text-sm opacity-90">AI finds recipes in seconds</div>
+            <div className={`mt-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${credits === 0 ? "bg-red-500/30" : "bg-white/20"}`}>
+              {creditLabel}
+            </div>
           </div>
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
             <Camera className="h-8 w-8" />
           </div>
-        </Link>
+        </button>
       </section>
 
       <section className="mt-10 px-6">
