@@ -46,6 +46,34 @@ function NoWebGL() {
 // ── Block size modes ──────────────────────────────────────────────────────────
 const MODES = [
   {
+    key: "atom",
+    label: "Atom",
+    emoji: "⚛️",
+    size: 0.1,
+    gap: 0.015,
+    gridCell: 0.1,
+    gridSection: 0.5,
+    gridFade: 7,
+    camera: [1.8, 1.5, 1.8] as [number, number, number],
+    minDist: 0.4,
+    maxDist: 10,
+    desc: "Ultra fine blocks",
+  },
+  {
+    key: "micro",
+    label: "Micro",
+    emoji: "🔭",
+    size: 0.2,
+    gap: 0.03,
+    gridCell: 0.2,
+    gridSection: 1,
+    gridFade: 13,
+    camera: [3.5, 3, 3.5] as [number, number, number],
+    minDist: 0.8,
+    maxDist: 18,
+    desc: "Very fine blocks",
+  },
+  {
     key: "nano",
     label: "Nano",
     emoji: "🔬",
@@ -364,10 +392,10 @@ function Btn({ onClick, active, bg, children }: {
 export default function App() {
   const [activeMode, setActiveMode] = useState<ModeKey>("small");
   const [allBlocks, setAllBlocks] = useState<Record<ModeKey, Block[]>>({
-    nano: [], small: [], large: [], mega: [],
+    atom: [], micro: [], nano: [], small: [], large: [], mega: [],
   });
   const [allHistory, setAllHistory] = useState<Record<ModeKey, Block[][]>>({
-    nano: [[]], small: [[]], large: [[]], mega: [[]],
+    atom: [[]], micro: [[]], nano: [[]], small: [[]], large: [[]], mega: [[]],
   });
   const [selectedColor, setSelectedColor] = useState(COLORS[5]);
   const [eraseMode, setEraseMode] = useState(false);
@@ -460,7 +488,7 @@ export default function App() {
         background: "linear-gradient(180deg, rgba(2,2,9,0.92) 0%, transparent 100%)",
       }}>
         {/* Mode switcher */}
-        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 6 }}>
+        <div style={{ display: "flex", gap: 4, justifyContent: "center", marginBottom: 6, flexWrap: "nowrap", overflowX: "auto" }}>
           {MODES.map((m) => (
             <button
               key={m.key}
@@ -469,23 +497,25 @@ export default function App() {
                 background: activeMode === m.key
                   ? "rgba(59,130,246,0.85)"
                   : "rgba(255,255,255,0.07)",
-                color: activeMode === m.key ? "white" : "rgba(255,255,255,0.55)",
+                color: activeMode === m.key ? "white" : "rgba(255,255,255,0.5)",
                 border: activeMode === m.key
                   ? "1.5px solid rgba(99,179,255,0.7)"
-                  : "1.5px solid rgba(255,255,255,0.1)",
-                borderRadius: 12,
-                padding: "7px 14px",
-                fontSize: 13,
+                  : "1.5px solid rgba(255,255,255,0.08)",
+                borderRadius: 10,
+                padding: "5px 9px",
+                fontSize: 11,
                 fontWeight: 700,
                 cursor: "pointer",
                 transition: "all 0.18s",
                 backdropFilter: "blur(8px)",
                 display: "flex",
                 alignItems: "center",
-                gap: 5,
+                gap: 3,
+                flexShrink: 0,
+                letterSpacing: 0.2,
               }}
             >
-              <span>{m.emoji}</span>
+              <span style={{ fontSize: 13 }}>{m.emoji}</span>
               <span>{m.label}</span>
             </button>
           ))}
