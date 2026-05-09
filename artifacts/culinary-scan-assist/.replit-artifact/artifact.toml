@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/culinary/"
+title = "Culinary Scan Assist"
+version = "1.0.0"
+id = "artifacts/culinary-scan-assist"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/culinary/" ]
+localPort = 23253
+
+[services.development]
+run = "pnpm --filter @workspace/culinary-scan-assist run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/culinary-scan-assist", "run", "build" ]
+publicDir = "artifacts/culinary-scan-assist/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23253"
+BASE_PATH = "/culinary/"
