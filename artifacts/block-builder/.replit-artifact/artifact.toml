@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/blocks/"
+title = "Block Builder 3D"
+version = "1.0.0"
+id = "artifacts/block-builder"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/blocks/" ]
+localPort = 23520
+
+[services.development]
+run = "pnpm --filter @workspace/block-builder run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/block-builder", "run", "build" ]
+publicDir = "artifacts/block-builder/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23520"
+BASE_PATH = "/blocks/"
