@@ -133,20 +133,28 @@ const MODES = [
 
 type ModeKey = (typeof MODES)[number]["key"];
 
-// ── Team colour palette ───────────────────────────────────────────────────────
+// ── Premier League 2024/25 team colours ──────────────────────────────────────
 const TEAMS = [
-  { hex: "#FF0000", name: "Liverpool"   },
-  { hex: "#034694", name: "Chelsea"     },
-  { hex: "#F5F5F5", name: "Tottenham"   },
-  { hex: "#FFD700", name: "Dortmund"    },
-  { hex: "#00A651", name: "Celtic"      },
-  { hex: "#6DCFF6", name: "Man City"    },
-  { hex: "#FF6600", name: "Netherlands" },
-  { hex: "#7B2D8B", name: "Fiorentina"  },
-  { hex: "#1C1C1B", name: "Juventus"    },
-  { hex: "#0052CC", name: "Edmonton"    },
-  { hex: "#EE2737", name: "Arsenal"     },
-  { hex: "#A50044", name: "Barcelona"   },
+  { hex: "#FF0000", name: "Liverpool"    },  // vibrant red
+  { hex: "#EF0107", name: "Arsenal"      },  // gunners red
+  { hex: "#FF2222", name: "Man Utd"      },  // bright crimson
+  { hex: "#FF3B30", name: "Nottm Forest" },  // garibaldi red
+  { hex: "#E30013", name: "Bournemouth"  },  // cherry red
+  { hex: "#FF1928", name: "Southampton"  },  // saints red
+  { hex: "#D0021B", name: "Brentford"    },  // bees red
+  { hex: "#C4122E", name: "Crystal Pal." },  // eagles red
+  { hex: "#6DCFF6", name: "Man City"     },  // sky blue
+  { hex: "#005BBB", name: "Chelsea"      },  // stamford blue
+  { hex: "#0057FF", name: "Brighton"     },  // electric blue
+  { hex: "#0047AB", name: "Everton"      },  // royal blue
+  { hex: "#003FDB", name: "Leicester"    },  // foxes blue
+  { hex: "#3A78D4", name: "Ipswich"      },  // town blue
+  { hex: "#888888", name: "Fulham"       },  // grey/silver
+  { hex: "#FDB913", name: "Wolves"       },  // gold
+  { hex: "#CC3366", name: "West Ham"     },  // bright claret
+  { hex: "#9B1C31", name: "Aston Villa"  },  // claret
+  { hex: "#1C1C1B", name: "Newcastle"    },  // black
+  { hex: "#F0F0F0", name: "Tottenham"    },  // white / lilywhite
 ];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -588,9 +596,11 @@ export default function App() {
         </div>
 
         {!eraseMode && (
-          <div style={{ display: "flex", gap: 6, justifyContent: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 5, justifyContent: "center", flexWrap: "wrap", maxWidth: 380, margin: "0 auto" }}>
             {TEAMS.map(({ hex, name }) => {
               const active = selectedColor === hex;
+              const isLight = hex === "#F0F0F0" || hex === "#F5F5F5";
+              const isDark  = hex === "#1C1C1B";
               return (
                 <button
                   key={hex}
@@ -598,24 +608,23 @@ export default function App() {
                   title={name}
                   style={{
                     display: "flex", flexDirection: "column", alignItems: "center",
-                    gap: 3, background: "none", border: "none", cursor: "pointer",
-                    padding: 0, flexShrink: 0,
+                    gap: 2, background: "none", border: "none", cursor: "pointer",
+                    padding: 0, flexShrink: 0, width: 36,
                   }}
                 >
                   <div style={{
-                    width: 32, height: 32, borderRadius: "50%", background: hex,
-                    border: active ? "3px solid white" : "2px solid rgba(255,255,255,0.15)",
-                    boxShadow: active ? `0 0 0 2px ${hex}99, 0 0 16px ${hex}aa` : "none",
-                    transform: active ? "scale(1.3)" : "scale(1)",
+                    width: 26, height: 26, borderRadius: "50%", background: hex,
+                    border: active ? "2.5px solid white" : isLight || isDark ? "1.5px solid rgba(255,255,255,0.35)" : "1.5px solid rgba(255,255,255,0.12)",
+                    boxShadow: active ? `0 0 0 2px ${hex}99, 0 0 14px ${hex}cc` : "none",
+                    transform: active ? "scale(1.28)" : "scale(1)",
                     transition: "all 0.15s",
-                    outline: hex === "#F5F5F5" || hex === "#1C1C1B" ? "1px solid rgba(255,255,255,0.2)" : "none",
-                    outlineOffset: -2,
                   }} />
                   <span style={{
-                    fontSize: 7.5, color: active ? "white" : "rgba(255,255,255,0.45)",
+                    fontSize: 6.5, color: active ? "white" : "rgba(255,255,255,0.4)",
                     fontWeight: 700, letterSpacing: 0.1,
-                    maxWidth: 36, textAlign: "center", lineHeight: 1.2,
-                    transition: "color 0.15s",
+                    width: 36, textAlign: "center", lineHeight: 1.2,
+                    transition: "color 0.15s", overflow: "hidden",
+                    whiteSpace: "nowrap", textOverflow: "ellipsis",
                   }}>
                     {name}
                   </span>
