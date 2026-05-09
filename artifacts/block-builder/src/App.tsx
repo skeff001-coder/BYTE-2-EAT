@@ -18,7 +18,7 @@ function NoWebGL() {
       justifyContent:"center",background:"linear-gradient(160deg,#020209,#0a0a1a)",
       color:"white",textAlign:"center",padding:32,gap:16 }}>
       <div style={{ fontSize:64 }}>🧱</div>
-      <h2 style={{ fontSize:22,fontWeight:800 }}>Block Builder 3D</h2>
+      <h2 style={{ fontSize:22,fontWeight:800 }}>Mo Salah's Crazy Football ⚽</h2>
       <p style={{ fontSize:15,opacity:0.7,maxWidth:320,lineHeight:1.7 }}>
         This preview can't run WebGL.<br />Open on your phone or computer!
       </p>
@@ -443,6 +443,82 @@ function RunningPlayer({ cfg, size, gridFade, ballRef }: {
           <meshStandardMaterial color="#2a1a0a" roughness={0.9} />
         </mesh>
       </group>
+    </group>
+  );
+}
+
+// ── Seated bench player ───────────────────────────────────────────────────────
+function BenchPlayer({ x, z, kitIdx, facingY = 0, size }: {
+  x:number; z:number; kitIdx:number; facingY?:number; size:number;
+}) {
+  const kit = KITS[kitIdx % KITS.length] ?? KITS[0];
+  const ph  = size * 0.95;
+  const hr  = ph * 0.115;
+  const bh  = ph * 0.28;
+  const bw  = ph * 0.10;
+  const lh  = ph * 0.28;
+  const lw  = ph * 0.058;
+  const aw  = ph * 0.046;
+  const ah  = ph * 0.22;
+  const seatH = ph * 0.36;  // height of the seat/bench
+
+  return (
+    <group position={[x, seatH, z]} rotation={[0, facingY, 0]}>
+      {/* Torso */}
+      <mesh position={[0, bh * 0.5, 0]} castShadow>
+        <cylinderGeometry args={[bw * 0.85, bw, bh, 8]} />
+        <meshStandardMaterial color={kit.jersey} roughness={0.5} />
+      </mesh>
+      {/* Shorts pelvis */}
+      <mesh position={[0, bh * 0.05, 0]} castShadow>
+        <cylinderGeometry args={[bw * 0.95, bw * 0.8, bh * 0.28, 7]} />
+        <meshStandardMaterial color={kit.shorts} roughness={0.65} />
+      </mesh>
+      {/* Left arm */}
+      <mesh position={[-(bw + aw * 0.55), bh * 0.78, 0]} rotation={[0.4, 0, 0.35]} castShadow>
+        <cylinderGeometry args={[aw * 0.85, aw, ah, 5]} />
+        <meshStandardMaterial color={kit.jersey} roughness={0.5} />
+      </mesh>
+      {/* Right arm */}
+      <mesh position={[bw + aw * 0.55, bh * 0.78, 0]} rotation={[0.4, 0, -0.35]} castShadow>
+        <cylinderGeometry args={[aw * 0.85, aw, ah, 5]} />
+        <meshStandardMaterial color={kit.jersey} roughness={0.5} />
+      </mesh>
+      {/* Left thigh (horizontal, bent forward) */}
+      <mesh position={[-bw * 0.5, -lh * 0.05, lh * 0.32]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <cylinderGeometry args={[lw * 1.05, lw, lh, 6]} />
+        <meshStandardMaterial color={kit.socks} roughness={0.7} />
+      </mesh>
+      {/* Right thigh */}
+      <mesh position={[bw * 0.5, -lh * 0.05, lh * 0.32]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <cylinderGeometry args={[lw * 1.05, lw, lh, 6]} />
+        <meshStandardMaterial color={kit.socks} roughness={0.7} />
+      </mesh>
+      {/* Left shin (hangs down from knee) */}
+      <mesh position={[-bw * 0.5, -lh * 0.65, lh * 0.64]} castShadow>
+        <cylinderGeometry args={[lw, lw * 0.85, lh * 0.9, 6]} />
+        <meshStandardMaterial color={kit.socks} roughness={0.7} />
+      </mesh>
+      {/* Right shin */}
+      <mesh position={[bw * 0.5, -lh * 0.65, lh * 0.64]} castShadow>
+        <cylinderGeometry args={[lw, lw * 0.85, lh * 0.9, 6]} />
+        <meshStandardMaterial color={kit.socks} roughness={0.7} />
+      </mesh>
+      {/* Neck */}
+      <mesh position={[0, bh + ph * 0.022, 0]} castShadow>
+        <cylinderGeometry args={[hr * 0.5, hr * 0.58, ph * 0.045, 6]} />
+        <meshStandardMaterial color={kit.skin} roughness={0.8} />
+      </mesh>
+      {/* Head */}
+      <mesh position={[0, bh + ph * 0.055 + hr, 0]} castShadow>
+        <sphereGeometry args={[hr, 10, 10]} />
+        <meshStandardMaterial color={kit.skin} roughness={0.78} />
+      </mesh>
+      {/* Hair */}
+      <mesh position={[0, bh + ph * 0.055 + hr * 1.55, 0]} castShadow>
+        <sphereGeometry args={[hr * 0.74, 7, 5, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
+        <meshStandardMaterial color="#2a1a0a" roughness={0.9} />
+      </mesh>
     </group>
   );
 }
@@ -922,18 +998,24 @@ function Scene({
     rotX:0, rotZ:0, cooldown:0,
   });
 
-  // 8 players with different kits, spread across the field
+  // 14 players with different kits, spread across the field
   const playerCfgs = useMemo<PlayerCfg[]>(() => {
     const s = gridFade * 0.28;
     return [
-      { id:0, kitIdx:0,  startX:-s*0.9, startZ:-s*0.7, phase:0.4  },
-      { id:1, kitIdx:4,  startX: s*0.9, startZ:-s*0.7, phase:2.8  },
-      { id:2, kitIdx:1,  startX:-s*0.4, startZ: s*0.5, phase:1.1  },
-      { id:3, kitIdx:8,  startX: s*0.4, startZ: s*0.5, phase:4.2  },
-      { id:4, kitIdx:2,  startX: 0,     startZ:-s*0.95,phase:5.8  },
-      { id:5, kitIdx:5,  startX: 0,     startZ: s*0.95,phase:3.5  },
-      { id:6, kitIdx:7,  startX:-s*0.7, startZ: s*0.05,phase:0.9  },
-      { id:7, kitIdx:9,  startX: s*0.7, startZ: s*0.05,phase:2.1  },
+      { id:0,  kitIdx:0,  startX:-s*0.9,  startZ:-s*0.7,  phase:0.4  },
+      { id:1,  kitIdx:4,  startX: s*0.9,  startZ:-s*0.7,  phase:2.8  },
+      { id:2,  kitIdx:1,  startX:-s*0.4,  startZ: s*0.5,  phase:1.1  },
+      { id:3,  kitIdx:8,  startX: s*0.4,  startZ: s*0.5,  phase:4.2  },
+      { id:4,  kitIdx:2,  startX: 0,      startZ:-s*0.95, phase:5.8  },
+      { id:5,  kitIdx:5,  startX: 0,      startZ: s*0.95, phase:3.5  },
+      { id:6,  kitIdx:7,  startX:-s*0.7,  startZ: s*0.05, phase:0.9  },
+      { id:7,  kitIdx:9,  startX: s*0.7,  startZ: s*0.05, phase:2.1  },
+      { id:8,  kitIdx:3,  startX:-s*0.55, startZ:-s*0.3,  phase:1.7  },
+      { id:9,  kitIdx:6,  startX: s*0.55, startZ: s*0.3,  phase:4.9  },
+      { id:10, kitIdx:10, startX: s*0.15, startZ:-s*0.55, phase:3.1  },
+      { id:11, kitIdx:11, startX:-s*0.15, startZ: s*0.55, phase:6.1  },
+      { id:12, kitIdx:0,  startX:-s*0.8,  startZ: s*0.8,  phase:2.3  },
+      { id:13, kitIdx:4,  startX: s*0.8,  startZ:-s*0.8,  phase:5.1  },
     ];
   }, [gridFade]);
 
@@ -1019,6 +1101,46 @@ function Scene({
       {playerCfgs.map(cfg => (
         <RunningPlayer key={cfg.id} cfg={cfg} size={size} gridFade={gridFade} ballRef={ballRef} />
       ))}
+
+      {/* ── Bench players sitting along the left touchline ── */}
+      {(() => {
+        const hw  = gridFade * 0.20;  // pitch half-width
+        const hl  = gridFade * 0.31;  // pitch half-length
+        const bx1 = hw + size * 1.6;  // front row of bench
+        const bx2 = hw + size * 3.1;  // back row of bench
+        const bx3 = hw + size * 4.5;  // third row
+        const gap = (hl * 2) / 9;     // 10 seats spread over full pitch length
+
+        // Also put subs on the right touchline (opposing dugout)
+        const rx1 = -(hw + size * 1.6);
+        const rx2 = -(hw + size * 3.1);
+
+        const bench: { bx:number; bz:number; kit:number }[] = [];
+
+        // Left side — 3 rows × 10 = 30 players
+        for (let i = 0; i < 10; i++) {
+          const bz = -hl + gap * 0.5 + gap * i;
+          bench.push({ bx: bx1, bz, kit: i % KITS.length });
+          bench.push({ bx: bx2, bz: bz + gap * 0.18, kit: (i + 3) % KITS.length });
+          bench.push({ bx: bx3, bz: bz - gap * 0.12, kit: (i + 7) % KITS.length });
+        }
+        // Right side (opposing dugout) — 2 rows × 10 = 20 more
+        for (let i = 0; i < 10; i++) {
+          const bz = -hl + gap * 0.5 + gap * i;
+          bench.push({ bx: rx1, bz, kit: (i + 1) % KITS.length });
+          bench.push({ bx: rx2, bz: bz + gap * 0.14, kit: (i + 5) % KITS.length });
+        }
+
+        return bench.map((b, idx) => (
+          <BenchPlayer
+            key={`bench-${idx}`}
+            x={b.bx} z={b.bz}
+            kitIdx={b.kit}
+            facingY={b.bx > 0 ? Math.PI * 0.5 : -Math.PI * 0.5}
+            size={size}
+          />
+        ));
+      })()}
 
       {/* Invisible ground */}
       {!chaosMode && (
@@ -1334,7 +1456,7 @@ export default function App() {
       const blob = await fetch(url).then(r=>r.blob());
       const file = new File([blob], "block-builder.png", { type:"image/png" });
       if (navigator.share && (navigator as {canShare?:(o:object)=>boolean}).canShare?.({ files:[file] })) {
-        await navigator.share({ title:"My Block Builder!", files:[file] });
+        await navigator.share({ title:"Mo Salah's Crazy Football!", files:[file] });
       } else {
         Object.assign(document.createElement("a"), { href:url, download:"block-builder.png" }).click();
       }
@@ -1392,7 +1514,7 @@ export default function App() {
         {/* Title + actions */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"3px 2px 10px" }}>
           <div>
-            <span style={{ color:"white", fontWeight:800, fontSize:15, textShadow:"0 0 20px rgba(99,102,241,0.8)" }}>🧱 Block Builder</span>
+            <span style={{ color:"white", fontWeight:800, fontSize:15, textShadow:"0 0 20px rgba(99,102,241,0.8)" }}>⚽ Mo Salah's Crazy Football</span>
             <span style={{ marginLeft:7, color:"rgba(255,255,255,0.3)", fontSize:10 }}>{mode.desc} · {mode.size}u</span>
           </div>
           <div style={{ display:"flex", gap:5 }}>
