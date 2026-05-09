@@ -6,37 +6,25 @@ import * as THREE from "three";
 // ── WebGL detection ───────────────────────────────────────────────────────────
 function checkWebGL(): boolean {
   try {
-    const canvas = document.createElement("canvas");
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-    );
-  } catch {
-    return false;
-  }
+    const c = document.createElement("canvas");
+    return !!(window.WebGLRenderingContext && (c.getContext("webgl") || c.getContext("experimental-webgl")));
+  } catch { return false; }
 }
 const WEBGL_AVAILABLE = checkWebGL();
 
-// ── No-WebGL fallback ─────────────────────────────────────────────────────────
 function NoWebGL() {
   return (
-    <div style={{
-      width: "100%", height: "100%",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      background: "linear-gradient(160deg, #020209 0%, #0a0a1a 100%)",
-      color: "white", textAlign: "center", padding: 32, gap: 16,
-    }}>
-      <div style={{ fontSize: 64 }}>🧱</div>
-      <h2 style={{ fontSize: 22, fontWeight: 800 }}>Block Builder 3D</h2>
-      <p style={{ fontSize: 15, opacity: 0.7, maxWidth: 320, lineHeight: 1.7 }}>
-        This preview can't run WebGL.<br />
-        Open the link below on your phone or computer to start building!
+    <div style={{ width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",
+      justifyContent:"center",background:"linear-gradient(160deg,#020209,#0a0a1a)",
+      color:"white",textAlign:"center",padding:32,gap:16 }}>
+      <div style={{ fontSize:64 }}>🧱</div>
+      <h2 style={{ fontSize:22,fontWeight:800 }}>Block Builder 3D</h2>
+      <p style={{ fontSize:15,opacity:0.7,maxWidth:320,lineHeight:1.7 }}>
+        This preview can't run WebGL.<br />Open the link below on your phone or computer!
       </p>
       <a href={window.location.href} target="_blank" rel="noreferrer" style={{
-        marginTop: 8, background: "#3b82f6", color: "white",
-        borderRadius: 14, padding: "12px 28px",
-        fontWeight: 700, fontSize: 15, textDecoration: "none",
-      }}>
+        marginTop:8,background:"#3b82f6",color:"white",borderRadius:14,
+        padding:"12px 28px",fontWeight:700,fontSize:15,textDecoration:"none" }}>
         Open full game ↗
       </a>
     </div>
@@ -45,151 +33,108 @@ function NoWebGL() {
 
 // ── Block size modes ──────────────────────────────────────────────────────────
 const MODES = [
-  {
-    key: "atom",
-    label: "Atom",
-    emoji: "⚛️",
-    size: 0.1,
-    gap: 0.015,
-    gridCell: 0.1,
-    gridSection: 0.5,
-    gridFade: 7,
-    camera: [1.8, 1.5, 1.8] as [number, number, number],
-    minDist: 0.4,
-    maxDist: 10,
-    desc: "Ultra fine blocks",
-  },
-  {
-    key: "micro",
-    label: "Micro",
-    emoji: "🔭",
-    size: 0.2,
-    gap: 0.03,
-    gridCell: 0.2,
-    gridSection: 1,
-    gridFade: 13,
-    camera: [3.5, 3, 3.5] as [number, number, number],
-    minDist: 0.8,
-    maxDist: 18,
-    desc: "Very fine blocks",
-  },
-  {
-    key: "nano",
-    label: "Nano",
-    emoji: "🔬",
-    size: 0.4,
-    gap: 0.06,
-    gridCell: 0.4,
-    gridSection: 2,
-    gridFade: 24,
-    camera: [6, 6, 6] as [number, number, number],
-    minDist: 2,
-    maxDist: 30,
-    desc: "Tiny detail blocks",
-  },
-  {
-    key: "small",
-    label: "Small",
-    emoji: "🧊",
-    size: 1,
-    gap: 0.08,
-    gridCell: 1,
-    gridSection: 10,
-    gridFade: 60,
-    camera: [16, 13, 16] as [number, number, number],
-    minDist: 4,
-    maxDist: 70,
-    desc: "Standard blocks",
-  },
-  {
-    key: "large",
-    label: "Large",
-    emoji: "🟦",
-    size: 2,
-    gap: 0.12,
-    gridCell: 2,
-    gridSection: 10,
-    gridFade: 100,
-    camera: [28, 22, 28] as [number, number, number],
-    minDist: 6,
-    maxDist: 120,
-    desc: "Big chunky blocks",
-  },
-  {
-    key: "mega",
-    label: "Mega",
-    emoji: "🏗️",
-    size: 4,
-    gap: 0.18,
-    gridCell: 4,
-    gridSection: 20,
-    gridFade: 180,
-    camera: [50, 40, 50] as [number, number, number],
-    minDist: 12,
-    maxDist: 220,
-    desc: "Massive building blocks",
-  },
+  { key:"atom",  label:"Atom",  emoji:"⚛️",  size:0.1, gap:0.015, gridCell:0.1, gridSection:0.5, gridFade:7,   camera:[1.8,1.5,1.8]   as [number,number,number], minDist:0.4, maxDist:10,  desc:"Ultra fine"    },
+  { key:"micro", label:"Micro", emoji:"🔭",  size:0.2, gap:0.03,  gridCell:0.2, gridSection:1,   gridFade:13,  camera:[3.5,3,3.5]     as [number,number,number], minDist:0.8, maxDist:18,  desc:"Very fine"     },
+  { key:"nano",  label:"Nano",  emoji:"🔬",  size:0.4, gap:0.06,  gridCell:0.4, gridSection:2,   gridFade:24,  camera:[6,6,6]         as [number,number,number], minDist:2,   maxDist:30,  desc:"Tiny"          },
+  { key:"small", label:"Small", emoji:"🧊",  size:1,   gap:0.08,  gridCell:1,   gridSection:10,  gridFade:60,  camera:[16,13,16]      as [number,number,number], minDist:4,   maxDist:70,  desc:"Standard"      },
+  { key:"large", label:"Large", emoji:"🟦",  size:2,   gap:0.12,  gridCell:2,   gridSection:10,  gridFade:100, camera:[28,22,28]      as [number,number,number], minDist:6,   maxDist:120, desc:"Chunky"        },
+  { key:"mega",  label:"Mega",  emoji:"🏗️", size:4,   gap:0.18,  gridCell:4,   gridSection:20,  gridFade:180, camera:[50,40,50]      as [number,number,number], minDist:12,  maxDist:220, desc:"Massive"       },
 ] as const;
-
 type ModeKey = (typeof MODES)[number]["key"];
 
-// ── Premier League 2024/25 team colours + official badges ────────────────────
+// ── Premier League teams ──────────────────────────────────────────────────────
 const PL = "https://resources.premierleague.com/premierleague/badges";
 const TEAMS = [
-  { hex: "#FF0000", name: "Liverpool",    logo: `${PL}/t14.png`  },
-  { hex: "#EF0107", name: "Arsenal",      logo: `${PL}/t3.png`   },
-  { hex: "#DA291C", name: "Man Utd",      logo: `${PL}/t1.png`   },
-  { hex: "#FF3B30", name: "Nottm Forest", logo: `${PL}/t17.png`  },
-  { hex: "#E30013", name: "Bournemouth",  logo: `${PL}/t91.png`  },
-  { hex: "#D71920", name: "Southampton",  logo: `${PL}/t20.png`  },
-  { hex: "#D0021B", name: "Brentford",    logo: `${PL}/t94.png`  },
-  { hex: "#C4122E", name: "Crystal Pal", logo: `${PL}/t31.png`  },
-  { hex: "#6DCFF6", name: "Man City",     logo: `${PL}/t43.png`  },
-  { hex: "#005BBB", name: "Chelsea",      logo: `${PL}/t8.png`   },
-  { hex: "#0057FF", name: "Brighton",     logo: `${PL}/t36.png`  },
-  { hex: "#0047AB", name: "Everton",      logo: `${PL}/t11.png`  },
-  { hex: "#003FDB", name: "Leicester",    logo: `${PL}/t13.png`  },
-  { hex: "#3A78D4", name: "Ipswich",      logo: `${PL}/t40.png`  },
-  { hex: "#888888", name: "Fulham",       logo: `${PL}/t54.png`  },
-  { hex: "#FDB913", name: "Wolves",       logo: `${PL}/t39.png`  },
-  { hex: "#CC3366", name: "West Ham",     logo: `${PL}/t21.png`  },
-  { hex: "#9B1C31", name: "Aston Villa",  logo: `${PL}/t7.png`   },
-  { hex: "#1C1C1B", name: "Newcastle",    logo: `${PL}/t4.png`   },
-  { hex: "#F0F0F0", name: "Tottenham",    logo: `${PL}/t6.png`   },
+  { hex:"#FF0000", name:"Liverpool",    logo:`${PL}/t14.png`  },
+  { hex:"#EF0107", name:"Arsenal",      logo:`${PL}/t3.png`   },
+  { hex:"#DA291C", name:"Man Utd",      logo:`${PL}/t1.png`   },
+  { hex:"#FF3B30", name:"Nottm Forest", logo:`${PL}/t17.png`  },
+  { hex:"#E30013", name:"Bournemouth",  logo:`${PL}/t91.png`  },
+  { hex:"#D71920", name:"Southampton",  logo:`${PL}/t20.png`  },
+  { hex:"#D0021B", name:"Brentford",    logo:`${PL}/t94.png`  },
+  { hex:"#C4122E", name:"Crystal Pal", logo:`${PL}/t31.png`  },
+  { hex:"#6DCFF6", name:"Man City",     logo:`${PL}/t43.png`  },
+  { hex:"#005BBB", name:"Chelsea",      logo:`${PL}/t8.png`   },
+  { hex:"#0057FF", name:"Brighton",     logo:`${PL}/t36.png`  },
+  { hex:"#0047AB", name:"Everton",      logo:`${PL}/t11.png`  },
+  { hex:"#003FDB", name:"Leicester",    logo:`${PL}/t13.png`  },
+  { hex:"#3A78D4", name:"Ipswich",      logo:`${PL}/t40.png`  },
+  { hex:"#888888", name:"Fulham",       logo:`${PL}/t54.png`  },
+  { hex:"#FDB913", name:"Wolves",       logo:`${PL}/t39.png`  },
+  { hex:"#CC3366", name:"West Ham",     logo:`${PL}/t21.png`  },
+  { hex:"#9B1C31", name:"Aston Villa",  logo:`${PL}/t7.png`   },
+  { hex:"#1C1C1B", name:"Newcastle",    logo:`${PL}/t4.png`   },
+  { hex:"#F0F0F0", name:"Tottenham",    logo:`${PL}/t6.png`   },
 ];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-type Block = { id: string; x: number; y: number; z: number; color: string };
+type Block = { id:string; x:number; y:number; z:number; color:string; logo:string };
+type PhysicsState = { px:number; py:number; pz:number; vx:number; vy:number; vz:number; rx:number; ry:number; rz:number; arx:number; ary:number; arz:number };
 
 const uid = () => `${Date.now()}-${Math.random()}`;
+function snapTo(v: number, size: number) { return Math.round(v / size) * size; }
+function haptic() { try { navigator.vibrate(10); } catch { /* not supported */ } }
 
-// ── Snap to block-size grid ───────────────────────────────────────────────────
-function snapTo(v: number, size: number) {
-  return Math.round(v / size) * size;
+function makeChaosPhysics(block: Block, size: number): PhysicsState {
+  return {
+    px: block.x, py: block.y * size + size / 2, pz: block.z,
+    vx: (Math.random() - 0.5) * size * 9,
+    vy: Math.random() * size * 5 + size * 2,
+    vz: (Math.random() - 0.5) * size * 9,
+    rx: 0, ry: 0, rz: 0,
+    arx: (Math.random() - 0.5) * 0.18,
+    ary: (Math.random() - 0.5) * 0.18,
+    arz: (Math.random() - 0.5) * 0.18,
+  };
+}
+
+// ── Texture cache ─────────────────────────────────────────────────────────────
+const _texCache = new Map<string, THREE.Texture | null>();
+function useLogoTexture(url: string): THREE.Texture | null {
+  const [tex, setTex] = useState<THREE.Texture | null>(() => _texCache.get(url) ?? null);
+  useEffect(() => {
+    if (_texCache.has(url)) { setTex(_texCache.get(url) ?? null); return; }
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      url,
+      (t) => { t.colorSpace = THREE.SRGBColorSpace; _texCache.set(url, t); setTex(t); },
+      undefined,
+      () => { _texCache.set(url, null); },
+    );
+  }, [url]);
+  return tex;
+}
+
+// ── Football texture (created once) ──────────────────────────────────────────
+let _fbTex: THREE.CanvasTexture | null = null;
+function getFootballTex(): THREE.CanvasTexture {
+  if (_fbTex) return _fbTex;
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 256;
+  const ctx = c.getContext("2d")!;
+  ctx.font = "190px serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("⚽", 128, 128);
+  _fbTex = new THREE.CanvasTexture(c);
+  return _fbTex;
 }
 
 // ── Starfield ─────────────────────────────────────────────────────────────────
-function Stars({ count = 1800 }: { count?: number }) {
+function Stars() {
   const ref = useRef<THREE.Points>(null);
   const [positions, sizes] = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const sz  = new Float32Array(count);
-    for (let i = 0; i < count; i++) {
-      const r     = 180 + Math.random() * 320;
-      const theta = Math.random() * Math.PI * 2;
-      const phi   = Math.acos(2 * Math.random() - 1);
-      pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = Math.abs(r * Math.cos(phi)) * (Math.random() < 0.5 ? 1 : -0.3);
-      pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+    const n = 1800, pos = new Float32Array(n * 3), sz = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const r = 180 + Math.random() * 320, theta = Math.random() * Math.PI * 2, phi = Math.acos(2 * Math.random() - 1);
+      pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+      pos[i*3+1] = Math.abs(r * Math.cos(phi)) * (Math.random() < 0.5 ? 1 : -0.3);
+      pos[i*3+2] = r * Math.sin(phi) * Math.sin(theta);
       sz[i] = 0.4 + Math.random() * 1.4;
     }
     return [pos, sz];
-  }, [count]);
-
-  useFrame(({ clock }) => {
-    if (ref.current) ref.current.rotation.y = clock.getElapsedTime() * 0.008;
-  });
-
+  }, []);
+  useFrame(({ clock }) => { if (ref.current) ref.current.rotation.y = clock.getElapsedTime() * 0.008; });
   return (
     <points ref={ref}>
       <bufferGeometry>
@@ -201,47 +146,69 @@ function Stars({ count = 1800 }: { count?: number }) {
   );
 }
 
-// ── Single block mesh ─────────────────────────────────────────────────────────
-function BlockMesh({
-  block, size, gap, eraseMode, onErase,
-}: {
-  block: Block; size: number; gap: number;
-  eraseMode: boolean; onErase: (id: string) => void;
+// ── Logo face planes ──────────────────────────────────────────────────────────
+function LogoFaces({ visual, logoTex }: { visual: number; logoTex: THREE.Texture | null }) {
+  const fbTex = getFootballTex();
+  const h = visual / 2;
+  const o = 0.003;
+  const pw = visual * 0.8, ph = visual * 0.75;
+  return (
+    <>
+      {logoTex && (
+        <>
+          <mesh position={[0, 0, h + o]}>
+            <planeGeometry args={[pw, pw]} />
+            <meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} />
+          </mesh>
+          <mesh position={[0, 0, -(h + o)]} rotation={[0, Math.PI, 0]}>
+            <planeGeometry args={[pw, pw]} />
+            <meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} />
+          </mesh>
+          <mesh position={[h + o, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+            <planeGeometry args={[pw, pw]} />
+            <meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} />
+          </mesh>
+          <mesh position={[-(h + o), 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+            <planeGeometry args={[pw, pw]} />
+            <meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} />
+          </mesh>
+        </>
+      )}
+      {/* Football on top */}
+      <mesh position={[0, h + o, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[ph, ph]} />
+        <meshBasicMaterial map={fbTex} transparent alphaTest={0.05} depthWrite={false} />
+      </mesh>
+    </>
+  );
+}
+
+// ── Static block mesh ─────────────────────────────────────────────────────────
+function BlockMesh({ block, size, gap, eraseMode, onErase }: {
+  block: Block; size: number; gap: number; eraseMode: boolean; onErase: (id: string) => void;
 }) {
   const [hovered, setHovered] = useState(false);
+  const logoTex = useLogoTexture(block.logo);
   const visual = size - gap;
+  const col = hovered && eraseMode ? "#ff3333" : block.color;
 
   useEffect(() => {
     document.body.style.cursor = hovered ? (eraseMode ? "not-allowed" : "pointer") : "auto";
     return () => { document.body.style.cursor = "auto"; };
   }, [hovered, eraseMode]);
 
-  const col = hovered && eraseMode ? "#ff3333" : block.color;
-
   return (
     <group position={[block.x, block.y * size + size / 2, block.z]}>
       <mesh castShadow receiveShadow>
         <boxGeometry args={[visual, visual, visual]} />
-        <meshStandardMaterial
-          color={col}
-          roughness={0.22}
-          metalness={0.28}
-          transparent={hovered && eraseMode}
-          opacity={hovered && eraseMode ? 0.55 : 1}
-        />
-        <Edges lineWidth={hovered ? 2 : 1} color={hovered ? "#ffffff" : "#3a4060"} />
+        <meshStandardMaterial color={col} roughness={0.22} metalness={0.28}
+          transparent={hovered && eraseMode} opacity={hovered && eraseMode ? 0.5 : 1} />
+        <Edges lineWidth={hovered ? 2 : 1} color={hovered ? "#fff" : "#3a4060"} />
       </mesh>
-      {/* top face highlight */}
-      <mesh position={[0, visual / 2 + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[visual * 0.82, visual * 0.82]} />
-        <meshBasicMaterial color="white" transparent opacity={0.07} depthWrite={false} side={THREE.FrontSide} />
-      </mesh>
-      {/* invisible hit target */}
-      <mesh
-        visible={false}
+      <LogoFaces visual={visual} logoTex={eraseMode ? null : logoTex} />
+      <mesh visible={false}
         onPointerEnter={(e) => { e.stopPropagation(); setHovered(true); }}
-        onPointerLeave={() => setHovered(false)}
-      >
+        onPointerLeave={() => setHovered(false)}>
         <boxGeometry args={[size, size, size]} />
         <meshBasicMaterial />
       </mesh>
@@ -249,15 +216,57 @@ function BlockMesh({
   );
 }
 
+// ── Physics block (chaos mode) ────────────────────────────────────────────────
+function PhysicsBlock({ block, size, gap, init }: {
+  block: Block; size: number; gap: number; init: PhysicsState;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const p = useRef<PhysicsState>({ ...init });
+  const logoTex = useLogoTexture(block.logo);
+  const visual = size - gap;
+
+  useFrame((_, dt) => {
+    const d = Math.min(dt, 0.05);
+    const s = p.current;
+    s.vy -= 20 * d;
+    s.px += s.vx * d; s.py += s.vy * d; s.pz += s.vz * d;
+    s.rx += s.arx;    s.ry += s.ary;    s.rz += s.arz;
+    const floor = size * 0.5;
+    if (s.py < floor) {
+      s.py = floor;
+      s.vy = Math.abs(s.vy) * 0.5;
+      s.vx *= 0.88; s.vz *= 0.88;
+      s.arx *= 0.78; s.ary *= 0.78; s.arz *= 0.78;
+    }
+    if (Math.abs(s.px) > 50) s.vx *= -0.75;
+    if (Math.abs(s.pz) > 50) s.vz *= -0.75;
+    if (groupRef.current) {
+      groupRef.current.position.set(s.px, s.py, s.pz);
+      groupRef.current.rotation.set(s.rx, s.ry, s.rz);
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[init.px, init.py, init.pz]}>
+      <mesh castShadow>
+        <boxGeometry args={[visual, visual, visual]} />
+        <meshStandardMaterial color={block.color} roughness={0.22} metalness={0.28} />
+        <Edges lineWidth={1} color="#3a4060" />
+      </mesh>
+      <LogoFaces visual={visual} logoTex={logoTex} />
+    </group>
+  );
+}
+
 // ── Ghost block ───────────────────────────────────────────────────────────────
 function GhostBlock({ position, color, size, gap }: {
-  position: [number, number, number]; color: string; size: number; gap: number;
+  position: [number,number,number]; color: string; size: number; gap: number;
 }) {
   const visual = size - gap;
   return (
     <mesh position={position}>
       <boxGeometry args={[visual, visual, visual]} />
-      <meshStandardMaterial color={color} transparent opacity={0.35} roughness={0.3} metalness={0.2} />
+      <meshStandardMaterial color={color} transparent opacity={0.32} roughness={0.3} metalness={0.2} />
       <Edges lineWidth={1.5} color="white" />
     </mesh>
   );
@@ -275,130 +284,110 @@ function PlatformGlow({ radius }: { radius: number }) {
 
 // ── 3-D Scene ─────────────────────────────────────────────────────────────────
 function Scene({
-  blocks, selectedColor, eraseMode, size, gap,
-  gridCell, gridSection, gridFade,
-  onAddBlock, onEraseBlock,
+  blocks, selectedColor, eraseMode, size, gap, gridCell, gridSection, gridFade,
+  chaosMode, chaosPhysics, onAddBlock, onEraseBlock,
 }: {
   blocks: Block[]; selectedColor: string; eraseMode: boolean;
-  size: number; gap: number;
-  gridCell: number; gridSection: number; gridFade: number;
-  onAddBlock: (x: number, y: number, z: number) => void;
-  onEraseBlock: (id: string) => void;
+  size: number; gap: number; gridCell: number; gridSection: number; gridFade: number;
+  chaosMode: boolean; chaosPhysics: Map<string, PhysicsState>;
+  onAddBlock: (x:number, y:number, z:number) => void;
+  onEraseBlock: (id:string) => void;
 }) {
-  const downPos = useRef<{ x: number; y: number } | null>(null);
-  const [ghost, setGhost] = useState<[number, number, number] | null>(null);
+  const downPos = useRef<{x:number;y:number}|null>(null);
+  const [ghost, setGhost] = useState<[number,number,number]|null>(null);
 
-  const handleGroundDown = (e: ThreeEvent<PointerEvent>) => {
-    downPos.current = { x: e.clientX, y: e.clientY };
-  };
+  const handleGroundDown = (e: ThreeEvent<PointerEvent>) => { downPos.current = {x:e.clientX,y:e.clientY}; };
 
   const handleGroundMove = useCallback((e: ThreeEvent<PointerEvent>) => {
-    if (eraseMode) { setGhost(null); return; }
-    const gx = snapTo(e.point.x, size);
-    const gz = snapTo(e.point.z, size);
-    setGhost([gx, size / 2, gz]);
-  }, [eraseMode, size]);
+    if (eraseMode || chaosMode) { setGhost(null); return; }
+    setGhost([snapTo(e.point.x, size), size / 2, snapTo(e.point.z, size)]);
+  }, [eraseMode, chaosMode, size]);
 
   const handleGroundClick = useCallback((e: ThreeEvent<MouseEvent>) => {
-    if (eraseMode) return;
+    if (eraseMode || chaosMode) return;
     if (downPos.current) {
-      const dx = e.clientX - downPos.current.x;
-      const dy = e.clientY - downPos.current.y;
-      if (Math.sqrt(dx * dx + dy * dy) > 8) return;
+      const dx = e.clientX - downPos.current.x, dy = e.clientY - downPos.current.y;
+      if (Math.sqrt(dx*dx+dy*dy) > 8) return;
     }
     onAddBlock(snapTo(e.point.x, size), 0, snapTo(e.point.z, size));
-  }, [eraseMode, size, onAddBlock]);
+  }, [eraseMode, chaosMode, size, onAddBlock]);
 
   const handleBlockClick = useCallback((e: ThreeEvent<MouseEvent>, block: Block) => {
+    if (chaosMode) return;
     if (eraseMode) { e.stopPropagation(); onEraseBlock(block.id); return; }
     e.stopPropagation();
     if (downPos.current) {
-      const dx = e.clientX - downPos.current.x;
-      const dy = e.clientY - downPos.current.y;
-      if (Math.sqrt(dx * dx + dy * dy) > 8) return;
+      const dx = e.clientX - downPos.current.x, dy = e.clientY - downPos.current.y;
+      if (Math.sqrt(dx*dx+dy*dy) > 8) return;
     }
-    const top = blocks
-      .filter((b) => b.x === block.x && b.z === block.z)
-      .reduce((max, b) => Math.max(max, b.y), -1);
+    const top = blocks.filter(b => b.x === block.x && b.z === block.z).reduce((m, b) => Math.max(m, b.y), -1);
     onAddBlock(block.x, top + 1, block.z);
-  }, [eraseMode, blocks, onAddBlock, onEraseBlock]);
+  }, [chaosMode, eraseMode, blocks, onAddBlock, onEraseBlock]);
 
   const handleBlockMove = useCallback((e: ThreeEvent<PointerEvent>, block: Block) => {
-    if (eraseMode) { setGhost(null); return; }
-    const top = blocks
-      .filter((b) => b.x === block.x && b.z === block.z)
-      .reduce((max, b) => Math.max(max, b.y), -1);
+    if (eraseMode || chaosMode) { setGhost(null); return; }
+    const top = blocks.filter(b => b.x === block.x && b.z === block.z).reduce((m, b) => Math.max(m, b.y), -1);
     setGhost([block.x, (top + 1) * size + size / 2, block.z]);
-  }, [eraseMode, blocks, size]);
+  }, [eraseMode, chaosMode, blocks, size]);
 
   return (
     <>
       <Stars />
-
-      {/* Lighting */}
       <ambientLight intensity={0.3} />
-      <directionalLight position={[14, 22, 10]} intensity={1.6} color="#d0e8ff" castShadow
+      <directionalLight position={[14,22,10]} intensity={1.6} color="#d0e8ff" castShadow
         shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} />
-      <directionalLight position={[-10, 6, -12]} intensity={0.35} color="#ffe4b0" />
-      <directionalLight position={[0, 4, -20]} intensity={0.5} color="#8b5cf6" />
-      <hemisphereLight args={["#0d1b45", "#000000", 0.5]} />
-      <pointLight position={[0, size * 0.5, 0]} intensity={0.4} color="#3b82f6" distance={gridFade * 0.3} />
+      <directionalLight position={[-10,6,-12]} intensity={0.35} color="#ffe4b0" />
+      <directionalLight position={[0,4,-20]} intensity={0.5} color="#8b5cf6" />
+      <hemisphereLight args={["#0d1b45","#000000",0.5]} />
+      <pointLight position={[0,size*0.5,0]} intensity={0.4} color="#3b82f6" distance={gridFade*0.3} />
 
-      {/* Infinite grid */}
-      <Grid
-        position={[0, 0, 0]}
-        args={[500, 500]}
-        cellSize={gridCell}
-        cellThickness={0.4}
-        cellColor="#1e3a6e"
-        sectionSize={gridSection}
-        sectionThickness={0.9}
-        sectionColor="#2563eb"
-        fadeDistance={gridFade}
-        fadeStrength={2.5}
-        infiniteGrid
-      />
-
+      <Grid position={[0,0,0]} args={[500,500]}
+        cellSize={gridCell} cellThickness={0.4} cellColor="#1e3a6e"
+        sectionSize={gridSection} sectionThickness={0.9} sectionColor="#2563eb"
+        fadeDistance={gridFade} fadeStrength={2.5} infiniteGrid />
       <PlatformGlow radius={gridFade * 0.22} />
 
       {/* Invisible ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}
-        onPointerDown={handleGroundDown}
-        onPointerMove={handleGroundMove}
-        onPointerLeave={() => setGhost(null)}
-        onClick={handleGroundClick}
-        receiveShadow>
-        <planeGeometry args={[2000, 2000]} />
-        <meshStandardMaterial transparent opacity={0} side={THREE.FrontSide} />
-      </mesh>
+      {!chaosMode && (
+        <mesh rotation={[-Math.PI/2,0,0]} position={[0,0,0]}
+          onPointerDown={handleGroundDown} onPointerMove={handleGroundMove}
+          onPointerLeave={() => setGhost(null)} onClick={handleGroundClick} receiveShadow>
+          <planeGeometry args={[2000,2000]} />
+          <meshStandardMaterial transparent opacity={0} side={THREE.FrontSide} />
+        </mesh>
+      )}
 
-      {/* Placed blocks */}
-      {blocks.map((block) => (
-        <group key={block.id}
-          onPointerDown={handleGroundDown}
-          onPointerMove={(e) => { e.stopPropagation(); handleBlockMove(e, block); }}
-          onClick={(e) => handleBlockClick(e, block)}>
-          <BlockMesh block={block} size={size} gap={gap} eraseMode={eraseMode} onErase={onEraseBlock} />
-        </group>
-      ))}
+      {/* Blocks */}
+      {blocks.map((block) =>
+        chaosMode ? (
+          <PhysicsBlock key={block.id} block={block} size={size} gap={gap}
+            init={chaosPhysics.get(block.id) ?? makeChaosPhysics(block, size)} />
+        ) : (
+          <group key={block.id}
+            onPointerDown={handleGroundDown}
+            onPointerMove={(e) => { e.stopPropagation(); handleBlockMove(e, block); }}
+            onClick={(e) => handleBlockClick(e, block)}>
+            <BlockMesh block={block} size={size} gap={gap} eraseMode={eraseMode} onErase={onEraseBlock} />
+          </group>
+        )
+      )}
 
-      {/* Ghost */}
-      {!eraseMode && ghost && <GhostBlock position={ghost} color={selectedColor} size={size} gap={gap} />}
+      {!eraseMode && !chaosMode && ghost && <GhostBlock position={ghost} color={selectedColor} size={size} gap={gap} />}
     </>
   );
 }
 
 // ── UI button ─────────────────────────────────────────────────────────────────
-function Btn({ onClick, active, bg, children }: {
-  onClick: () => void; active?: boolean; bg?: string; children: React.ReactNode;
+function Btn({ onClick, active, bg, title, children }: {
+  onClick: () => void; active?: boolean; bg?: string; title?: string; children: React.ReactNode;
 }) {
   return (
-    <button onClick={onClick} style={{
+    <button onClick={onClick} title={title} style={{
       background: bg ?? (active ? "#3b82f6" : "rgba(255,255,255,0.08)"),
       color: "white",
       border: active ? "1.5px solid rgba(255,255,255,0.45)" : "1.5px solid rgba(255,255,255,0.12)",
-      borderRadius: 14, padding: "9px 18px", fontSize: 14, fontWeight: 700,
-      cursor: "pointer", transition: "all 0.15s", whiteSpace: "nowrap", letterSpacing: 0.2,
+      borderRadius: 14, padding: "8px 14px", fontSize: 14, fontWeight: 700,
+      cursor: "pointer", transition: "all 0.15s", whiteSpace: "nowrap",
       backdropFilter: "blur(8px)",
     }}>
       {children}
@@ -408,241 +397,245 @@ function Btn({ onClick, active, bg, children }: {
 
 // ── Root component ────────────────────────────────────────────────────────────
 export default function App() {
-  const [activeMode, setActiveMode] = useState<ModeKey>("small");
-  const [allBlocks, setAllBlocks] = useState<Record<ModeKey, Block[]>>({
-    atom: [], micro: [], nano: [], small: [], large: [], mega: [],
+  const [activeMode, setActiveMode]  = useState<ModeKey>("small");
+  const [allBlocks, setAllBlocks]    = useState<Record<ModeKey, Block[]>>({
+    atom:[], micro:[], nano:[], small:[], large:[], mega:[],
   });
-  const [allHistory, setAllHistory] = useState<Record<ModeKey, Block[][]>>({
-    atom: [[]], micro: [[]], nano: [[]], small: [[]], large: [[]], mega: [[]],
+  const [allHistory, setAllHistory]  = useState<Record<ModeKey, Block[][]>>({
+    atom:[[]], micro:[[]], nano:[[]], small:[[]], large:[[]], mega:[[]],
   });
   const [selectedColor, setSelectedColor] = useState(TEAMS[0].hex);
-  const [eraseMode, setEraseMode] = useState(false);
+  const [eraseMode,  setEraseMode]   = useState(false);
+  const [chaosMode,  setChaosMode]   = useState(false);
+  const [chaosPhysics, setChaosPhysics] = useState<Map<string, PhysicsState>>(new Map());
+  const [sharing, setSharing]        = useState(false);
+  const glRef = useRef<THREE.WebGLRenderer | null>(null);
 
-  const mode = MODES.find((m) => m.key === activeMode)!;
+  const mode    = MODES.find(m => m.key === activeMode)!;
   const blocks  = allBlocks[activeMode];
-  const history = allHistory[activeMode];
 
-  const switchMode = (key: ModeKey) => {
-    setActiveMode(key);
-    setEraseMode(false);
-  };
+  const selectedTeam = TEAMS.find(t => t.hex === selectedColor) ?? TEAMS[0];
 
-  const addBlock = useCallback(
-    (x: number, y: number, z: number) => {
-      setAllBlocks((prev) => {
-        const cur = prev[activeMode];
-        if (cur.some((b) => b.x === x && b.y === y && b.z === z)) return prev;
-        const next = [...cur, { id: uid(), x, y, z, color: selectedColor }];
-        setAllHistory((h) => ({ ...h, [activeMode]: [...h[activeMode].slice(-49), next] }));
-        return { ...prev, [activeMode]: next };
-      });
-    },
-    [activeMode, selectedColor]
-  );
+  const switchMode = (key: ModeKey) => { setActiveMode(key); setEraseMode(false); setChaosMode(false); };
+
+  const addBlock = useCallback((x: number, y: number, z: number) => {
+    setAllBlocks(prev => {
+      const cur = prev[activeMode];
+      if (cur.some(b => b.x===x && b.y===y && b.z===z)) return prev;
+      haptic();
+      const next = [...cur, { id:uid(), x, y, z, color:selectedColor, logo:selectedTeam.logo }];
+      setAllHistory(h => ({ ...h, [activeMode]: [...h[activeMode].slice(-49), next] }));
+      return { ...prev, [activeMode]: next };
+    });
+  }, [activeMode, selectedColor, selectedTeam.logo]);
 
   const eraseBlock = useCallback((id: string) => {
-    setAllBlocks((prev) => {
-      const next = prev[activeMode].filter((b) => b.id !== id);
-      setAllHistory((h) => ({ ...h, [activeMode]: [...h[activeMode].slice(-49), next] }));
+    setAllBlocks(prev => {
+      const next = prev[activeMode].filter(b => b.id !== id);
+      setAllHistory(h => ({ ...h, [activeMode]: [...h[activeMode].slice(-49), next] }));
       return { ...prev, [activeMode]: next };
     });
   }, [activeMode]);
 
   const undo = useCallback(() => {
-    setAllHistory((h) => {
+    setAllHistory(h => {
       const cur = h[activeMode];
       if (cur.length <= 1) return h;
-      const prev = cur[cur.length - 2];
-      setAllBlocks((b) => ({ ...b, [activeMode]: prev }));
-      return { ...h, [activeMode]: cur.slice(0, -1) };
+      setAllBlocks(b => ({ ...b, [activeMode]: cur[cur.length-2] }));
+      return { ...h, [activeMode]: cur.slice(0,-1) };
     });
   }, [activeMode]);
 
   const clear = useCallback(() => {
     if (blocks.length === 0) return;
-    setAllBlocks((b) => ({ ...b, [activeMode]: [] }));
-    setAllHistory((h) => ({ ...h, [activeMode]: [[]] }));
+    setAllBlocks(b => ({ ...b, [activeMode]: [] }));
+    setAllHistory(h => ({ ...h, [activeMode]: [[]] }));
+    setChaosMode(false);
   }, [activeMode, blocks.length]);
+
+  const toggleChaos = useCallback(() => {
+    if (!chaosMode) {
+      const map = new Map<string, PhysicsState>();
+      blocks.forEach(b => map.set(b.id, makeChaosPhysics(b, mode.size)));
+      setChaosPhysics(map);
+      setEraseMode(false);
+    }
+    setChaosMode(m => !m);
+  }, [chaosMode, blocks, mode.size]);
+
+  const handleShare = useCallback(async () => {
+    const gl = glRef.current;
+    if (!gl || sharing) return;
+    setSharing(true);
+    try {
+      const url = gl.domElement.toDataURL("image/png");
+      const blob = await fetch(url).then(r => r.blob());
+      const file = new File([blob], "block-builder.png", { type:"image/png" });
+      if (navigator.share && (navigator as {canShare?:(o:object)=>boolean}).canShare?.({ files:[file] })) {
+        await navigator.share({ title:"My Block Builder!", files:[file] });
+      } else {
+        const a = Object.assign(document.createElement("a"), { href:url, download:"block-builder.png" });
+        a.click();
+      }
+    } catch { /* cancelled */ }
+    setSharing(false);
+  }, [sharing]);
 
   if (!WEBGL_AVAILABLE) return <NoWebGL />;
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative", background: "#020209" }}>
+    <div style={{ width:"100%", height:"100%", position:"relative", background:"#020209" }}>
 
-      {/* ── 3-D Canvas ── */}
+      {/* ── Canvas ── */}
       <Canvas
-        key={activeMode}
-        shadows
+        key={activeMode} shadows
         camera={{ position: mode.camera, fov: 45 }}
-        gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
-        style={{ background: "radial-gradient(ellipse at 50% 40%, #0a0e2a 0%, #020209 70%)" }}
-        dpr={[1, 2]}
+        gl={{ antialias:true, alpha:false, preserveDrawingBuffer:true,
+              toneMapping:THREE.ACESFilmicToneMapping, toneMappingExposure:1.1 }}
+        style={{ background:"radial-gradient(ellipse at 50% 40%,#0a0e2a 0%,#020209 70%)" }}
+        dpr={[1,2]}
+        onCreated={({ gl }) => { glRef.current = gl; }}
       >
         <fog attach="fog" args={["#020209", mode.gridFade * 0.8, mode.gridFade * 2.5]} />
-        <OrbitControls
-          enableDamping dampingFactor={0.1}
+        <OrbitControls enableDamping dampingFactor={0.1}
           minDistance={mode.minDist} maxDistance={mode.maxDist}
           maxPolarAngle={Math.PI / 2 - 0.03}
-          touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
-        />
+          touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }} />
         <Scene
-          blocks={blocks}
-          selectedColor={selectedColor}
-          eraseMode={eraseMode}
-          size={mode.size}
-          gap={mode.gap}
-          gridCell={mode.gridCell}
-          gridSection={mode.gridSection}
-          gridFade={mode.gridFade}
-          onAddBlock={addBlock}
-          onEraseBlock={eraseBlock}
-        />
+          blocks={blocks} selectedColor={selectedColor}
+          eraseMode={eraseMode} size={mode.size} gap={mode.gap}
+          gridCell={mode.gridCell} gridSection={mode.gridSection} gridFade={mode.gridFade}
+          chaosMode={chaosMode} chaosPhysics={chaosPhysics}
+          onAddBlock={addBlock} onEraseBlock={eraseBlock} />
       </Canvas>
 
-      {/* ── Mode tabs ── */}
-      <div style={{
-        position: "absolute", top: 0, left: 0, right: 0,
-        padding: "12px 12px 0",
-        background: "linear-gradient(180deg, rgba(2,2,9,0.92) 0%, transparent 100%)",
-      }}>
-        {/* Mode switcher */}
-        <div style={{ display: "flex", gap: 4, justifyContent: "center", marginBottom: 6, flexWrap: "nowrap", overflowX: "auto" }}>
-          {MODES.map((m) => (
-            <button
-              key={m.key}
-              onClick={() => switchMode(m.key)}
-              style={{
-                background: activeMode === m.key
-                  ? "rgba(59,130,246,0.85)"
-                  : "rgba(255,255,255,0.07)",
-                color: activeMode === m.key ? "white" : "rgba(255,255,255,0.5)",
-                border: activeMode === m.key
-                  ? "1.5px solid rgba(99,179,255,0.7)"
-                  : "1.5px solid rgba(255,255,255,0.08)",
-                borderRadius: 10,
-                padding: "5px 9px",
-                fontSize: 11,
-                fontWeight: 700,
-                cursor: "pointer",
-                transition: "all 0.18s",
-                backdropFilter: "blur(8px)",
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-                flexShrink: 0,
-                letterSpacing: 0.2,
-              }}
-            >
-              <span style={{ fontSize: 13 }}>{m.emoji}</span>
+      {/* ── Top bar ── */}
+      <div style={{ position:"absolute", top:0, left:0, right:0, padding:"12px 12px 0",
+        background:"linear-gradient(180deg,rgba(2,2,9,0.92) 0%,transparent 100%)" }}>
+
+        {/* Size tabs */}
+        <div style={{ display:"flex", gap:4, justifyContent:"center", marginBottom:6,
+          flexWrap:"nowrap", overflowX:"auto" }}>
+          {MODES.map(m => (
+            <button key={m.key} onClick={() => switchMode(m.key)} style={{
+              background: activeMode===m.key ? "rgba(59,130,246,0.85)" : "rgba(255,255,255,0.07)",
+              color: activeMode===m.key ? "white" : "rgba(255,255,255,0.5)",
+              border: activeMode===m.key ? "1.5px solid rgba(99,179,255,0.7)" : "1.5px solid rgba(255,255,255,0.08)",
+              borderRadius:10, padding:"5px 9px", fontSize:11, fontWeight:700,
+              cursor:"pointer", transition:"all 0.18s", backdropFilter:"blur(8px)",
+              display:"flex", alignItems:"center", gap:3, flexShrink:0,
+            }}>
+              <span style={{ fontSize:13 }}>{m.emoji}</span>
               <span>{m.label}</span>
             </button>
           ))}
         </div>
 
-        {/* Active mode label + controls row */}
-        <div style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "4px 4px 10px",
-        }}>
+        {/* Title + action buttons */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"4px 4px 10px" }}>
           <div>
-            <span style={{ color: "rgba(255,255,255,0.9)", fontWeight: 800, fontSize: 18, textShadow: "0 0 20px rgba(99,102,241,0.8)" }}>
+            <span style={{ color:"white", fontWeight:800, fontSize:16, textShadow:"0 0 20px rgba(99,102,241,0.8)" }}>
               🧱 Block Builder
             </span>
-            <span style={{ marginLeft: 10, color: "rgba(255,255,255,0.35)", fontSize: 12 }}>
+            <span style={{ marginLeft:8, color:"rgba(255,255,255,0.3)", fontSize:11 }}>
               {mode.desc} · {mode.size}u
             </span>
           </div>
-          <div style={{ display: "flex", gap: 6 }}>
-            <Btn onClick={undo} bg="rgba(255,255,255,0.07)">↩</Btn>
-            <Btn onClick={clear} bg="rgba(239,68,68,0.25)">🗑</Btn>
+          <div style={{ display:"flex", gap:5 }}>
+            <Btn onClick={undo} bg="rgba(255,255,255,0.07)" title="Undo">↩</Btn>
+            <Btn onClick={clear} bg="rgba(239,68,68,0.22)" title="Clear">🗑</Btn>
+            <Btn onClick={handleShare} bg={sharing ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.07)"} title="Share screenshot">
+              {sharing ? "⏳" : "📷"}
+            </Btn>
+            <Btn onClick={toggleChaos}
+              bg={chaosMode ? "rgba(239,68,68,0.75)" : "rgba(255,255,255,0.07)"}
+              title="Chaos mode — physics!">
+              💥
+            </Btn>
           </div>
         </div>
       </div>
 
       {/* ── Block counter ── */}
-      <div style={{
-        position: "absolute", top: 100, right: 14,
-        background: "rgba(255,255,255,0.07)",
-        backdropFilter: "blur(8px)",
-        borderRadius: 10, padding: "3px 10px",
-        color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 600,
-        border: "1px solid rgba(255,255,255,0.1)",
-      }}>
-        {blocks.length} block{blocks.length !== 1 ? "s" : ""}
+      <div style={{ position:"absolute", top:100, right:14,
+        background:"rgba(255,255,255,0.07)", backdropFilter:"blur(8px)",
+        borderRadius:10, padding:"3px 10px",
+        color:"rgba(255,255,255,0.5)", fontSize:12, fontWeight:600,
+        border:"1px solid rgba(255,255,255,0.1)" }}>
+        {blocks.length} block{blocks.length!==1?"s":""}
       </div>
 
+      {/* ── Chaos label ── */}
+      {chaosMode && (
+        <div style={{ position:"absolute", top:"50%", left:"50%",
+          transform:"translate(-50%,-50%)", pointerEvents:"none",
+          color:"#ff3b30", fontSize:22, fontWeight:900, letterSpacing:2,
+          textShadow:"0 0 30px #ff3b30cc", animation:"pulse 0.8s infinite alternate",
+          opacity:0.85 }}>
+          💥 CHAOS 💥
+        </div>
+      )}
+
       {/* ── Hint ── */}
-      {blocks.length === 0 && (
-        <div style={{
-          position: "absolute", top: "50%", left: "50%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center",
-          color: "rgba(255,255,255,0.28)",
-          fontSize: 15, fontWeight: 600, pointerEvents: "none", lineHeight: 1.7,
-        }}>
+      {blocks.length === 0 && !chaosMode && (
+        <div style={{ position:"absolute", top:"50%", left:"50%",
+          transform:"translate(-50%,-50%)", textAlign:"center",
+          color:"rgba(255,255,255,0.28)", fontSize:15, fontWeight:600,
+          pointerEvents:"none", lineHeight:1.7 }}>
           Tap the grid to place blocks<br />
-          <span style={{ fontSize: 12, opacity: 0.7 }}>Drag to rotate · Pinch to zoom</span>
+          <span style={{ fontSize:12, opacity:0.7 }}>Drag to rotate · Pinch to zoom</span>
         </div>
       )}
 
       {/* ── Bottom UI ── */}
-      <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0,
-        padding: "10px 16px 28px",
-        background: "linear-gradient(0deg, rgba(2,2,9,0.92) 0%, transparent 100%)",
-      }}>
-        <div style={{ display: "flex", gap: 8, marginBottom: 12, justifyContent: "center" }}>
-          <Btn onClick={() => setEraseMode(false)} active={!eraseMode}>🧱 Build</Btn>
-          <Btn onClick={() => setEraseMode(true)} active={eraseMode} bg={eraseMode ? "rgba(239,68,68,0.55)" : undefined}>🗑 Erase</Btn>
-        </div>
+      <div style={{ position:"absolute", bottom:0, left:0, right:0,
+        padding:"10px 16px 28px",
+        background:"linear-gradient(0deg,rgba(2,2,9,0.92) 0%,transparent 100%)" }}>
 
-        {!eraseMode && (
-          <div style={{ display: "flex", gap: 4, justifyContent: "center", flexWrap: "wrap", maxWidth: 400, margin: "0 auto" }}>
+        {/* Build / Erase */}
+        {!chaosMode && (
+          <div style={{ display:"flex", gap:8, marginBottom:10, justifyContent:"center" }}>
+            <Btn onClick={() => setEraseMode(false)} active={!eraseMode}>🧱 Build</Btn>
+            <Btn onClick={() => setEraseMode(true)} active={eraseMode}
+              bg={eraseMode ? "rgba(239,68,68,0.55)" : undefined}>🗑 Erase</Btn>
+          </div>
+        )}
+
+        {chaosMode && (
+          <div style={{ textAlign:"center", marginBottom:10 }}>
+            <Btn onClick={toggleChaos} bg="rgba(59,130,246,0.6)">⏹ Stop Chaos</Btn>
+          </div>
+        )}
+
+        {/* Team palette */}
+        {!eraseMode && !chaosMode && (
+          <div style={{ display:"flex", gap:4, justifyContent:"center",
+            flexWrap:"wrap", maxWidth:400, margin:"0 auto" }}>
             {TEAMS.map(({ hex, name, logo }) => {
               const active = selectedColor === hex;
-              const isLight = hex === "#F0F0F0" || hex === "#F5F5F5";
+              const isLight = hex === "#F0F0F0";
               const isDark  = hex === "#1C1C1B";
               return (
-                <button
-                  key={hex}
-                  onClick={() => setSelectedColor(hex)}
-                  title={name}
-                  style={{
-                    display: "flex", flexDirection: "column", alignItems: "center",
-                    gap: 2, background: "none", border: "none", cursor: "pointer",
-                    padding: 0, flexShrink: 0, width: 36,
-                  }}
-                >
-                  {/* Circle with team colour + badge */}
+                <button key={hex} onClick={() => setSelectedColor(hex)} title={name}
+                  style={{ display:"flex", flexDirection:"column", alignItems:"center",
+                    gap:2, background:"none", border:"none", cursor:"pointer",
+                    padding:0, flexShrink:0, width:36 }}>
                   <div style={{
-                    width: 34, height: 34, borderRadius: "50%", background: hex,
-                    border: active ? "2.5px solid white" : isLight || isDark ? "1.5px solid rgba(255,255,255,0.35)" : "1.5px solid rgba(255,255,255,0.12)",
-                    boxShadow: active ? `0 0 0 2px ${hex}99, 0 0 16px ${hex}cc` : "none",
+                    width:34, height:34, borderRadius:"50%", background:hex,
+                    border: active ? "2.5px solid white" : isLight||isDark ? "1.5px solid rgba(255,255,255,0.35)" : "1.5px solid rgba(255,255,255,0.12)",
+                    boxShadow: active ? `0 0 0 2px ${hex}99,0 0 16px ${hex}cc` : "none",
                     transform: active ? "scale(1.25)" : "scale(1)",
-                    transition: "all 0.15s",
-                    position: "relative",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    overflow: "hidden",
+                    transition:"all 0.15s",
+                    display:"flex", alignItems:"center", justifyContent:"center",
                   }}>
-                    <img
-                      src={logo}
-                      alt={name}
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                      style={{
-                        width: 26, height: 26,
-                        objectFit: "contain",
-                        filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))",
-                        flexShrink: 0,
-                      }}
-                    />
+                    <img src={logo} alt={name}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }}
+                      style={{ width:26, height:26, objectFit:"contain",
+                        filter:"drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }} />
                   </div>
-                  <span style={{
-                    fontSize: 6.5, color: active ? "white" : "rgba(255,255,255,0.4)",
-                    fontWeight: 700, letterSpacing: 0.1,
-                    width: 36, textAlign: "center", lineHeight: 1.2,
-                    transition: "color 0.15s", overflow: "hidden",
-                    whiteSpace: "nowrap", textOverflow: "ellipsis",
-                  }}>
+                  <span style={{ fontSize:6.5, color: active ? "white" : "rgba(255,255,255,0.4)",
+                    fontWeight:700, width:36, textAlign:"center", lineHeight:1.2,
+                    overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}>
                     {name}
                   </span>
                 </button>
@@ -652,11 +645,15 @@ export default function App() {
         )}
 
         {eraseMode && (
-          <p style={{ textAlign: "center", color: "#fca5a5", fontSize: 14, fontWeight: 700 }}>
+          <p style={{ textAlign:"center", color:"#fca5a5", fontSize:14, fontWeight:700 }}>
             Tap a block to remove it
           </p>
         )}
       </div>
+
+      <style>{`
+        @keyframes pulse { from { opacity:0.6; } to { opacity:1; } }
+      `}</style>
     </div>
   );
 }
