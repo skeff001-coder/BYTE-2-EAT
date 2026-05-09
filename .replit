@@ -37,3 +37,4 @@ externalPort = 3000
 VITE_SUPABASE_URL = "https://xnaggiadvfhrirkdkzwa.supabase.co"
 VITE_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Wgj06QSKWxjGddupQTRi2A_USKxNTJO"
 VITE_API_BASE_URL = "https://capacitor-i-os-builder.replit.app"
+BASE_PATH = "/"

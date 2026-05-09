@@ -1,5 +1,5 @@
 kind = "web"
-previewPath = "/culinary/"
+previewPath = "/"
 title = "Culinary Scan Assist"
 version = "1.0.0"
 id = "artifacts/culinary-scan-assist"
@@ -11,7 +11,7 @@ version = "1.0.0"
 
 [[services]]
 name = "web"
-paths = [ "/culinary/" ]
+paths = [ "/" ]
 localPort = 23253
 
 [services.development]
@@ -28,4 +28,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "23253"
-BASE_PATH = "/culinary/"
+BASE_PATH = "/"
