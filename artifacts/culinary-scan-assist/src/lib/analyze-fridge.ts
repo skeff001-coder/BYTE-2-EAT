@@ -6,8 +6,10 @@ export type AnalysisResult = {
   recipes: { title: string; time: string; description: string; steps: string[] }[];
 };
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+
 export async function analyzeFridge(imageDataUrl: string): Promise<AnalysisResult> {
-  const response = await fetch("/api/analyze-fridge", {
+  const response = await fetch(`${API_BASE}/api/analyze-fridge`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ imageDataUrl }),
