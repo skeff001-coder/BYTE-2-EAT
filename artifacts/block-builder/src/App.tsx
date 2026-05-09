@@ -293,58 +293,119 @@ function PhysicsBlock({ block, size, gap, init }: {
   );
 }
 
+// ── Player kit colours per team ───────────────────────────────────────────────
+const PLAYER_KITS = [
+  { jersey:"#D00010", shorts:"#D00010", socks:"#D00010", skin:"#e8b48a", name:"Liverpool"    },
+  { jersey:"#EF0107", shorts:"#FFFFFF", socks:"#FFFFFF", skin:"#d4956a", name:"Arsenal"      },
+  { jersey:"#DA291C", shorts:"#FFFFFF", socks:"#000000", skin:"#c8803c", name:"Man Utd"      },
+  { jersey:"#CC0000", shorts:"#FFFFFF", socks:"#CC0000", skin:"#e8b48a", name:"Nottm Forest" },
+  { jersey:"#6DCFF6", shorts:"#FFFFFF", socks:"#6DCFF6", skin:"#c87941", name:"Man City"     },
+  { jersey:"#0057AA", shorts:"#0057AA", socks:"#FFFFFF", skin:"#e8c49a", name:"Chelsea"      },
+  { jersey:"#0047AB", shorts:"#FFFFFF", socks:"#FFFFFF", skin:"#d4956a", name:"Everton"      },
+  { jersey:"#FDB913", shorts:"#0A0A0A", socks:"#FDB913", skin:"#b06828", name:"Wolves"       },
+  { jersey:"#F8F8F8", shorts:"#1a1a44", socks:"#F8F8F8", skin:"#e8b48a", name:"Tottenham"    },
+  { jersey:"#1a1a1a", shorts:"#1a1a1a", socks:"#FFFFFF", skin:"#c87941", name:"Newcastle"    },
+  { jersey:"#9B1C31", shorts:"#74003E", socks:"#9B1C31", skin:"#e8c49a", name:"Aston Villa"  },
+  { jersey:"#7A1429", shorts:"#1E5F9C", socks:"#7A1429", skin:"#d4956a", name:"West Ham"     },
+];
+
 // ── Walking player ────────────────────────────────────────────────────────────
-type PlayerConfig = { id:number; color:string; startX:number; dz:number; speed:number; phase:number; range:number };
-function WalkingPlayer({ cfg, size }: { cfg: PlayerConfig; size: number }) {
-  const groupRef  = useRef<THREE.Group>(null);
-  const lHipRef   = useRef<THREE.Group>(null);
-  const rHipRef   = useRef<THREE.Group>(null);
+type PlayerConfig = { id:number; kitIdx:number; lane:number; direction:1|-1; speed:number; phase:number };
+
+function WalkingPlayer({ cfg, size, gridFade }: { cfg: PlayerConfig; size: number; gridFade: number }) {
+  const kit = PLAYER_KITS[(cfg.kitIdx ?? 0) % PLAYER_KITS.length] ?? PLAYER_KITS[0];
+
+  const groupRef = useRef<THREE.Group>(null);
+  const lHipRef  = useRef<THREE.Group>(null);
+  const rHipRef  = useRef<THREE.Group>(null);
+  const lShlRef  = useRef<THREE.Group>(null);
+  const rShlRef  = useRef<THREE.Group>(null);
   const t = useRef(cfg.phase);
 
-  const ph  = size * 0.38;   // total player height
-  const hr  = ph  * 0.12;   // head radius
-  const bh  = ph  * 0.30;   // body height
-  const bw  = ph  * 0.10;   // body radius
-  const lh  = ph  * 0.28;   // leg height
-  const lw  = ph  * 0.06;   // leg radius
-  const hipY = lh;           // y of hip pivot
+  // Scale: players are the same height as one block
+  const ph  = size * 1.0;   // total player height
+  const hr  = ph  * 0.13;   // head radius
+  const bh  = ph  * 0.33;   // body (jersey) height
+  const bw  = ph  * 0.11;   // body radius
+  const lh  = ph  * 0.32;   // leg height
+  const lw  = ph  * 0.065;  // leg radius
+  const ah  = ph  * 0.26;   // arm height
+  const aw  = ph  * 0.055;  // arm radius
+  const hipY = lh;
+  const shlY = hipY + bh * 0.88; // shoulder y
+
+  const range = gridFade * 0.42; // how far left/right players walk
 
   useFrame((_, dt) => {
     t.current += dt * cfg.speed;
-    const z = cfg.startX + ((t.current * size * 2.8) % (cfg.range * 2)) - cfg.range;
+    // Walk across X axis; wrap around when they exit
+    const progress = (t.current * size * 2.6) % (range * 2);
+    const x = cfg.direction > 0 ? -range + progress : range - progress;
     if (groupRef.current) {
-      groupRef.current.position.z = z;
-      groupRef.current.rotation.y = cfg.dz > 0 ? 0 : Math.PI;
+      groupRef.current.position.x = x;
+      groupRef.current.rotation.y = cfg.direction > 0 ? Math.PI / 2 : -Math.PI / 2;
     }
-    const swing = Math.sin(t.current * 8) * 0.55;
+    // Leg + arm swing
+    const swing = Math.sin(t.current * 9) * 0.58;
     if (lHipRef.current) lHipRef.current.rotation.x =  swing;
     if (rHipRef.current) rHipRef.current.rotation.x = -swing;
+    if (lShlRef.current) lShlRef.current.rotation.x = -swing * 0.7;
+    if (rShlRef.current) rShlRef.current.rotation.x =  swing * 0.7;
   });
 
   return (
-    <group ref={groupRef} position={[cfg.startX, 0, 0]}>
+    <group ref={groupRef} position={[cfg.direction > 0 ? -range : range, 0, cfg.lane]}>
       {/* Head */}
-      <mesh position={[0, hipY+bh+hr*1.1, 0]} castShadow>
-        <sphereGeometry args={[hr, 8, 8]} />
-        <meshStandardMaterial color="#e8b48a" roughness={0.8} />
+      <mesh position={[0, hipY+bh+hr*1.15, 0]} castShadow>
+        <sphereGeometry args={[hr, 10, 10]} />
+        <meshStandardMaterial color={kit.skin} roughness={0.8} />
       </mesh>
-      {/* Body (jersey) */}
+      {/* Body / jersey */}
       <mesh position={[0, hipY+bh*0.5, 0]} castShadow>
-        <cylinderGeometry args={[bw*0.85, bw, bh, 7]} />
-        <meshStandardMaterial color={cfg.color} roughness={0.5} metalness={0.1} />
+        <cylinderGeometry args={[bw*0.88, bw, bh, 8]} />
+        <meshStandardMaterial color={kit.jersey} roughness={0.55} metalness={0.05} />
       </mesh>
-      {/* Left hip pivot → left leg */}
-      <group ref={lHipRef} position={[-bw*0.55, hipY, 0]}>
-        <mesh position={[0, -lh*0.5, 0]} castShadow>
-          <cylinderGeometry args={[lw, lw*1.1, lh, 5]} />
-          <meshStandardMaterial color="#1a1a2e" roughness={0.7} />
+      {/* Shorts */}
+      <mesh position={[0, hipY+bh*0.08, 0]} castShadow>
+        <cylinderGeometry args={[bw*1.0, bw*0.82, bh*0.32, 8]} />
+        <meshStandardMaterial color={kit.shorts} roughness={0.7} />
+      </mesh>
+      {/* Left shoulder → arm */}
+      <group ref={lShlRef} position={[-(bw+aw*0.6), shlY, 0]}>
+        <mesh position={[0, -ah*0.5, 0]} castShadow>
+          <cylinderGeometry args={[aw, aw*0.85, ah, 6]} />
+          <meshStandardMaterial color={kit.jersey} roughness={0.55} />
         </mesh>
       </group>
-      {/* Right hip pivot → right leg */}
-      <group ref={rHipRef} position={[bw*0.55, hipY, 0]}>
+      {/* Right shoulder → arm */}
+      <group ref={rShlRef} position={[bw+aw*0.6, shlY, 0]}>
+        <mesh position={[0, -ah*0.5, 0]} castShadow>
+          <cylinderGeometry args={[aw, aw*0.85, ah, 6]} />
+          <meshStandardMaterial color={kit.jersey} roughness={0.55} />
+        </mesh>
+      </group>
+      {/* Left hip → leg */}
+      <group ref={lHipRef} position={[-bw*0.52, hipY, 0]}>
         <mesh position={[0, -lh*0.5, 0]} castShadow>
-          <cylinderGeometry args={[lw, lw*1.1, lh, 5]} />
-          <meshStandardMaterial color="#1a1a2e" roughness={0.7} />
+          <cylinderGeometry args={[lw, lw*1.1, lh, 6]} />
+          <meshStandardMaterial color={kit.socks} roughness={0.7} />
+        </mesh>
+        {/* Boot */}
+        <mesh position={[0, -lh+lw, lw*0.7]} castShadow>
+          <boxGeometry args={[lw*2.2, lw*1.4, lw*2.8]} />
+          <meshStandardMaterial color="#111" roughness={0.5} />
+        </mesh>
+      </group>
+      {/* Right hip → leg */}
+      <group ref={rHipRef} position={[bw*0.52, hipY, 0]}>
+        <mesh position={[0, -lh*0.5, 0]} castShadow>
+          <cylinderGeometry args={[lw, lw*1.1, lh, 6]} />
+          <meshStandardMaterial color={kit.socks} roughness={0.7} />
+        </mesh>
+        {/* Boot */}
+        <mesh position={[0, -lh+lw, lw*0.7]} castShadow>
+          <boxGeometry args={[lw*2.2, lw*1.4, lw*2.8]} />
+          <meshStandardMaterial color="#111" roughness={0.5} />
         </mesh>
       </group>
     </group>
@@ -391,19 +452,18 @@ function Scene({
   const isSpace = stadiumId === "space";
   const isPitch = STADIUMS.find(s => s.id === stadiumId)?.isPitch ?? false;
 
-  // Generate stable player configs per mode
+  // Generate stable player configs per mode — staggered lanes, different kits
   const playerConfigs = useMemo<PlayerConfig[]>(() => {
-    const spread = gridFade * 0.28;
-    return Array.from({ length: 6 }, (_, i) => ({
-      id: i,
-      color: TEAMS[Math.floor(Math.random() * TEAMS.length)].hex,
-      startX: (Math.random() - 0.5) * spread * 2,
-      dz: Math.random() > 0.5 ? 1 : -1,
-      speed: 0.6 + Math.random() * 0.6,
-      phase: Math.random() * Math.PI * 4,
-      range: gridFade * 0.35,
-    }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // 6 lanes spread across the visible Z range; alternating directions
+    const step = gridFade * 0.14;
+    return [
+      { id:0, kitIdx:0,  lane: -step*2.5, direction: 1,  speed:0.50, phase:0    },
+      { id:1, kitIdx:3,  lane: -step*1.2, direction:-1,  speed:0.44, phase:5.5  },
+      { id:2, kitIdx:4,  lane:  step*0.1, direction: 1,  speed:0.56, phase:11   },
+      { id:3, kitIdx:1,  lane:  step*1.4, direction:-1,  speed:0.48, phase:2.5  },
+      { id:4, kitIdx:7,  lane:  step*2.6, direction: 1,  speed:0.52, phase:8    },
+      { id:5, kitIdx:9,  lane: -step*0.4, direction:-1,  speed:0.42, phase:15   },
+    ];
   }, [gridFade]);
 
   const handleGroundDown = (e: ThreeEvent<PointerEvent>) => { downPos.current = {x:e.clientX,y:e.clientY}; };
@@ -465,7 +525,7 @@ function Scene({
 
       {/* Walking players */}
       {playerConfigs.map(cfg => (
-        <WalkingPlayer key={cfg.id} cfg={cfg} size={size} />
+        <WalkingPlayer key={cfg.id} cfg={cfg} size={size} gridFade={gridFade} />
       ))}
 
       {/* Invisible ground */}
