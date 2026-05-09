@@ -388,6 +388,92 @@ function RunningPlayer({ cfg, size, gridFade, ballRef }: {
   );
 }
 
+// ── Pitch markings ────────────────────────────────────────────────────────────
+function PitchLine({ pts, opacity = 0.52 }: { pts: [number,number,number][]; opacity?: number }) {
+  const lineObj = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    geo.setFromPoints(pts.map(([x,y,z]) => new THREE.Vector3(x,y,z)));
+    const mat = new THREE.LineBasicMaterial({ color:"white", transparent:true, opacity, fog:false, depthWrite:false });
+    return new THREE.Line(geo, mat);
+  }, [pts, opacity]);
+  useEffect(() => () => {
+    lineObj.geometry.dispose();
+    (lineObj.material as THREE.Material).dispose();
+  }, [lineObj]);
+  return <primitive object={lineObj} />;
+}
+
+function PitchMarkings({ gridFade }: { gridFade: number }) {
+  const segments = useMemo(() => {
+    const L = gridFade * 0.62;   // pitch length along Z
+    const W = gridFade * 0.40;   // pitch width  along X
+    const y = 0.018;             // just above grid surface
+    const hl = L / 2, hw = W / 2;
+
+    const paDepth = L * 0.157;    // penalty area depth  (16.5 m)
+    const paHW    = W * 0.297;    // penalty area half-width (20.16 m)
+    const syDepth = L * 0.052;    // six-yard box depth (5.5 m)
+    const syHW    = W * 0.135;    // six-yard box half-width (9.16 m)
+    const ccR     = Math.min(L,W) * 0.140;  // centre-circle radius (9.15 m)
+    const penDist = L * 0.105;    // penalty spot from goal line (11 m)
+    const spotR   = Math.max(0.08, L * 0.004);
+    const crnR    = Math.max(0.12, L * 0.008); // corner arc radius (1 m)
+
+    // arc(cx, cz, r, startAngle, endAngle) — angle 0 = +Z, π/2 = +X
+    function arc(cx:number,cz:number,r:number,a0:number,a1:number,segs=40): [number,number,number][] {
+      const pts: [number,number,number][] = [];
+      for (let i=0;i<=segs;i++) {
+        const a = a0+(a1-a0)*(i/segs);
+        pts.push([cx+Math.sin(a)*r, y, cz+Math.cos(a)*r]);
+      }
+      return pts;
+    }
+    function rect(x1:number,z1:number,x2:number,z2:number): [number,number,number][] {
+      return [[x1,y,z1],[x2,y,z1],[x2,y,z2],[x1,y,z2],[x1,y,z1]];
+    }
+    function spot(cx:number,cz:number): [number,number,number][] {
+      return arc(cx,cz,spotR,0,Math.PI*2,10);
+    }
+
+    // Penalty D half-angle: part of 9.15m circle outside the penalty area
+    const dCos = (paDepth - penDist) / ccR;
+    const dHalf = (dCos>=-1&&dCos<=1) ? Math.acos(dCos) : Math.PI*0.55;
+
+    return [
+      // Outer boundary
+      rect(-hw,-hl,hw,hl),
+      // Centre line
+      [[-hw,y,0],[hw,y,0]] as [number,number,number][],
+      // Centre circle + spot
+      arc(0,0,ccR,0,Math.PI*2),
+      spot(0,0),
+      // ── Bottom end (z = -hl) ──
+      rect(-paHW,-hl,paHW,-hl+paDepth),
+      rect(-syHW,-hl,syHW,-hl+syDepth),
+      spot(0,-hl+penDist),
+      arc(0,-hl+penDist,ccR,-dHalf,dHalf,32),   // D arc faces infield (+Z)
+      // ── Top end (z = +hl) ──
+      rect(-paHW,hl,paHW,hl-paDepth),
+      rect(-syHW,hl,syHW,hl-syDepth),
+      spot(0,hl-penDist),
+      arc(0,hl-penDist,ccR,Math.PI-dHalf,Math.PI+dHalf,32), // D arc faces infield (-Z)
+      // Corner arcs (quarter circles, radius 1m)
+      arc(-hw,-hl,crnR,-Math.PI/2,0,10),
+      arc( hw,-hl,crnR, Math.PI,-Math.PI/2+0.001,10),
+      arc(-hw, hl,crnR, 0,Math.PI/2,10),
+      arc( hw, hl,crnR, Math.PI/2,Math.PI,10),
+    ];
+  }, [gridFade]);
+
+  return (
+    <>
+      {segments.map((pts, i) => (
+        <PitchLine key={i} pts={pts} />
+      ))}
+    </>
+  );
+}
+
 // ── Stars ─────────────────────────────────────────────────────────────────────
 function Stars() {
   const ref = useRef<THREE.Points>(null);
@@ -598,6 +684,7 @@ function Scene({
         sectionSize={gridSection} sectionThickness={0.9} sectionColor="#2563eb"
         fadeDistance={gridFade} fadeStrength={2.5} infiniteGrid />
       <PlatformGlow radius={gridFade*0.22} />
+      <PitchMarkings gridFade={gridFade} />
 
       {/* Football */}
       <Football size={size} ballRef={ballRef} />
