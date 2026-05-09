@@ -1,4 +1,4 @@
-import { Canvas, type ThreeEvent, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, type ThreeEvent, useFrame } from "@react-three/fiber";
 import { OrbitControls, Grid, Edges } from "@react-three/drei";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import * as THREE from "three";
@@ -20,7 +20,7 @@ function NoWebGL() {
       <div style={{ fontSize:64 }}>🧱</div>
       <h2 style={{ fontSize:22,fontWeight:800 }}>Block Builder 3D</h2>
       <p style={{ fontSize:15,opacity:0.7,maxWidth:320,lineHeight:1.7 }}>
-        This preview can't run WebGL.<br />Open the link below on your phone or computer!
+        This preview can't run WebGL.<br />Open on your phone or computer!
       </p>
       <a href={window.location.href} target="_blank" rel="noreferrer" style={{
         marginTop:8,background:"#3b82f6",color:"white",borderRadius:14,
@@ -42,7 +42,7 @@ const MODES = [
 ] as const;
 type ModeKey = (typeof MODES)[number]["key"];
 
-// ── Premier League teams ──────────────────────────────────────────────────────
+// ── Premier League teams (block palette) ──────────────────────────────────────
 const PL = "https://resources.premierleague.com/premierleague/badges";
 const TEAMS = [
   { hex:"#FF0000", name:"Liverpool",    logo:`${PL}/t14.png`  },
@@ -67,60 +67,32 @@ const TEAMS = [
   { hex:"#F0F0F0", name:"Tottenham",    logo:`${PL}/t6.png`   },
 ];
 
-// ── Stadium backgrounds ───────────────────────────────────────────────────────
-const WK = "https://commons.wikimedia.org/wiki/Special:FilePath";
-const STADIUMS = [
-  { id:"space",    name:"🌌 Space",      label:null,              preview:"#0a0e2a",  url:null,    isPitch:false },
-  { id:"pitch",    name:"🟩 Pitch",      label:null,              preview:"#1d6010",  url:null,    isPitch:true  },
-  { id:"anfield",  name:"Anfield",       label:"Liverpool",       preview:"#C8102E",  isPitch:false,
-    url:`${WK}/Anfield_from_the_Kop.jpg?width=1280` },
-  { id:"emirates", name:"Emirates",      label:"Arsenal",         preview:"#EF0107",  isPitch:false,
-    url:`${WK}/Emirates_Stadium_exterior.jpg?width=1280` },
-  { id:"old-traf", name:"Old Trafford",  label:"Man Utd",         preview:"#DA291C",  isPitch:false,
-    url:`${WK}/Old_Trafford_inside_20060726_1.jpg?width=1280` },
-  { id:"etihad",   name:"Etihad",        label:"Man City",        preview:"#6DCFF6",  isPitch:false,
-    url:`${WK}/Etihad_Stadium%2C_Manchester.jpg?width=1280` },
-  { id:"stamford", name:"Stamford Bge",  label:"Chelsea",         preview:"#005BBB",  isPitch:false,
-    url:`${WK}/Stamford_Bridge_exterior.jpg?width=1280` },
-  { id:"spurs",    name:"Spurs Stadium", label:"Tottenham",       preview:"#d8d8d8",  isPitch:false,
-    url:`${WK}/Tottenham_Hotspur_Stadium_interior.jpg?width=1280` },
-  { id:"stjames",  name:"St James' Pk",  label:"Newcastle",       preview:"#1C1C1B",  isPitch:false,
-    url:`${WK}/St_James%27_Park.jpg?width=1280` },
-  { id:"villa",    name:"Villa Park",    label:"Aston Villa",     preview:"#9B1C31",  isPitch:false,
-    url:`${WK}/Villa_Park_Interior_2014.jpg?width=1280` },
-  { id:"london",   name:"London Stad.",  label:"West Ham",        preview:"#CC3366",  isPitch:false,
-    url:`${WK}/London_Stadium_interior.jpg?width=1280` },
-  { id:"amex",     name:"Amex Stadium",  label:"Brighton",        preview:"#0057FF",  isPitch:false,
-    url:`${WK}/The_American_Express_Community_Stadium.jpg?width=1280` },
-  { id:"goodison", name:"Goodison Pk",   label:"Everton",         preview:"#0047AB",  isPitch:false,
-    url:`${WK}/Goodison_Park.jpg?width=1280` },
-  { id:"molineux", name:"Molineux",      label:"Wolves",          preview:"#FDB913",  isPitch:false,
-    url:`${WK}/Molineux_Stadium.jpg?width=1280` },
-  { id:"citygrnd", name:"City Ground",   label:"Nottm Forest",    preview:"#FF3B30",  isPitch:false,
-    url:`${WK}/The_City_Ground_from_the_Bridgford_End.jpg?width=1280` },
-  { id:"kingpow",  name:"King Power",    label:"Leicester",       preview:"#003FDB",  isPitch:false,
-    url:`${WK}/King_Power_Stadium.jpg?width=1280` },
-  { id:"selhurst", name:"Selhurst Pk",   label:"Crystal Pal.",    preview:"#C4122E",  isPitch:false,
-    url:`${WK}/Selhurst_Park.jpg?width=1280` },
-  { id:"craven",   name:"Craven Cott.",  label:"Fulham",          preview:"#888888",  isPitch:false,
-    url:`${WK}/Craven_Cottage_exterior.jpg?width=1280` },
-  { id:"portman",  name:"Portman Road",  label:"Ipswich",         preview:"#3A78D4",  isPitch:false,
-    url:`${WK}/Portman_Road.jpg?width=1280` },
-  { id:"vitality", name:"Vitality Stad.",label:"Bournemouth",     preview:"#E30013",  isPitch:false,
-    url:`${WK}/Dean_Court.jpg?width=1280` },
-  { id:"stmarys",  name:"St Mary's",     label:"Southampton",     preview:"#D71920",  isPitch:false,
-    url:`${WK}/St_Mary%27s_Stadium%2C_Southampton.jpg?width=1280` },
-  { id:"gtech",    name:"Gtech Comm.",   label:"Brentford",       preview:"#D0021B",  isPitch:false,
-    url:`${WK}/Brentford_Community_Stadium_-_panorama.jpg?width=1280` },
+// ── Player kits ───────────────────────────────────────────────────────────────
+const KITS = [
+  { jersey:"#D00010", shorts:"#D00010", socks:"#D00010", skin:"#e8b48a", name:"Liverpool"    },
+  { jersey:"#EF0107", shorts:"#FFFFFF", socks:"#FFFFFF", skin:"#d4956a", name:"Arsenal"      },
+  { jersey:"#DA291C", shorts:"#FFFFFF", socks:"#000000", skin:"#c8803c", name:"Man Utd"      },
+  { jersey:"#CC0000", shorts:"#FFFFFF", socks:"#CC0000", skin:"#e8b48a", name:"Nottm Forest" },
+  { jersey:"#6DCFF6", shorts:"#FFFFFF", socks:"#6DCFF6", skin:"#c87941", name:"Man City"     },
+  { jersey:"#0057AA", shorts:"#0057AA", socks:"#FFFFFF", skin:"#e8c49a", name:"Chelsea"      },
+  { jersey:"#0047AB", shorts:"#FFFFFF", socks:"#FFFFFF", skin:"#d4956a", name:"Everton"      },
+  { jersey:"#FDB913", shorts:"#0A0A0A", socks:"#FDB913", skin:"#b06828", name:"Wolves"       },
+  { jersey:"#F8F8F8", shorts:"#1a1a44", socks:"#F8F8F8", skin:"#e8b48a", name:"Tottenham"    },
+  { jersey:"#1a1a1a", shorts:"#1a1a1a", socks:"#FFFFFF", skin:"#c87941", name:"Newcastle"    },
+  { jersey:"#9B1C31", shorts:"#74003E", socks:"#9B1C31", skin:"#e8c49a", name:"Aston Villa"  },
+  { jersey:"#7A1429", shorts:"#1E5F9C", socks:"#7A1429", skin:"#d4956a", name:"West Ham"     },
 ];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Block = { id:string; x:number; y:number; z:number; color:string; logo:string };
 type PhysicsState = { px:number;py:number;pz:number;vx:number;vy:number;vz:number;rx:number;ry:number;rz:number;arx:number;ary:number;arz:number };
+type BallData = { px:number;py:number;pz:number;vx:number;vy:number;vz:number;rotX:number;rotZ:number;cooldown:number };
+type RunBehavior = { x:number;z:number;dirX:number;dirZ:number;speed:number;facingY:number;timer:number;mode:0|1;kickT:number;legPhase:number };
+type PlayerCfg = { id:number; kitIdx:number; startX:number; startZ:number; phase:number };
 
 const uid = () => `${Date.now()}-${Math.random()}`;
 function snapTo(v: number, size: number) { return Math.round(v / size) * size; }
-function haptic() { try { navigator.vibrate(10); } catch { /* not supported */ } }
+function haptic() { try { navigator.vibrate(10); } catch { /* noop */ } }
 
 function makeChaosPhysics(block: Block, size: number): PhysicsState {
   return {
@@ -147,59 +119,285 @@ function useLogoTexture(url: string): THREE.Texture | null {
   return tex;
 }
 
-// ── Football texture ──────────────────────────────────────────────────────────
+// ── Football emoji texture ────────────────────────────────────────────────────
 let _fbTex: THREE.CanvasTexture | null = null;
 function getFootballTex(): THREE.CanvasTexture {
   if (_fbTex) return _fbTex;
   const c = document.createElement("canvas");
   c.width = 256; c.height = 256;
   const ctx = c.getContext("2d")!;
-  ctx.font = "190px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = "210px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   ctx.fillText("⚽", 128, 128);
   _fbTex = new THREE.CanvasTexture(c);
   return _fbTex;
 }
 
-// ── Scene background (sets scene.background + fog) ────────────────────────────
-function SceneBackground({ stadiumId, gridFade }: { stadiumId: string; gridFade: number }) {
-  const { scene } = useThree();
-  const stadium = STADIUMS.find(s => s.id === stadiumId) ?? STADIUMS[0];
+// ── Football with physics ─────────────────────────────────────────────────────
+function Football({ size, ballRef }: { size: number; ballRef: React.MutableRefObject<BallData> }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const r = size * 0.17;
 
-  useEffect(() => {
-    if (stadium.isPitch) {
-      scene.background = new THREE.Color("#1d6010");
-      scene.fog = new THREE.Fog("#1d6010", gridFade * 0.6, gridFade * 2);
-      return () => { scene.background = null; scene.fog = null; };
-    }
-    if (!stadium.url) {
-      scene.background = new THREE.Color("#020209");
-      scene.fog = new THREE.Fog("#020209", gridFade * 0.8, gridFade * 2.5);
-      return () => { scene.background = null; scene.fog = null; };
-    }
-    scene.fog = null;
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      stadium.url,
-      (t) => { t.colorSpace = THREE.SRGBColorSpace; scene.background = t; },
-      undefined,
-      () => { scene.background = new THREE.Color("#020209"); scene.fog = new THREE.Fog("#020209", gridFade*0.8, gridFade*2.5); },
-    );
-    return () => { scene.background = null; scene.fog = null; };
-  }, [stadiumId, gridFade, scene, stadium]);
+  useFrame((_, dt) => {
+    const b = ballRef.current;
+    const d = Math.min(dt, 0.04);
 
-  return null;
+    // Gravity when airborne
+    if (b.py > r + 0.001 || b.vy > 0) b.vy -= 24 * d;
+
+    b.px += b.vx * d;
+    b.py += b.vy * d;
+    b.pz += b.vz * d;
+    b.cooldown -= d;
+
+    // Ground
+    if (b.py < r) {
+      b.py = r;
+      if (b.vy < -size * 0.5) {
+        b.vy = Math.abs(b.vy) * 0.48; // bounce
+      } else {
+        b.vy = 0;
+      }
+      b.vx *= 0.91;
+      b.vz *= 0.91;
+    }
+
+    // Rolling spin
+    b.rotX += b.vz * d * 3.5;
+    b.rotZ -= b.vx * d * 3.5;
+
+    // Boundary bounce
+    const bound = size * 13;
+    if (Math.abs(b.px) > bound) { b.vx *= -0.72; b.px = Math.sign(b.px) * bound; }
+    if (Math.abs(b.pz) > bound) { b.vz *= -0.72; b.pz = Math.sign(b.pz) * bound; }
+
+    if (meshRef.current) {
+      meshRef.current.position.set(b.px, b.py, b.pz);
+      meshRef.current.rotation.set(b.rotX, 0, b.rotZ);
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} position={[0, r, 0]} castShadow>
+      <sphereGeometry args={[r, 16, 16]} />
+      <meshStandardMaterial map={getFootballTex()} roughness={0.25} metalness={0.05} />
+    </mesh>
+  );
 }
 
-// ── Starfield (only in space mode) ───────────────────────────────────────────
+// ── Running football player ───────────────────────────────────────────────────
+function RunningPlayer({ cfg, size, gridFade, ballRef }: {
+  cfg: PlayerCfg; size: number; gridFade: number;
+  ballRef: React.MutableRefObject<BallData>;
+}) {
+  const kit = KITS[(cfg.kitIdx ?? 0) % KITS.length] ?? KITS[0];
+
+  const groupRef  = useRef<THREE.Group>(null);
+  const upperRef  = useRef<THREE.Group>(null); // upper body for lean
+  const lHipRef   = useRef<THREE.Group>(null);
+  const rHipRef   = useRef<THREE.Group>(null);
+  const lShlRef   = useRef<THREE.Group>(null);
+  const rShlRef   = useRef<THREE.Group>(null);
+
+  const behavior = useRef<RunBehavior>({
+    x: cfg.startX, z: cfg.startZ,
+    dirX: Math.sin(cfg.phase), dirZ: Math.cos(cfg.phase),
+    speed: 2.2 + Math.random() * 1.8,
+    facingY: cfg.phase,
+    timer: Math.random() * 1.5,
+    mode: 0, // 0=free, 1=chasing
+    kickT: 0,
+    legPhase: cfg.phase * 4,
+  });
+
+  // Proportions — player is 1.25 × block height for nice visibility
+  const ph  = size * 1.25;
+  const hr  = ph * 0.112;
+  const bh  = ph * 0.31;
+  const bw  = ph * 0.112;
+  const lh  = ph * 0.34;
+  const lw  = ph * 0.066;
+  const ah  = ph * 0.27;
+  const aw  = ph * 0.052;
+  const hipY = lh;
+  const shlY = hipY + bh * 0.86;
+
+  useFrame((_, dt) => {
+    const d = Math.min(dt, 0.04);
+    const beh = behavior.current;
+    const ball = ballRef.current;
+
+    beh.timer    -= d;
+    if (beh.kickT > 0) beh.kickT -= d * 5;
+
+    // Ball distance
+    const bdx = ball.px - beh.x;
+    const bdz = ball.pz - beh.z;
+    const bdist = Math.sqrt(bdx * bdx + bdz * bdz);
+    const chaseRange = size * 11;
+    const kickRange  = size * 1.6;
+
+    // ── Kick ──
+    if (ball.cooldown <= 0 && bdist < kickRange) {
+      // Kick the ball!  angle roughly toward "open space" (forward + random spread)
+      const kickAngle = beh.facingY + (Math.random() - 0.5) * 2.2;
+      const kickSpeed = size * (7 + Math.random() * 6);
+      ball.vx = Math.sin(kickAngle) * kickSpeed;
+      ball.vz = Math.cos(kickAngle) * kickSpeed;
+      ball.vy = size * (3.5 + Math.random() * 3.5);
+      ball.cooldown = 1.2 + Math.random() * 1.2;
+      beh.kickT = 1;
+      beh.mode  = 0;
+      beh.timer = 0.4;
+    }
+    // ── Chase ball ──
+    else if (ball.cooldown <= 0 && bdist < chaseRange) {
+      beh.mode = 1;
+      const len = bdist || 1;
+      beh.dirX  = bdx / len;
+      beh.dirZ  = bdz / len;
+      beh.speed = 4.8 + Math.random() * 0.8; // full sprint
+    }
+    // ── Free sprint ──
+    else {
+      beh.mode = 0;
+      if (beh.timer <= 0) {
+        // Dart to a new random direction with enthusiasm
+        const angle = Math.random() * Math.PI * 2;
+        beh.dirX  = Math.sin(angle);
+        beh.dirZ  = Math.cos(angle);
+        beh.speed = 2.5 + Math.random() * 2.8; // varied paces
+        beh.timer = 0.8 + Math.random() * 1.8;
+      }
+    }
+
+    // Move
+    const spd = beh.speed * size;
+    beh.x += beh.dirX * spd * d;
+    beh.z += beh.dirZ * spd * d;
+
+    // Boundary — bounce back toward centre
+    const bound = gridFade * 0.36;
+    if (Math.abs(beh.x) > bound) {
+      beh.x = Math.sign(beh.x) * bound;
+      beh.dirX = -beh.dirX;
+      beh.timer = 0;
+    }
+    if (Math.abs(beh.z) > bound) {
+      beh.z = Math.sign(beh.z) * bound;
+      beh.dirZ = -beh.dirZ;
+      beh.timer = 0;
+    }
+
+    // Smooth facing toward movement direction
+    const targetY = Math.atan2(beh.dirX, beh.dirZ);
+    const diff = ((targetY - beh.facingY) + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+    beh.facingY += diff * Math.min(d * 9, 1);
+
+    // Accumulate leg phase proportional to speed
+    beh.legPhase += d * beh.speed * 11;
+
+    // Apply to group
+    if (groupRef.current) {
+      groupRef.current.position.set(beh.x, 0, beh.z);
+      groupRef.current.rotation.y = beh.facingY;
+    }
+
+    // Upper body forward lean when sprinting
+    const lean = Math.min(beh.speed * 0.038, 0.28);
+    if (upperRef.current) upperRef.current.rotation.x = -lean;
+
+    // Leg swing — faster and bigger when sprinting
+    const swingAmt = Math.min(beh.speed / 4.5, 1) * 0.7;
+    const legSwing = Math.sin(beh.legPhase) * swingAmt;
+    const armSwing = Math.sin(beh.legPhase) * swingAmt * 0.6;
+    const kickAnim = beh.kickT > 0 ? Math.sin(beh.kickT * Math.PI) * 1.3 : 0;
+
+    if (lHipRef.current) lHipRef.current.rotation.x =  legSwing + kickAnim;
+    if (rHipRef.current) rHipRef.current.rotation.x = -legSwing;
+    if (lShlRef.current) lShlRef.current.rotation.x = -armSwing;
+    if (rShlRef.current) rShlRef.current.rotation.x =  armSwing;
+  });
+
+  return (
+    <group ref={groupRef} position={[cfg.startX, 0, cfg.startZ]}>
+      {/* Legs */}
+      <group ref={lHipRef} position={[-bw * 0.5, hipY, 0]}>
+        <mesh position={[0, -lh * 0.5, 0]} castShadow>
+          <cylinderGeometry args={[lw, lw * 1.1, lh, 6]} />
+          <meshStandardMaterial color={kit.socks} roughness={0.7} />
+        </mesh>
+        {/* Boot */}
+        <mesh position={[0, -lh + lw * 0.5, lw * 0.85]} castShadow>
+          <boxGeometry args={[lw * 2.2, lw * 1.3, lw * 2.6]} />
+          <meshStandardMaterial color="#0a0a0a" roughness={0.45} />
+        </mesh>
+      </group>
+      <group ref={rHipRef} position={[bw * 0.5, hipY, 0]}>
+        <mesh position={[0, -lh * 0.5, 0]} castShadow>
+          <cylinderGeometry args={[lw, lw * 1.1, lh, 6]} />
+          <meshStandardMaterial color={kit.socks} roughness={0.7} />
+        </mesh>
+        <mesh position={[0, -lh + lw * 0.5, lw * 0.85]} castShadow>
+          <boxGeometry args={[lw * 2.2, lw * 1.3, lw * 2.6]} />
+          <meshStandardMaterial color="#0a0a0a" roughness={0.45} />
+        </mesh>
+      </group>
+
+      {/* Upper body group (lean forward when running) */}
+      <group ref={upperRef} position={[0, hipY, 0]}>
+        {/* Shorts */}
+        <mesh position={[0, bh * 0.06, 0]} castShadow>
+          <cylinderGeometry args={[bw * 1.02, bw * 0.85, bh * 0.3, 8]} />
+          <meshStandardMaterial color={kit.shorts} roughness={0.65} />
+        </mesh>
+        {/* Jersey */}
+        <mesh position={[0, bh * 0.5, 0]} castShadow>
+          <cylinderGeometry args={[bw * 0.9, bw, bh, 8]} />
+          <meshStandardMaterial color={kit.jersey} roughness={0.5} metalness={0.06} />
+        </mesh>
+        {/* Arms */}
+        <group ref={lShlRef} position={[-(bw + aw * 0.55), bh * 0.84, 0]}>
+          <mesh position={[0, -ah * 0.5, 0]} castShadow>
+            <cylinderGeometry args={[aw, aw * 0.85, ah, 5]} />
+            <meshStandardMaterial color={kit.jersey} roughness={0.5} />
+          </mesh>
+        </group>
+        <group ref={rShlRef} position={[bw + aw * 0.55, bh * 0.84, 0]}>
+          <mesh position={[0, -ah * 0.5, 0]} castShadow>
+            <cylinderGeometry args={[aw, aw * 0.85, ah, 5]} />
+            <meshStandardMaterial color={kit.jersey} roughness={0.5} />
+          </mesh>
+        </group>
+        {/* Neck */}
+        <mesh position={[0, bh + ph * 0.025, 0]} castShadow>
+          <cylinderGeometry args={[hr * 0.52, hr * 0.6, ph * 0.05, 6]} />
+          <meshStandardMaterial color={kit.skin} roughness={0.8} />
+        </mesh>
+        {/* Head */}
+        <mesh position={[0, bh + ph * 0.06 + hr, 0]} castShadow>
+          <sphereGeometry args={[hr, 12, 12]} />
+          <meshStandardMaterial color={kit.skin} roughness={0.78} />
+        </mesh>
+        {/* Hair cap */}
+        <mesh position={[0, bh + ph * 0.06 + hr * 1.55, 0]} castShadow>
+          <sphereGeometry args={[hr * 0.76, 8, 6, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
+          <meshStandardMaterial color="#2a1a0a" roughness={0.9} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+// ── Stars ─────────────────────────────────────────────────────────────────────
 function Stars() {
   const ref = useRef<THREE.Points>(null);
   const [positions, sizes] = useMemo(() => {
     const n = 1800, pos = new Float32Array(n * 3), sz = new Float32Array(n);
     for (let i = 0; i < n; i++) {
-      const r = 180 + Math.random()*320, theta = Math.random()*Math.PI*2, phi = Math.acos(2*Math.random()-1);
-      pos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
-      pos[i*3+1] = Math.abs(r*Math.cos(phi))*(Math.random()<0.5?1:-0.3);
-      pos[i*3+2] = r*Math.sin(phi)*Math.sin(theta);
+      const r = 180 + Math.random()*320, t = Math.random()*Math.PI*2, p = Math.acos(2*Math.random()-1);
+      pos[i*3]   = r*Math.sin(p)*Math.cos(t);
+      pos[i*3+1] = Math.abs(r*Math.cos(p))*(Math.random()<0.5?1:-0.3);
+      pos[i*3+2] = r*Math.sin(p)*Math.sin(t);
       sz[i] = 0.4 + Math.random()*1.4;
     }
     return [pos, sz];
@@ -219,17 +417,15 @@ function Stars() {
 // ── Logo + football face planes ───────────────────────────────────────────────
 function LogoFaces({ visual, logoTex }: { visual: number; logoTex: THREE.Texture | null }) {
   const fbTex = getFootballTex();
-  const h = visual / 2, o = 0.003, pw = visual * 0.8, ph = visual * 0.75;
+  const h = visual/2, o = 0.003, pw = visual*0.8, ph = visual*0.75;
   return (
     <>
-      {logoTex && (
-        <>
-          <mesh position={[0,0,h+o]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
-          <mesh position={[0,0,-(h+o)]} rotation={[0,Math.PI,0]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
-          <mesh position={[h+o,0,0]} rotation={[0,-Math.PI/2,0]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
-          <mesh position={[-(h+o),0,0]} rotation={[0,Math.PI/2,0]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
-        </>
-      )}
+      {logoTex && (<>
+        <mesh position={[0,0,h+o]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
+        <mesh position={[0,0,-(h+o)]} rotation={[0,Math.PI,0]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
+        <mesh position={[h+o,0,0]} rotation={[0,-Math.PI/2,0]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
+        <mesh position={[-(h+o),0,0]} rotation={[0,Math.PI/2,0]}><planeGeometry args={[pw,pw]} /><meshBasicMaterial map={logoTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
+      </>)}
       <mesh position={[0,h+o,0]} rotation={[-Math.PI/2,0,0]}><planeGeometry args={[ph,ph]} /><meshBasicMaterial map={fbTex} transparent alphaTest={0.05} depthWrite={false} /></mesh>
     </>
   );
@@ -237,7 +433,7 @@ function LogoFaces({ visual, logoTex }: { visual: number; logoTex: THREE.Texture
 
 // ── Static block mesh ─────────────────────────────────────────────────────────
 function BlockMesh({ block, size, gap, eraseMode, onErase }: {
-  block: Block; size: number; gap: number; eraseMode: boolean; onErase: (id:string)=>void;
+  block:Block; size:number; gap:number; eraseMode:boolean; onErase:(id:string)=>void;
 }) {
   const [hovered, setHovered] = useState(false);
   const logoTex = useLogoTexture(block.logo);
@@ -268,14 +464,14 @@ function BlockMesh({ block, size, gap, eraseMode, onErase }: {
 
 // ── Physics block (chaos mode) ────────────────────────────────────────────────
 function PhysicsBlock({ block, size, gap, init }: {
-  block: Block; size: number; gap: number; init: PhysicsState;
+  block:Block; size:number; gap:number; init:PhysicsState;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const p = useRef<PhysicsState>({ ...init });
   const logoTex = useLogoTexture(block.logo);
   const visual = size - gap;
   useFrame((_, dt) => {
-    const d = Math.min(dt, 0.05), s = p.current;
+    const d = Math.min(dt,0.05), s = p.current;
     s.vy -= 20*d;
     s.px += s.vx*d; s.py += s.vy*d; s.pz += s.vz*d;
     s.rx += s.arx; s.ry += s.ary; s.rz += s.arz;
@@ -289,125 +485,6 @@ function PhysicsBlock({ block, size, gap, init }: {
     <group ref={groupRef} position={[init.px,init.py,init.pz]}>
       <mesh castShadow><boxGeometry args={[visual,visual,visual]} /><meshStandardMaterial color={block.color} roughness={0.22} metalness={0.28} /><Edges lineWidth={1} color="#3a4060" /></mesh>
       <LogoFaces visual={visual} logoTex={logoTex} />
-    </group>
-  );
-}
-
-// ── Player kit colours per team ───────────────────────────────────────────────
-const PLAYER_KITS = [
-  { jersey:"#D00010", shorts:"#D00010", socks:"#D00010", skin:"#e8b48a", name:"Liverpool"    },
-  { jersey:"#EF0107", shorts:"#FFFFFF", socks:"#FFFFFF", skin:"#d4956a", name:"Arsenal"      },
-  { jersey:"#DA291C", shorts:"#FFFFFF", socks:"#000000", skin:"#c8803c", name:"Man Utd"      },
-  { jersey:"#CC0000", shorts:"#FFFFFF", socks:"#CC0000", skin:"#e8b48a", name:"Nottm Forest" },
-  { jersey:"#6DCFF6", shorts:"#FFFFFF", socks:"#6DCFF6", skin:"#c87941", name:"Man City"     },
-  { jersey:"#0057AA", shorts:"#0057AA", socks:"#FFFFFF", skin:"#e8c49a", name:"Chelsea"      },
-  { jersey:"#0047AB", shorts:"#FFFFFF", socks:"#FFFFFF", skin:"#d4956a", name:"Everton"      },
-  { jersey:"#FDB913", shorts:"#0A0A0A", socks:"#FDB913", skin:"#b06828", name:"Wolves"       },
-  { jersey:"#F8F8F8", shorts:"#1a1a44", socks:"#F8F8F8", skin:"#e8b48a", name:"Tottenham"    },
-  { jersey:"#1a1a1a", shorts:"#1a1a1a", socks:"#FFFFFF", skin:"#c87941", name:"Newcastle"    },
-  { jersey:"#9B1C31", shorts:"#74003E", socks:"#9B1C31", skin:"#e8c49a", name:"Aston Villa"  },
-  { jersey:"#7A1429", shorts:"#1E5F9C", socks:"#7A1429", skin:"#d4956a", name:"West Ham"     },
-];
-
-// ── Walking player ────────────────────────────────────────────────────────────
-type PlayerConfig = { id:number; kitIdx:number; lane:number; direction:1|-1; speed:number; phase:number };
-
-function WalkingPlayer({ cfg, size, gridFade }: { cfg: PlayerConfig; size: number; gridFade: number }) {
-  const kit = PLAYER_KITS[(cfg.kitIdx ?? 0) % PLAYER_KITS.length] ?? PLAYER_KITS[0];
-
-  const groupRef = useRef<THREE.Group>(null);
-  const lHipRef  = useRef<THREE.Group>(null);
-  const rHipRef  = useRef<THREE.Group>(null);
-  const lShlRef  = useRef<THREE.Group>(null);
-  const rShlRef  = useRef<THREE.Group>(null);
-  const t = useRef(cfg.phase);
-
-  // Scale: players are the same height as one block
-  const ph  = size * 1.0;   // total player height
-  const hr  = ph  * 0.13;   // head radius
-  const bh  = ph  * 0.33;   // body (jersey) height
-  const bw  = ph  * 0.11;   // body radius
-  const lh  = ph  * 0.32;   // leg height
-  const lw  = ph  * 0.065;  // leg radius
-  const ah  = ph  * 0.26;   // arm height
-  const aw  = ph  * 0.055;  // arm radius
-  const hipY = lh;
-  const shlY = hipY + bh * 0.88; // shoulder y
-
-  const range = gridFade * 0.42; // how far left/right players walk
-
-  useFrame((_, dt) => {
-    t.current += dt * cfg.speed;
-    // Walk across X axis; wrap around when they exit
-    const progress = (t.current * size * 2.6) % (range * 2);
-    const x = cfg.direction > 0 ? -range + progress : range - progress;
-    if (groupRef.current) {
-      groupRef.current.position.x = x;
-      groupRef.current.rotation.y = cfg.direction > 0 ? Math.PI / 2 : -Math.PI / 2;
-    }
-    // Leg + arm swing
-    const swing = Math.sin(t.current * 9) * 0.58;
-    if (lHipRef.current) lHipRef.current.rotation.x =  swing;
-    if (rHipRef.current) rHipRef.current.rotation.x = -swing;
-    if (lShlRef.current) lShlRef.current.rotation.x = -swing * 0.7;
-    if (rShlRef.current) rShlRef.current.rotation.x =  swing * 0.7;
-  });
-
-  return (
-    <group ref={groupRef} position={[cfg.direction > 0 ? -range : range, 0, cfg.lane]}>
-      {/* Head */}
-      <mesh position={[0, hipY+bh+hr*1.15, 0]} castShadow>
-        <sphereGeometry args={[hr, 10, 10]} />
-        <meshStandardMaterial color={kit.skin} roughness={0.8} />
-      </mesh>
-      {/* Body / jersey */}
-      <mesh position={[0, hipY+bh*0.5, 0]} castShadow>
-        <cylinderGeometry args={[bw*0.88, bw, bh, 8]} />
-        <meshStandardMaterial color={kit.jersey} roughness={0.55} metalness={0.05} />
-      </mesh>
-      {/* Shorts */}
-      <mesh position={[0, hipY+bh*0.08, 0]} castShadow>
-        <cylinderGeometry args={[bw*1.0, bw*0.82, bh*0.32, 8]} />
-        <meshStandardMaterial color={kit.shorts} roughness={0.7} />
-      </mesh>
-      {/* Left shoulder → arm */}
-      <group ref={lShlRef} position={[-(bw+aw*0.6), shlY, 0]}>
-        <mesh position={[0, -ah*0.5, 0]} castShadow>
-          <cylinderGeometry args={[aw, aw*0.85, ah, 6]} />
-          <meshStandardMaterial color={kit.jersey} roughness={0.55} />
-        </mesh>
-      </group>
-      {/* Right shoulder → arm */}
-      <group ref={rShlRef} position={[bw+aw*0.6, shlY, 0]}>
-        <mesh position={[0, -ah*0.5, 0]} castShadow>
-          <cylinderGeometry args={[aw, aw*0.85, ah, 6]} />
-          <meshStandardMaterial color={kit.jersey} roughness={0.55} />
-        </mesh>
-      </group>
-      {/* Left hip → leg */}
-      <group ref={lHipRef} position={[-bw*0.52, hipY, 0]}>
-        <mesh position={[0, -lh*0.5, 0]} castShadow>
-          <cylinderGeometry args={[lw, lw*1.1, lh, 6]} />
-          <meshStandardMaterial color={kit.socks} roughness={0.7} />
-        </mesh>
-        {/* Boot */}
-        <mesh position={[0, -lh+lw, lw*0.7]} castShadow>
-          <boxGeometry args={[lw*2.2, lw*1.4, lw*2.8]} />
-          <meshStandardMaterial color="#111" roughness={0.5} />
-        </mesh>
-      </group>
-      {/* Right hip → leg */}
-      <group ref={rHipRef} position={[bw*0.52, hipY, 0]}>
-        <mesh position={[0, -lh*0.5, 0]} castShadow>
-          <cylinderGeometry args={[lw, lw*1.1, lh, 6]} />
-          <meshStandardMaterial color={kit.socks} roughness={0.7} />
-        </mesh>
-        {/* Boot */}
-        <mesh position={[0, -lh+lw, lw*0.7]} castShadow>
-          <boxGeometry args={[lw*2.2, lw*1.4, lw*2.8]} />
-          <meshStandardMaterial color="#111" roughness={0.5} />
-        </mesh>
-      </group>
     </group>
   );
 }
@@ -439,77 +516,76 @@ function PlatformGlow({ radius }: { radius: number }) {
 // ── 3-D Scene ─────────────────────────────────────────────────────────────────
 function Scene({
   blocks, selectedColor, eraseMode, size, gap, gridCell, gridSection, gridFade,
-  chaosMode, chaosPhysics, stadiumId, onAddBlock, onEraseBlock,
+  chaosMode, chaosPhysics, onAddBlock, onEraseBlock,
 }: {
-  blocks: Block[]; selectedColor: string; eraseMode: boolean;
-  size: number; gap: number; gridCell: number; gridSection: number; gridFade: number;
-  chaosMode: boolean; chaosPhysics: Map<string, PhysicsState>; stadiumId: string;
-  onAddBlock: (x:number,y:number,z:number)=>void; onEraseBlock: (id:string)=>void;
+  blocks:Block[]; selectedColor:string; eraseMode:boolean;
+  size:number; gap:number; gridCell:number; gridSection:number; gridFade:number;
+  chaosMode:boolean; chaosPhysics:Map<string,PhysicsState>;
+  onAddBlock:(x:number,y:number,z:number)=>void; onEraseBlock:(id:string)=>void;
 }) {
   const downPos = useRef<{x:number;y:number}|null>(null);
   const [ghost, setGhost] = useState<[number,number,number]|null>(null);
 
-  const isSpace = stadiumId === "space";
-  const isPitch = STADIUMS.find(s => s.id === stadiumId)?.isPitch ?? false;
+  // Shared ball state — one ball rolling around the whole scene
+  const ballRef = useRef<BallData>({
+    px:0, py:size*0.17, pz:0,
+    vx:size*2.1, vy:0, vz:size*1.5,
+    rotX:0, rotZ:0, cooldown:0,
+  });
 
-  // Generate stable player configs per mode — staggered lanes, different kits
-  const playerConfigs = useMemo<PlayerConfig[]>(() => {
-    // 6 lanes spread across the visible Z range; alternating directions
-    const step = gridFade * 0.14;
+  // 8 players with different kits, spread across the field
+  const playerCfgs = useMemo<PlayerCfg[]>(() => {
+    const s = gridFade * 0.28;
     return [
-      { id:0, kitIdx:0,  lane: -step*2.5, direction: 1,  speed:0.50, phase:0    },
-      { id:1, kitIdx:3,  lane: -step*1.2, direction:-1,  speed:0.44, phase:5.5  },
-      { id:2, kitIdx:4,  lane:  step*0.1, direction: 1,  speed:0.56, phase:11   },
-      { id:3, kitIdx:1,  lane:  step*1.4, direction:-1,  speed:0.48, phase:2.5  },
-      { id:4, kitIdx:7,  lane:  step*2.6, direction: 1,  speed:0.52, phase:8    },
-      { id:5, kitIdx:9,  lane: -step*0.4, direction:-1,  speed:0.42, phase:15   },
+      { id:0, kitIdx:0,  startX:-s*0.9, startZ:-s*0.7, phase:0.4  },
+      { id:1, kitIdx:4,  startX: s*0.9, startZ:-s*0.7, phase:2.8  },
+      { id:2, kitIdx:1,  startX:-s*0.4, startZ: s*0.5, phase:1.1  },
+      { id:3, kitIdx:8,  startX: s*0.4, startZ: s*0.5, phase:4.2  },
+      { id:4, kitIdx:2,  startX: 0,     startZ:-s*0.95,phase:5.8  },
+      { id:5, kitIdx:5,  startX: 0,     startZ: s*0.95,phase:3.5  },
+      { id:6, kitIdx:7,  startX:-s*0.7, startZ: s*0.05,phase:0.9  },
+      { id:7, kitIdx:9,  startX: s*0.7, startZ: s*0.05,phase:2.1  },
     ];
   }, [gridFade]);
 
-  const handleGroundDown = (e: ThreeEvent<PointerEvent>) => { downPos.current = {x:e.clientX,y:e.clientY}; };
+  const handleGroundDown = (e: ThreeEvent<PointerEvent>) => { downPos.current={x:e.clientX,y:e.clientY}; };
 
   const handleGroundMove = useCallback((e: ThreeEvent<PointerEvent>) => {
-    if (eraseMode || chaosMode) { setGhost(null); return; }
-    setGhost([snapTo(e.point.x, size), size/2, snapTo(e.point.z, size)]);
-  }, [eraseMode, chaosMode, size]);
+    if (eraseMode||chaosMode) { setGhost(null); return; }
+    setGhost([snapTo(e.point.x,size), size/2, snapTo(e.point.z,size)]);
+  }, [eraseMode,chaosMode,size]);
 
   const handleGroundClick = useCallback((e: ThreeEvent<MouseEvent>) => {
-    if (eraseMode || chaosMode) return;
+    if (eraseMode||chaosMode) return;
     if (downPos.current) {
-      const dx = e.clientX - downPos.current.x, dy = e.clientY - downPos.current.y;
-      if (Math.sqrt(dx*dx+dy*dy) > 8) return;
+      const dx=e.clientX-downPos.current.x, dy=e.clientY-downPos.current.y;
+      if (Math.sqrt(dx*dx+dy*dy)>8) return;
     }
-    onAddBlock(snapTo(e.point.x, size), 0, snapTo(e.point.z, size));
-  }, [eraseMode, chaosMode, size, onAddBlock]);
+    onAddBlock(snapTo(e.point.x,size), 0, snapTo(e.point.z,size));
+  }, [eraseMode,chaosMode,size,onAddBlock]);
 
   const handleBlockClick = useCallback((e: ThreeEvent<MouseEvent>, block: Block) => {
     if (chaosMode) return;
     if (eraseMode) { e.stopPropagation(); onEraseBlock(block.id); return; }
     e.stopPropagation();
     if (downPos.current) {
-      const dx = e.clientX - downPos.current.x, dy = e.clientY - downPos.current.y;
-      if (Math.sqrt(dx*dx+dy*dy) > 8) return;
+      const dx=e.clientX-downPos.current.x, dy=e.clientY-downPos.current.y;
+      if (Math.sqrt(dx*dx+dy*dy)>8) return;
     }
     const top = blocks.filter(b=>b.x===block.x&&b.z===block.z).reduce((m,b)=>Math.max(m,b.y),-1);
     onAddBlock(block.x, top+1, block.z);
-  }, [chaosMode, eraseMode, blocks, onAddBlock, onEraseBlock]);
+  }, [chaosMode,eraseMode,blocks,onAddBlock,onEraseBlock]);
 
   const handleBlockMove = useCallback((e: ThreeEvent<PointerEvent>, block: Block) => {
-    if (eraseMode || chaosMode) { setGhost(null); return; }
+    if (eraseMode||chaosMode) { setGhost(null); return; }
     const top = blocks.filter(b=>b.x===block.x&&b.z===block.z).reduce((m,b)=>Math.max(m,b.y),-1);
-    setGhost([block.x, (top+1)*size+size/2, block.z]);
-  }, [eraseMode, chaosMode, blocks, size]);
-
-  const gridColor  = isPitch ? "#2d8a1a" : "#1e3a6e";
-  const secColor   = isPitch ? "#3aaa22" : "#2563eb";
-  const ambStrength = isPitch ? 0.6 : 0.3;
+    setGhost([block.x,(top+1)*size+size/2,block.z]);
+  }, [eraseMode,chaosMode,blocks,size]);
 
   return (
     <>
-      <SceneBackground stadiumId={stadiumId} gridFade={gridFade} />
-      {isSpace && <Stars />}
-
-      <ambientLight intensity={ambStrength} />
+      <Stars />
+      <ambientLight intensity={0.32} />
       <directionalLight position={[14,22,10]} intensity={1.6} color="#d0e8ff" castShadow
         shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} />
       <directionalLight position={[-10,6,-12]} intensity={0.35} color="#ffe4b0" />
@@ -518,14 +594,17 @@ function Scene({
       <pointLight position={[0,size*0.5,0]} intensity={0.4} color="#3b82f6" distance={gridFade*0.3} />
 
       <Grid position={[0,0,0]} args={[500,500]}
-        cellSize={gridCell} cellThickness={0.4} cellColor={gridColor}
-        sectionSize={gridSection} sectionThickness={0.9} sectionColor={secColor}
+        cellSize={gridCell} cellThickness={0.4} cellColor="#1e3a6e"
+        sectionSize={gridSection} sectionThickness={0.9} sectionColor="#2563eb"
         fadeDistance={gridFade} fadeStrength={2.5} infiniteGrid />
       <PlatformGlow radius={gridFade*0.22} />
 
-      {/* Walking players */}
-      {playerConfigs.map(cfg => (
-        <WalkingPlayer key={cfg.id} cfg={cfg} size={size} gridFade={gridFade} />
+      {/* Football */}
+      <Football size={size} ballRef={ballRef} />
+
+      {/* Players sprinting and chasing */}
+      {playerCfgs.map(cfg => (
+        <RunningPlayer key={cfg.id} cfg={cfg} size={size} gridFade={gridFade} ballRef={ballRef} />
       ))}
 
       {/* Invisible ground */}
@@ -538,22 +617,21 @@ function Scene({
         </mesh>
       )}
 
-      {/* Blocks */}
       {blocks.map((block) =>
         chaosMode ? (
           <PhysicsBlock key={block.id} block={block} size={size} gap={gap}
-            init={chaosPhysics.get(block.id) ?? makeChaosPhysics(block, size)} />
+            init={chaosPhysics.get(block.id)??makeChaosPhysics(block,size)} />
         ) : (
           <group key={block.id}
             onPointerDown={handleGroundDown}
-            onPointerMove={(e)=>{ e.stopPropagation(); handleBlockMove(e, block); }}
-            onClick={(e)=>handleBlockClick(e, block)}>
+            onPointerMove={(e)=>{ e.stopPropagation(); handleBlockMove(e,block); }}
+            onClick={(e)=>handleBlockClick(e,block)}>
             <BlockMesh block={block} size={size} gap={gap} eraseMode={eraseMode} onErase={onEraseBlock} />
           </group>
         )
       )}
 
-      {!eraseMode && !chaosMode && ghost && <GhostBlock position={ghost} color={selectedColor} size={size} gap={gap} />}
+      {!eraseMode&&!chaosMode&&ghost&&<GhostBlock position={ghost} color={selectedColor} size={size} gap={gap} />}
     </>
   );
 }
@@ -565,7 +643,7 @@ function Btn({ onClick, active, bg, title, children }: {
   return (
     <button onClick={onClick} title={title} style={{
       background: bg ?? (active ? "#3b82f6" : "rgba(255,255,255,0.08)"),
-      color: "white",
+      color:"white",
       border: active ? "1.5px solid rgba(255,255,255,0.45)" : "1.5px solid rgba(255,255,255,0.12)",
       borderRadius:14, padding:"8px 14px", fontSize:14, fontWeight:700,
       cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap", backdropFilter:"blur(8px)",
@@ -577,15 +655,14 @@ function Btn({ onClick, active, bg, title, children }: {
 
 // ── Root component ────────────────────────────────────────────────────────────
 export default function App() {
-  const [activeMode,  setActiveMode]  = useState<ModeKey>("small");
-  const [allBlocks,   setAllBlocks]   = useState<Record<ModeKey,Block[]>>({ atom:[],micro:[],nano:[],small:[],large:[],mega:[] });
-  const [allHistory,  setAllHistory]  = useState<Record<ModeKey,Block[][]>>({ atom:[[]],micro:[[]],nano:[[]],small:[[]],large:[[]],mega:[[]] });
-  const [selectedColor, setSelectedColor] = useState(TEAMS[0].hex);
-  const [eraseMode,   setEraseMode]   = useState(false);
-  const [chaosMode,   setChaosMode]   = useState(false);
-  const [chaosPhysics,setChaosPhysics]= useState<Map<string,PhysicsState>>(new Map());
-  const [stadiumId,   setStadiumId]   = useState("space");
-  const [sharing,     setSharing]     = useState(false);
+  const [activeMode,   setActiveMode]   = useState<ModeKey>("small");
+  const [allBlocks,    setAllBlocks]    = useState<Record<ModeKey,Block[]>>({ atom:[],micro:[],nano:[],small:[],large:[],mega:[] });
+  const [allHistory,   setAllHistory]   = useState<Record<ModeKey,Block[][]>>({ atom:[[]],micro:[[]],nano:[[]],small:[[]],large:[[]],mega:[[]] });
+  const [selectedColor,setSelectedColor]= useState(TEAMS[0].hex);
+  const [eraseMode,    setEraseMode]    = useState(false);
+  const [chaosMode,    setChaosMode]    = useState(false);
+  const [chaosPhysics, setChaosPhysics] = useState<Map<string,PhysicsState>>(new Map());
+  const [sharing,      setSharing]      = useState(false);
   const glRef = useRef<THREE.WebGLRenderer | null>(null);
 
   const mode   = MODES.find(m => m.key === activeMode)!;
@@ -597,35 +674,35 @@ export default function App() {
   const addBlock = useCallback((x:number,y:number,z:number) => {
     setAllBlocks(prev => {
       const cur = prev[activeMode];
-      if (cur.some(b => b.x===x&&b.y===y&&b.z===z)) return prev;
+      if (cur.some(b=>b.x===x&&b.y===y&&b.z===z)) return prev;
       haptic();
       const next = [...cur, { id:uid(), x, y, z, color:selectedColor, logo:selectedTeam.logo }];
-      setAllHistory(h => ({ ...h, [activeMode]: [...h[activeMode].slice(-49), next] }));
-      return { ...prev, [activeMode]: next };
+      setAllHistory(h=>({ ...h, [activeMode]:[...h[activeMode].slice(-49),next] }));
+      return { ...prev, [activeMode]:next };
     });
   }, [activeMode, selectedColor, selectedTeam.logo]);
 
   const eraseBlock = useCallback((id:string) => {
     setAllBlocks(prev => {
-      const next = prev[activeMode].filter(b => b.id !== id);
-      setAllHistory(h => ({ ...h, [activeMode]: [...h[activeMode].slice(-49), next] }));
-      return { ...prev, [activeMode]: next };
+      const next = prev[activeMode].filter(b=>b.id!==id);
+      setAllHistory(h=>({ ...h, [activeMode]:[...h[activeMode].slice(-49),next] }));
+      return { ...prev, [activeMode]:next };
     });
   }, [activeMode]);
 
   const undo = useCallback(() => {
     setAllHistory(h => {
       const cur = h[activeMode];
-      if (cur.length <= 1) return h;
-      setAllBlocks(b => ({ ...b, [activeMode]: cur[cur.length-2] }));
-      return { ...h, [activeMode]: cur.slice(0,-1) };
+      if (cur.length<=1) return h;
+      setAllBlocks(b=>({ ...b, [activeMode]:cur[cur.length-2] }));
+      return { ...h, [activeMode]:cur.slice(0,-1) };
     });
   }, [activeMode]);
 
   const clear = useCallback(() => {
-    if (blocks.length === 0) return;
-    setAllBlocks(b => ({ ...b, [activeMode]: [] }));
-    setAllHistory(h => ({ ...h, [activeMode]: [[]] }));
+    if (blocks.length===0) return;
+    setAllBlocks(b=>({ ...b, [activeMode]:[] }));
+    setAllHistory(h=>({ ...h, [activeMode]:[[]] }));
     setChaosMode(false);
   }, [activeMode, blocks.length]);
 
@@ -636,16 +713,16 @@ export default function App() {
       setChaosPhysics(map);
       setEraseMode(false);
     }
-    setChaosMode(m => !m);
+    setChaosMode(m=>!m);
   }, [chaosMode, blocks, mode.size]);
 
   const handleShare = useCallback(async () => {
     const gl = glRef.current;
-    if (!gl || sharing) return;
+    if (!gl||sharing) return;
     setSharing(true);
     try {
       const url = gl.domElement.toDataURL("image/png");
-      const blob = await fetch(url).then(r => r.blob());
+      const blob = await fetch(url).then(r=>r.blob());
       const file = new File([blob], "block-builder.png", { type:"image/png" });
       if (navigator.share && (navigator as {canShare?:(o:object)=>boolean}).canShare?.({ files:[file] })) {
         await navigator.share({ title:"My Block Builder!", files:[file] });
@@ -666,10 +743,11 @@ export default function App() {
         camera={{ position:mode.camera, fov:45 }}
         gl={{ antialias:true, alpha:false, preserveDrawingBuffer:true,
               toneMapping:THREE.ACESFilmicToneMapping, toneMappingExposure:1.1 }}
-        style={{ background:"#020209" }}
+        style={{ background:"radial-gradient(ellipse at 50% 40%,#0a0e2a 0%,#020209 70%)" }}
         dpr={[1,2]}
         onCreated={({ gl }) => { glRef.current = gl; }}
       >
+        <fog attach="fog" args={["#020209", mode.gridFade*0.8, mode.gridFade*2.5]} />
         <OrbitControls enableDamping dampingFactor={0.1}
           minDistance={mode.minDist} maxDistance={mode.maxDist}
           maxPolarAngle={Math.PI/2 - 0.03}
@@ -678,7 +756,7 @@ export default function App() {
           blocks={blocks} selectedColor={selectedColor}
           eraseMode={eraseMode} size={mode.size} gap={mode.gap}
           gridCell={mode.gridCell} gridSection={mode.gridSection} gridFade={mode.gridFade}
-          chaosMode={chaosMode} chaosPhysics={chaosPhysics} stadiumId={stadiumId}
+          chaosMode={chaosMode} chaosPhysics={chaosPhysics}
           onAddBlock={addBlock} onEraseBlock={eraseBlock} />
       </Canvas>
 
@@ -689,7 +767,7 @@ export default function App() {
         {/* Size tabs */}
         <div style={{ display:"flex", gap:4, justifyContent:"center", marginBottom:5, flexWrap:"nowrap", overflowX:"auto" }}>
           {MODES.map(m => (
-            <button key={m.key} onClick={() => switchMode(m.key)} style={{
+            <button key={m.key} onClick={()=>switchMode(m.key)} style={{
               background: activeMode===m.key ? "rgba(59,130,246,0.85)" : "rgba(255,255,255,0.07)",
               color: activeMode===m.key ? "white" : "rgba(255,255,255,0.5)",
               border: activeMode===m.key ? "1.5px solid rgba(99,179,255,0.7)" : "1.5px solid rgba(255,255,255,0.08)",
@@ -703,60 +781,22 @@ export default function App() {
         </div>
 
         {/* Title + actions */}
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"3px 2px 8px" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"3px 2px 10px" }}>
           <div>
             <span style={{ color:"white", fontWeight:800, fontSize:15, textShadow:"0 0 20px rgba(99,102,241,0.8)" }}>🧱 Block Builder</span>
             <span style={{ marginLeft:7, color:"rgba(255,255,255,0.3)", fontSize:10 }}>{mode.desc} · {mode.size}u</span>
           </div>
           <div style={{ display:"flex", gap:5 }}>
-            <Btn onClick={undo} bg="rgba(255,255,255,0.07)" title="Undo">↩</Btn>
-            <Btn onClick={clear} bg="rgba(239,68,68,0.22)" title="Clear">🗑</Btn>
+            <Btn onClick={undo}        bg="rgba(255,255,255,0.07)" title="Undo">↩</Btn>
+            <Btn onClick={clear}       bg="rgba(239,68,68,0.22)"   title="Clear">🗑</Btn>
             <Btn onClick={handleShare} bg={sharing?"rgba(34,197,94,0.5)":"rgba(255,255,255,0.07)"} title="Share screenshot">{sharing?"⏳":"📷"}</Btn>
             <Btn onClick={toggleChaos} bg={chaosMode?"rgba(239,68,68,0.75)":"rgba(255,255,255,0.07)"} title="Chaos physics!">💥</Btn>
           </div>
         </div>
-
-        {/* Stadium picker */}
-        <div style={{ display:"flex", gap:5, overflowX:"auto", paddingBottom:8,
-          msOverflowStyle:"none", scrollbarWidth:"none" }}>
-          {STADIUMS.map(s => {
-            const active = stadiumId === s.id;
-            return (
-              <button key={s.id} onClick={() => setStadiumId(s.id)} style={{
-                flexShrink:0, background:"none", border:"none", padding:0, cursor:"pointer",
-                display:"flex", flexDirection:"column", alignItems:"center", gap:2, width:58,
-              }}>
-                <div style={{
-                  width:56, height:28, borderRadius:7,
-                  background: s.preview,
-                  border: active ? "2px solid white" : "1.5px solid rgba(255,255,255,0.18)",
-                  boxShadow: active ? `0 0 10px ${s.preview}cc` : "none",
-                  transform: active ? "scale(1.1)" : "scale(1)",
-                  transition:"all 0.15s",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize: 14,
-                }}>
-                  {s.isPitch ? "⚽" : !s.url ? "✨" : ""}
-                </div>
-                <span style={{ fontSize:7.5, color: active?"white":"rgba(255,255,255,0.45)",
-                  fontWeight:700, textAlign:"center", lineHeight:1.2,
-                  width:58, overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}>
-                  {s.name}
-                </span>
-                {s.label && (
-                  <span style={{ fontSize:6.5, color:"rgba(255,255,255,0.28)", textAlign:"center",
-                    width:58, overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}>
-                    {s.label}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       {/* ── Block counter ── */}
-      <div style={{ position:"absolute", top:148, right:14,
+      <div style={{ position:"absolute", top:96, right:14,
         background:"rgba(255,255,255,0.07)", backdropFilter:"blur(8px)",
         borderRadius:10, padding:"3px 10px",
         color:"rgba(255,255,255,0.5)", fontSize:12, fontWeight:600,
@@ -775,7 +815,7 @@ export default function App() {
       )}
 
       {/* ── Hint ── */}
-      {blocks.length === 0 && !chaosMode && (
+      {blocks.length===0 && !chaosMode && (
         <div style={{ position:"absolute", top:"55%", left:"50%",
           transform:"translate(-50%,-50%)", textAlign:"center",
           color:"rgba(255,255,255,0.25)", fontSize:14, fontWeight:600,
@@ -796,24 +836,22 @@ export default function App() {
             <Btn onClick={()=>setEraseMode(true)} active={eraseMode} bg={eraseMode?"rgba(239,68,68,0.55)":undefined}>🗑 Erase</Btn>
           </div>
         )}
-
         {chaosMode && (
           <div style={{ textAlign:"center", marginBottom:10 }}>
             <Btn onClick={toggleChaos} bg="rgba(59,130,246,0.6)">⏹ Stop Chaos</Btn>
           </div>
         )}
 
-        {/* Team palette — larger icons */}
+        {/* Team palette */}
         {!eraseMode && !chaosMode && (
           <div style={{ display:"flex", gap:5, justifyContent:"center", flexWrap:"wrap", maxWidth:440, margin:"0 auto" }}>
             {TEAMS.map(({ hex, name, logo }) => {
-              const active = selectedColor === hex;
-              const isDark = hex === "#1C1C1B";
+              const active = selectedColor===hex;
+              const isDark = hex==="#1C1C1B";
               return (
                 <button key={hex} onClick={()=>setSelectedColor(hex)} title={name}
                   style={{ display:"flex", flexDirection:"column", alignItems:"center",
-                    gap:3, background:"none", border:"none", cursor:"pointer",
-                    padding:0, flexShrink:0, width:42 }}>
+                    gap:3, background:"none", border:"none", cursor:"pointer", padding:0, flexShrink:0, width:42 }}>
                   <div style={{
                     width:40, height:40, borderRadius:"50%", background:hex,
                     border: active ? "2.5px solid white" : isDark ? "1.5px solid rgba(255,255,255,0.35)" : "1.5px solid rgba(255,255,255,0.15)",
@@ -823,9 +861,8 @@ export default function App() {
                     display:"flex", alignItems:"center", justifyContent:"center",
                   }}>
                     <img src={logo} alt={name}
-                      onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }}
-                      style={{ width:30, height:30, objectFit:"contain",
-                        filter:"drop-shadow(0 1px 3px rgba(0,0,0,0.7))" }} />
+                      onError={(e)=>{ (e.target as HTMLImageElement).style.display="none"; }}
+                      style={{ width:30, height:30, objectFit:"contain", filter:"drop-shadow(0 1px 3px rgba(0,0,0,0.7))" }} />
                   </div>
                   <span style={{ fontSize:8.5, color:active?"white":"rgba(255,255,255,0.45)",
                     fontWeight:700, width:42, textAlign:"center", lineHeight:1.25,
@@ -837,7 +874,6 @@ export default function App() {
             })}
           </div>
         )}
-
         {eraseMode && (
           <p style={{ textAlign:"center", color:"#fca5a5", fontSize:14, fontWeight:700 }}>
             Tap a block to remove it
