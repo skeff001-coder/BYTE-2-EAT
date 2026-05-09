@@ -474,6 +474,250 @@ function PitchMarkings({ gridFade }: { gridFade: number }) {
   );
 }
 
+// ── Stadium crowd colours ─────────────────────────────────────────────────────
+const CROWD_HEX = [
+  0xCC0000, 0xFF2222, 0xDD0000,
+  0xFFFFFF, 0xF5F5F5, 0xEEEEEE,
+  0x0044BB, 0x003399, 0x0055CC,
+  0xFFCC00, 0xDDAA00, 0xFFBB11,
+  0x111111, 0x333333, 0x555555,
+  0xFF6600, 0xCC4400, 0xFF8833,
+  0x880000, 0xAA1100, 0x660000,
+  0x88AAFF, 0x99CCFF, 0xBBDDFF,
+];
+
+// ── Floodlight tower ──────────────────────────────────────────────────────────
+function FloodlightTower({ px, pz, poleH, size }: {
+  px: number; pz: number; poleH: number; size: number;
+}) {
+  const poleThin = Math.max(size * 0.03, poleH * 0.018);
+  const lampW = poleH * 0.22;
+  const lampH = poleH * 0.022;
+  const lampD = poleH * 0.07;
+  return (
+    <group position={[px, 0, pz]}>
+      {/* Main tapered pole */}
+      <mesh position={[0, poleH * 0.5, 0]} castShadow>
+        <cylinderGeometry args={[poleThin * 0.55, poleThin, poleH, 6]} />
+        <meshStandardMaterial color="#6b7a8d" metalness={0.78} roughness={0.28} />
+      </mesh>
+      {/* Mid cross-brace */}
+      <mesh position={[0, poleH * 0.52, 0]}>
+        <boxGeometry args={[poleThin * 5, poleThin * 0.5, poleThin * 0.5]} />
+        <meshStandardMaterial color="#6b7a8d" metalness={0.6} roughness={0.4} />
+      </mesh>
+      {/* Lamp bank at top, angled slightly down */}
+      <group position={[0, poleH, 0]}>
+        <mesh rotation={[Math.PI / 7, 0, 0]}>
+          <boxGeometry args={[lampW, lampH, lampD]} />
+          <meshStandardMaterial color="#ffffcc" emissive="#ffffee" emissiveIntensity={7} roughness={0.05} />
+        </mesh>
+        <pointLight color="#fff4cc" intensity={poleH * 1.2} distance={poleH * 11}
+          decay={1.4} castShadow shadow-mapSize-width={512} shadow-mapSize-height={512} />
+      </group>
+    </group>
+  );
+}
+
+// ── Goal net lines ────────────────────────────────────────────────────────────
+function GoalNetLines({ gW, gH, gD, dz }: { gW: number; gH: number; gD: number; dz: number }) {
+  const lineObj = useMemo(() => {
+    const pts: number[] = [];
+    const p = (x1:number,y1:number,z1:number, x2:number,y2:number,z2:number) =>
+      pts.push(x1,y1,z1, x2,y2,z2);
+    const nW = 10, nH = 6, nD = 4;
+    const bz = dz * gD;
+    // Back face grid
+    for (let i=0;i<=nW;i++) { const x=-gW/2+(gW/nW)*i; p(x,0,bz,  x,gH,bz); }
+    for (let j=0;j<=nH;j++) { const y=(gH/nH)*j;       p(-gW/2,y,bz, gW/2,y,bz); }
+    // Top face runs
+    for (let i=0;i<=nW;i++) { const x=-gW/2+(gW/nW)*i; p(x,gH,0, x,gH,bz); }
+    for (let j=0;j<=nD;j++) { const z=dz*(gD/nD)*j;    p(-gW/2,gH,z, gW/2,gH,z); }
+    // Left side
+    for (let j=0;j<=nH;j++) { const y=(gH/nH)*j; p(-gW/2,y,0, -gW/2,y,bz); }
+    for (let j=0;j<=nD;j++) { const z=dz*(gD/nD)*j; p(-gW/2,0,z, -gW/2,gH,z); }
+    // Right side
+    for (let j=0;j<=nH;j++) { const y=(gH/nH)*j; p(gW/2,y,0, gW/2,y,bz); }
+    for (let j=0;j<=nD;j++) { const z=dz*(gD/nD)*j; p(gW/2,0,z, gW/2,gH,z); }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(pts), 3));
+    const mat = new THREE.LineBasicMaterial({ color:"#ffffff", transparent:true, opacity:0.28, fog:false });
+    return new THREE.LineSegments(geo, mat);
+  }, [gW, gH, gD, dz]);
+  useEffect(() => () => {
+    lineObj.geometry.dispose();
+    (lineObj.material as THREE.Material).dispose();
+  }, [lineObj]);
+  return <primitive object={lineObj} />;
+}
+
+// ── Football goal ─────────────────────────────────────────────────────────────
+function FootballGoal({ cz, dz, size, pitchW }: {
+  cz: number; dz: number; size: number; pitchW: number;
+}) {
+  const gW = pitchW * 0.108;
+  const gH = Math.max(size * 0.6, pitchW * 0.036);
+  const gD = gH * 0.78;
+  const postR = Math.max(size * 0.018, gH * 0.04);
+  return (
+    <group position={[0, 0, cz]}>
+      {/* Posts */}
+      <mesh position={[-gW/2, gH/2, 0]} castShadow>
+        <cylinderGeometry args={[postR, postR, gH, 8]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.22} metalness={0.55} />
+      </mesh>
+      <mesh position={[gW/2, gH/2, 0]} castShadow>
+        <cylinderGeometry args={[postR, postR, gH, 8]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.22} metalness={0.55} />
+      </mesh>
+      {/* Crossbar */}
+      <mesh position={[0, gH, 0]} rotation={[0, 0, Math.PI/2]} castShadow>
+        <cylinderGeometry args={[postR, postR, gW + postR*2, 8]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.22} metalness={0.55} />
+      </mesh>
+      <GoalNetLines gW={gW} gH={gH} gD={gD} dz={dz} />
+    </group>
+  );
+}
+
+// ── Stadium stands + crowd + flags ────────────────────────────────────────────
+function StadiumStands({ pitchL, pitchW, size, gridFade }: {
+  pitchL: number; pitchW: number; size: number; gridFade: number;
+}) {
+  const { positions, colors, seatS, flagsData, hl, hw, standEnd } = useMemo(() => {
+    const hl = pitchL / 2, hw = pitchW / 2;
+    const gap      = gridFade * 0.030;
+    const rows     = 7;
+    const rowDepth = gridFade * 0.013;
+    const rowRise  = gridFade * 0.0075;
+    const baseY    = 0.05;
+    const unitSeat = gridFade * 0.015;
+    const seatS    = unitSeat * 0.82;
+
+    const longCols  = Math.round(pitchL / unitSeat);
+    const shortCols = Math.round(pitchW / unitSeat);
+    const pos: [number,number,number][] = [];
+    const col: number[] = [];
+
+    for (let r = 0; r < rows; r++) {
+      const y    = baseY + r * rowRise + rowRise * 0.65;
+      const back = gap + r * rowDepth + rowDepth * 0.5;
+      for (let c = 0; c < longCols; c++) {
+        const z    = -pitchL/2 + (c+0.5)*(pitchL/longCols);
+        const cIdx = (Math.floor(c/7)*3 + r) % CROWD_HEX.length;
+        pos.push([-hw-back, y, z]); col.push(CROWD_HEX[cIdx]);
+        pos.push([ hw+back, y, z]); col.push(CROWD_HEX[(cIdx+5)%CROWD_HEX.length]);
+      }
+      for (let c = 0; c < shortCols; c++) {
+        const x    = -pitchW/2 + (c+0.5)*(pitchW/shortCols);
+        const cIdx = (Math.floor(c/5)*3 + r + 8) % CROWD_HEX.length;
+        pos.push([x, y, -hl-back]); col.push(CROWD_HEX[cIdx]);
+        pos.push([x, y,  hl+back]); col.push(CROWD_HEX[(cIdx+7)%CROWD_HEX.length]);
+      }
+    }
+
+    // Flags scattered across top rows
+    const flagPH = gridFade * 0.026;
+    const flagsData: { x:number; y:number; z:number; color:string; phase:number }[] = [];
+    const addFlags = (side: 0|1|2|3, n: number) => {
+      for (let i=0; i<n; i++) {
+        const t = (i+0.5)/n;
+        const rOff = i % rows;
+        const back = gap + (rows-1-rOff)*rowDepth + rowDepth*0.5;
+        const fy   = baseY + (rows-1-rOff)*rowRise + rowRise*0.65 + flagPH*0.5;
+        let x=0, z=0;
+        if (side===0) { x=-hw-back; z=-pitchL/2+pitchL*t; }
+        if (side===1) { x= hw+back; z=-pitchL/2+pitchL*t; }
+        if (side===2) { x=-pitchW/2+pitchW*t; z=-hl-back; }
+        if (side===3) { x=-pitchW/2+pitchW*t; z= hl+back; }
+        const hex = CROWD_HEX[(i*4+side*5) % CROWD_HEX.length];
+        flagsData.push({ x, y:fy, z, color:`#${hex.toString(16).padStart(6,"0")}`, phase:i*0.62+side*1.1 });
+      }
+    };
+    addFlags(0,11); addFlags(1,11); addFlags(2,7); addFlags(3,7);
+
+    const standEnd = gap + rows * rowDepth;
+    return { positions:pos, colors:col, seatS, flagsData, hl, hw, standEnd };
+  }, [pitchL, pitchW, gridFade]);
+
+  const count  = positions.length;
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const flagRefs = useRef<(THREE.Group|null)[]>([]);
+
+  useEffect(() => {
+    const m = meshRef.current;
+    if (!m) return;
+    const mat4 = new THREE.Matrix4();
+    const c3   = new THREE.Color();
+    for (let i=0; i<count; i++) {
+      const [x,y,z] = positions[i];
+      mat4.makeTranslation(x, y, z);
+      m.setMatrixAt(i, mat4);
+      m.setColorAt(i, c3.setHex(colors[i]));
+    }
+    m.instanceMatrix.needsUpdate = true;
+    if (m.instanceColor) m.instanceColor.needsUpdate = true;
+  }, [positions, colors, count]);
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    flagRefs.current.forEach((ref, i) => {
+      if (ref) ref.rotation.z = Math.sin(t*2.8 + (flagsData[i]?.phase ?? 0)) * 0.18;
+    });
+  });
+
+  const flagPH  = gridFade * 0.026;
+  const flagCW  = gridFade * 0.012;
+  const flagCH  = gridFade * 0.008;
+  const poleR   = Math.max(size * 0.008, flagPH * 0.028);
+  const baseBox = 0.05;
+
+  return (
+    <>
+      {/* Crowd seats */}
+      <instancedMesh ref={meshRef} args={[undefined, undefined, count]} castShadow>
+        <boxGeometry args={[seatS, seatS * 0.9, seatS]} />
+        <meshStandardMaterial roughness={0.65} />
+      </instancedMesh>
+
+      {/* Concrete stand bases */}
+      <mesh position={[-hw-standEnd*0.5, baseBox*0.5, 0]}>
+        <boxGeometry args={[standEnd, baseBox, pitchL+standEnd*0.4]} />
+        <meshStandardMaterial color="#2c2c2c" roughness={0.95} />
+      </mesh>
+      <mesh position={[hw+standEnd*0.5, baseBox*0.5, 0]}>
+        <boxGeometry args={[standEnd, baseBox, pitchL+standEnd*0.4]} />
+        <meshStandardMaterial color="#2c2c2c" roughness={0.95} />
+      </mesh>
+      <mesh position={[0, baseBox*0.5, -hl-standEnd*0.5]}>
+        <boxGeometry args={[pitchW+standEnd*2.6, baseBox, standEnd]} />
+        <meshStandardMaterial color="#2c2c2c" roughness={0.95} />
+      </mesh>
+      <mesh position={[0, baseBox*0.5, hl+standEnd*0.5]}>
+        <boxGeometry args={[pitchW+standEnd*2.6, baseBox, standEnd]} />
+        <meshStandardMaterial color="#2c2c2c" roughness={0.95} />
+      </mesh>
+
+      {/* Waving flags and scarves */}
+      {flagsData.map((fd, i) => (
+        <group key={i}
+          ref={el => { flagRefs.current[i] = el; }}
+          position={[fd.x, fd.y, fd.z]}>
+          <mesh position={[0, -flagPH*0.45, 0]}>
+            <cylinderGeometry args={[poleR, poleR, flagPH, 4]} />
+            <meshStandardMaterial color="#999" metalness={0.5} roughness={0.5} />
+          </mesh>
+          <mesh position={[flagCW*0.5, 0, 0]}>
+            <boxGeometry args={[flagCW, flagCH, flagCH * 0.3]} />
+            <meshBasicMaterial color={fd.color} />
+          </mesh>
+        </group>
+      ))}
+    </>
+  );
+}
+
 // ── Stars ─────────────────────────────────────────────────────────────────────
 function Stars() {
   const ref = useRef<THREE.Points>(null);
@@ -671,13 +915,14 @@ function Scene({
   return (
     <>
       <Stars />
-      <ambientLight intensity={0.32} />
-      <directionalLight position={[14,22,10]} intensity={1.6} color="#d0e8ff" castShadow
+      {/* Base ambient — kept low so floodlights dominate */}
+      <ambientLight intensity={0.14} />
+      <directionalLight position={[14,22,10]} intensity={0.7} color="#d0e8ff" castShadow
         shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-bias={-0.0004} />
-      <directionalLight position={[-10,6,-12]} intensity={0.35} color="#ffe4b0" />
-      <directionalLight position={[0,4,-20]}   intensity={0.5}  color="#8b5cf6" />
-      <hemisphereLight args={["#0d1b45","#000000",0.5]} />
-      <pointLight position={[0,size*0.5,0]} intensity={0.4} color="#3b82f6" distance={gridFade*0.3} />
+      <directionalLight position={[-10,6,-12]} intensity={0.18} color="#ffe4b0" />
+      <directionalLight position={[0,4,-20]}   intensity={0.22} color="#8b5cf6" />
+      <hemisphereLight args={["#0d1b45","#000000",0.35]} />
+      <pointLight position={[0,size*0.5,0]} intensity={0.25} color="#3b82f6" distance={gridFade*0.3} />
 
       <Grid position={[0,0,0]} args={[500,500]}
         cellSize={gridCell} cellThickness={0.4} cellColor="#1e3a6e"
@@ -685,6 +930,28 @@ function Scene({
         fadeDistance={gridFade} fadeStrength={2.5} infiniteGrid />
       <PlatformGlow radius={gridFade*0.22} />
       <PitchMarkings gridFade={gridFade} />
+
+      {/* ── Stadium atmosphere ── */}
+      {(() => {
+        const pL = gridFade * 0.62, pW = gridFade * 0.40;
+        const hL = pL / 2,         hW = pW / 2;
+        const sEnd = gridFade * (0.030 + 7 * 0.013); // stand depth
+        const ftOff = sEnd + gridFade * 0.045;        // floodlight corner offset
+        const pH = gridFade * 0.20;                   // pole height
+        return (
+          <>
+            <StadiumStands pitchL={pL} pitchW={pW} size={size} gridFade={gridFade} />
+            {/* Goals — net faces infield (away from pitch) */}
+            <FootballGoal cz={-hL} dz={-1} size={size} pitchW={pW} />
+            <FootballGoal cz={ hL} dz={ 1} size={size} pitchW={pW} />
+            {/* 4 floodlight towers at corners of the stands */}
+            <FloodlightTower px={-hW-ftOff} pz={-hL-ftOff} poleH={pH} size={size} />
+            <FloodlightTower px={ hW+ftOff} pz={-hL-ftOff} poleH={pH} size={size} />
+            <FloodlightTower px={-hW-ftOff} pz={ hL+ftOff} poleH={pH} size={size} />
+            <FloodlightTower px={ hW+ftOff} pz={ hL+ftOff} poleH={pH} size={size} />
+          </>
+        );
+      })()}
 
       {/* Football */}
       <Football size={size} ballRef={ballRef} />
