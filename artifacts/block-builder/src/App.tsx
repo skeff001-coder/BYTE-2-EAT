@@ -42,29 +42,30 @@ const MODES = [
 ] as const;
 type ModeKey = (typeof MODES)[number]["key"];
 
-// ── Premier League teams (block palette) ──────────────────────────────────────
+// ── Block themes: free (half-and-half) + premium (official logos) ─────────────
+type BlockTheme = { id:string; name:string; hex:string; logo:string; premiumLogo:string };
 const PL = "https://resources.premierleague.com/premierleague/badges";
-const TEAMS = [
-  { hex:"#FF0000", name:"Liverpool",    logo:`${PL}/t14.png`  },
-  { hex:"#EF0107", name:"Arsenal",      logo:`${PL}/t3.png`   },
-  { hex:"#DA291C", name:"Man Utd",      logo:`${PL}/t1.png`   },
-  { hex:"#FF3B30", name:"Nottm Forest", logo:`${PL}/t17.png`  },
-  { hex:"#E30013", name:"Bournemouth",  logo:`${PL}/t91.png`  },
-  { hex:"#D71920", name:"Southampton",  logo:`${PL}/t20.png`  },
-  { hex:"#D0021B", name:"Brentford",    logo:`${PL}/t94.png`  },
-  { hex:"#C4122E", name:"Crystal Pal", logo:`${PL}/t31.png`  },
-  { hex:"#6DCFF6", name:"Man City",     logo:`${PL}/t43.png`  },
-  { hex:"#005BBB", name:"Chelsea",      logo:`${PL}/t8.png`   },
-  { hex:"#0057FF", name:"Brighton",     logo:`${PL}/t36.png`  },
-  { hex:"#0047AB", name:"Everton",      logo:`${PL}/t11.png`  },
-  { hex:"#003FDB", name:"Leicester",    logo:`${PL}/t13.png`  },
-  { hex:"#3A78D4", name:"Ipswich",      logo:`${PL}/t40.png`  },
-  { hex:"#888888", name:"Fulham",       logo:`${PL}/t54.png`  },
-  { hex:"#FDB913", name:"Wolves",       logo:`${PL}/t39.png`  },
-  { hex:"#CC3366", name:"West Ham",     logo:`${PL}/t21.png`  },
-  { hex:"#9B1C31", name:"Aston Villa",  logo:`${PL}/t7.png`   },
-  { hex:"#1C1C1B", name:"Newcastle",    logo:`${PL}/t4.png`   },
-  { hex:"#F0F0F0", name:"Tottenham",    logo:`${PL}/t6.png`   },
+const BLOCK_THEMES: BlockTheme[] = [
+  { id:"liverpool",   name:"Merseyside Red",      hex:"#C8102E", logo:"half|#C8102E|#F6EB61|⚽", premiumLogo:`${PL}/t14.png` },
+  { id:"arsenal",     name:"North London Red",    hex:"#EF0107", logo:"half|#EF0107|#FFFFFF|⚽", premiumLogo:`${PL}/t3.png`  },
+  { id:"manutd",      name:"Manchester Red",      hex:"#DA291C", logo:"half|#DA291C|#FBE122|⚽", premiumLogo:`${PL}/t1.png`  },
+  { id:"nforest",     name:"Forest Red",          hex:"#CC0000", logo:"half|#CC0000|#FFFFFF|⚽", premiumLogo:`${PL}/t17.png` },
+  { id:"bournemouth", name:"Dorset Red",          hex:"#E30013", logo:"half|#E30013|#000000|⚽", premiumLogo:`${PL}/t91.png` },
+  { id:"southampton", name:"South Coast Red",     hex:"#D71920", logo:"half|#D71920|#FFFFFF|⚽", premiumLogo:`${PL}/t20.png` },
+  { id:"brentford",   name:"West London Bees",    hex:"#D0021B", logo:"half|#D0021B|#FFFFFF|⚽", premiumLogo:`${PL}/t94.png` },
+  { id:"cpfc",        name:"South London Eagles", hex:"#C4122E", logo:"half|#C4122E|#005DB8|⚽", premiumLogo:`${PL}/t31.png` },
+  { id:"mancity",     name:"Sky Blue",            hex:"#6DCFF6", logo:"half|#6DCFF6|#FFFFFF|🏆", premiumLogo:`${PL}/t43.png` },
+  { id:"chelsea",     name:"London Blue",         hex:"#005BBB", logo:"half|#005BBB|#FFFFFF|⚽", premiumLogo:`${PL}/t8.png`  },
+  { id:"brighton",    name:"Seagulls Blue",       hex:"#0057FF", logo:"half|#0057FF|#FFFFFF|⚽", premiumLogo:`${PL}/t36.png` },
+  { id:"everton",     name:"Merseyside Blue",     hex:"#0047AB", logo:"half|#0047AB|#FFFFFF|⚽", premiumLogo:`${PL}/t11.png` },
+  { id:"leicester",   name:"Foxes Blue",          hex:"#003FDB", logo:"half|#003FDB|#FDBE11|🏆", premiumLogo:`${PL}/t13.png` },
+  { id:"ipswich",     name:"Tractor Boys",        hex:"#3A78D4", logo:"half|#3A78D4|#FFFFFF|⚽", premiumLogo:`${PL}/t40.png` },
+  { id:"fulham",      name:"Cottage White",       hex:"#888888", logo:"half|#000000|#FFFFFF|⚽", premiumLogo:`${PL}/t54.png` },
+  { id:"wolves",      name:"West Midlands Gold",  hex:"#FDB913", logo:"half|#FDB913|#231F20|⚽", premiumLogo:`${PL}/t39.png` },
+  { id:"westham",     name:"East London Claret",  hex:"#CC3366", logo:"half|#7A1429|#1E5F9C|⚽", premiumLogo:`${PL}/t21.png` },
+  { id:"astonvilla",  name:"Midlands Claret",     hex:"#9B1C31", logo:"half|#670E36|#95BFE5|⚽", premiumLogo:`${PL}/t7.png`  },
+  { id:"newcastle",   name:"Tyneside Magpies",    hex:"#1C1C1B", logo:"half|#1C1C1B|#FFFFFF|⚽", premiumLogo:`${PL}/t4.png`  },
+  { id:"tottenham",   name:"North London White",  hex:"#F0F0F0", logo:"half|#FFFFFF|#132257|🏆", premiumLogo:`${PL}/t6.png`  },
 ];
 
 // ── Player kits ───────────────────────────────────────────────────────────────
@@ -103,20 +104,78 @@ function makeChaosPhysics(block: Block, size: number): PhysicsState {
   };
 }
 
+// ── Canvas texture helpers ─────────────────────────────────────────────────────
+const _halfTexCache   = new Map<string, THREE.CanvasTexture>();
+const _customTexCache = new Map<string, THREE.CanvasTexture>();
+
+function makeHalfTex(logo: string): THREE.CanvasTexture {
+  if (_halfTexCache.has(logo)) return _halfTexCache.get(logo)!;
+  const parts  = logo.split("|");
+  const colorA = parts[1] ?? "#CC0000";
+  const colorB = parts[2] ?? "#FFFFFF";
+  const emoji  = decodeURIComponent(parts[3] ?? "⚽");
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 256;
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = colorA; ctx.fillRect(0, 0, 256, 256);
+  ctx.fillStyle = colorB;
+  ctx.beginPath(); ctx.moveTo(256,0); ctx.lineTo(256,256); ctx.lineTo(0,256); ctx.closePath(); ctx.fill();
+  ctx.font = "120px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(emoji, 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  _halfTexCache.set(logo, tex);
+  return tex;
+}
+
+function makeCustomTex(logo: string): THREE.CanvasTexture {
+  if (_customTexCache.has(logo)) return _customTexCache.get(logo)!;
+  const parts  = logo.split("|");
+  const colorA = parts[1] ?? "#CC0000";
+  const colorB = parts[2] ?? "#FFFFFF";
+  const name   = decodeURIComponent(parts[3] ?? "Team");
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 256;
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = colorA; ctx.fillRect(0, 0, 256, 256);
+  ctx.fillStyle = colorB;
+  ctx.beginPath(); ctx.moveTo(256,0); ctx.lineTo(256,256); ctx.lineTo(0,256); ctx.closePath(); ctx.fill();
+  const sz = name.length > 9 ? 24 : name.length > 6 ? 32 : name.length > 3 ? 42 : 56;
+  ctx.font = `bold ${sz}px sans-serif`;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const r = parseInt(colorA.slice(1,3)||"00",16);
+  const g = parseInt(colorA.slice(3,5)||"00",16);
+  const b = parseInt(colorA.slice(5,7)||"00",16);
+  ctx.fillStyle = (r*0.299+g*0.587+b*0.114) > 140 ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.88)";
+  ctx.fillText(name.substring(0,12), 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  _customTexCache.set(logo, tex);
+  return tex;
+}
+
 // ── Texture cache ─────────────────────────────────────────────────────────────
 const _texCache = new Map<string, THREE.Texture | null>();
 function useLogoTexture(url: string): THREE.Texture | null {
-  const [tex, setTex] = useState<THREE.Texture | null>(() => _texCache.get(url) ?? null);
+  const isHalf   = url.startsWith("half|");
+  const isCustom = url.startsWith("custom|");
+  const canvasTex = useMemo<THREE.Texture | null>(() => {
+    if (isHalf)   return makeHalfTex(url);
+    if (isCustom) return makeCustomTex(url);
+    return null;
+  }, [url, isHalf, isCustom]);
+  const [urlTex, setUrlTex] = useState<THREE.Texture | null>(() =>
+    (!isHalf && !isCustom) ? (_texCache.get(url) ?? null) : null
+  );
   useEffect(() => {
-    if (_texCache.has(url)) { setTex(_texCache.get(url) ?? null); return; }
+    if (isHalf || isCustom) return;
+    if (_texCache.has(url)) { setUrlTex(_texCache.get(url) ?? null); return; }
     new THREE.TextureLoader().load(
       url,
-      (t) => { t.colorSpace = THREE.SRGBColorSpace; _texCache.set(url, t); setTex(t); },
+      (t) => { t.colorSpace = THREE.SRGBColorSpace; _texCache.set(url, t); setUrlTex(t); },
       undefined,
       () => { _texCache.set(url, null); },
     );
-  }, [url]);
-  return tex;
+  }, [url, isHalf, isCustom]);
+  return (isHalf || isCustom) ? canvasTex : urlTex;
 }
 
 // ── Football emoji texture ────────────────────────────────────────────────────
@@ -1007,21 +1066,217 @@ function Btn({ onClick, active, bg, title, children }: {
   );
 }
 
+// ── Premium lock popup ────────────────────────────────────────────────────────
+function PremiumLockPopup({ onClose, onBuy }: { onClose:()=>void; onBuy:()=>void }) {
+  return (
+    <div onClick={onClose} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.78)",
+      backdropFilter:"blur(5px)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:400 }}>
+      <div onClick={e=>e.stopPropagation()} style={{
+        background:"linear-gradient(145deg,#0f0f20,#1a1a32)", borderRadius:24,
+        border:"1.5px solid rgba(255,255,255,0.14)", padding:"32px 28px", maxWidth:300, width:"90%",
+        textAlign:"center", boxShadow:"0 24px 64px rgba(0,0,0,0.85)" }}>
+        <div style={{ fontSize:52, marginBottom:10 }}>🔒</div>
+        <h3 style={{ color:"white", fontWeight:900, fontSize:20, margin:"0 0 8px", letterSpacing:-0.3 }}>
+          Unlock the Premier Pack
+        </h3>
+        <p style={{ color:"rgba(255,255,255,0.55)", fontSize:13.5, lineHeight:1.65, margin:"0 0 22px" }}>
+          Official Premier League badges on every block — one-time unlock
+        </p>
+        <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
+          <button onClick={onClose} style={{ background:"rgba(255,255,255,0.07)", color:"rgba(255,255,255,0.7)",
+            border:"1px solid rgba(255,255,255,0.12)", borderRadius:12, padding:"10px 18px",
+            fontSize:13, fontWeight:600, cursor:"pointer" }}>Maybe later</button>
+          <button onClick={onBuy} style={{ background:"linear-gradient(135deg,#f59e0b,#ef4444)",
+            color:"white", border:"none", borderRadius:12, padding:"10px 20px",
+            fontSize:14, fontWeight:800, cursor:"pointer", boxShadow:"0 4px 16px rgba(239,68,68,0.45)",
+            letterSpacing:0.2 }}>⚽ Buy — 99p</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Theme shop drawer ─────────────────────────────────────────────────────────
+function ShopDrawer({
+  open, onClose, isPremiumUser, hasCustomTeam,
+  selectedThemeId, onSelectPremium, onBuyPremier,
+  customTeam, onCustomTeamChange, onBuyCustom, onSelectCustom,
+}: {
+  open:boolean; onClose:()=>void;
+  isPremiumUser:boolean; hasCustomTeam:boolean;
+  selectedThemeId:string;
+  onSelectPremium:(id:string)=>void; onBuyPremier:()=>void;
+  customTeam:{name:string;colorA:string;colorB:string};
+  onCustomTeamChange:(t:{name:string;colorA:string;colorB:string})=>void;
+  onBuyCustom:()=>void; onSelectCustom:()=>void;
+}) {
+  const cardStyle: React.CSSProperties = {
+    background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.09)",
+    borderRadius:16, padding:"16px", display:"flex", flexDirection:"column", gap:12,
+  };
+  const buyBtnStyle: React.CSSProperties = {
+    background:"linear-gradient(135deg,#f59e0b,#ef4444)", color:"white", border:"none",
+    borderRadius:10, padding:"10px 0", fontSize:13, fontWeight:800, cursor:"pointer",
+    width:"100%", letterSpacing:0.2,
+  };
+  const labelStyle: React.CSSProperties = { color:"white", fontWeight:800, fontSize:15 };
+  const descStyle:  React.CSSProperties = { color:"rgba(255,255,255,0.5)", fontSize:12.5, lineHeight:1.55, margin:0 };
+
+  return (
+    <>
+      {open && <div onClick={onClose} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.55)",
+        backdropFilter:"blur(3px)", zIndex:300 }} />}
+      <div style={{
+        position:"fixed", top:0, right: open ? 0 : "-110%", width:"min(340px,100vw)",
+        height:"100%", background:"linear-gradient(170deg,#0a0a1e 0%,#0d0d26 100%)",
+        borderLeft:"1px solid rgba(255,255,255,0.1)", overflowY:"auto",
+        transition:"right 0.3s cubic-bezier(0.4,0,0.2,1)", zIndex:301,
+        display:"flex", flexDirection:"column",
+      }}>
+        {/* Header */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"18px 18px 14px", borderBottom:"1px solid rgba(255,255,255,0.08)", flexShrink:0 }}>
+          <span style={{ color:"white", fontWeight:900, fontSize:17, letterSpacing:-0.2 }}>🛒 Theme Shop</span>
+          <button onClick={onClose} style={{ background:"rgba(255,255,255,0.08)", color:"white", border:"none",
+            borderRadius:8, width:30, height:30, cursor:"pointer", fontSize:14, fontWeight:700 }}>✕</button>
+        </div>
+
+        <div style={{ padding:"14px 16px", display:"flex", flexDirection:"column", gap:14, overflowY:"auto" }}>
+
+          {/* Premier Pack */}
+          <div style={cardStyle}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <span style={labelStyle}>⚽ Premier Pack</span>
+              {isPremiumUser
+                ? <span style={{ color:"#4ade80", fontSize:12, fontWeight:700, background:"rgba(74,222,128,0.12)",
+                    padding:"3px 10px", borderRadius:20 }}>✓ Unlocked</span>
+                : <span style={{ color:"#fbbf24", fontSize:12, fontWeight:800 }}>99p</span>}
+            </div>
+            <p style={descStyle}>Official Premier League club badges on your building blocks.</p>
+
+            {/* Team grid preview */}
+            <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+              {BLOCK_THEMES.map(t => {
+                const isSelected = isPremiumUser && selectedThemeId === t.id;
+                return (
+                  <button key={t.id} title={t.name}
+                    onClick={() => isPremiumUser ? onSelectPremium(t.id) : undefined}
+                    style={{ position:"relative", width:40, height:40, borderRadius:"50%",
+                      border: isSelected ? "2.5px solid white" : "1.5px solid rgba(255,255,255,0.15)",
+                      overflow:"hidden", cursor: isPremiumUser ? "pointer" : "default",
+                      background:"#111", padding:0, flexShrink:0,
+                      boxShadow: isSelected ? "0 0 0 2px rgba(255,255,255,0.3)" : "none",
+                      transform: isSelected ? "scale(1.12)" : "scale(1)", transition:"all 0.15s" }}>
+                    {isPremiumUser
+                      ? <img src={t.premiumLogo} alt={t.name}
+                          style={{ width:30, height:30, objectFit:"contain",
+                            position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)" }}
+                          onError={e=>{ (e.target as HTMLImageElement).style.display="none"; }} />
+                      : <>
+                          <div style={{ position:"absolute", inset:0,
+                            background:`linear-gradient(135deg,${t.logo.split("|")[1]??t.hex} 50%,${t.logo.split("|")[2]??"#fff"} 50%)`,
+                            filter:"blur(1px) brightness(0.45)" }} />
+                          <span style={{ position:"relative", fontSize:14 }}>🔒</span>
+                        </>}
+                  </button>
+                );
+              })}
+            </div>
+            {!isPremiumUser && <button style={buyBtnStyle} onClick={onBuyPremier}>Buy Premier Pack — 99p</button>}
+          </div>
+
+          {/* Custom Team */}
+          <div style={cardStyle}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <span style={labelStyle}>🏷️ Your Team</span>
+              {hasCustomTeam
+                ? <span style={{ color:"#4ade80", fontSize:12, fontWeight:700, background:"rgba(74,222,128,0.12)",
+                    padding:"3px 10px", borderRadius:20 }}>✓ Unlocked</span>
+                : <span style={{ color:"#fbbf24", fontSize:12, fontWeight:800 }}>99p</span>}
+            </div>
+            <p style={descStyle}>Type your own team name onto every block you place — your colours, your badge.</p>
+
+            {hasCustomTeam ? (
+              <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                {/* Name input */}
+                <div>
+                  <label style={{ color:"rgba(255,255,255,0.55)", fontSize:11, fontWeight:700,
+                    display:"block", marginBottom:4, textTransform:"uppercase", letterSpacing:0.5 }}>
+                    Team Name (max 10 chars)
+                  </label>
+                  <input value={customTeam.name} maxLength={10}
+                    onChange={e => onCustomTeamChange({ ...customTeam, name:e.target.value })}
+                    style={{ width:"100%", boxSizing:"border-box", background:"rgba(255,255,255,0.07)",
+                      border:"1px solid rgba(255,255,255,0.15)", borderRadius:8, padding:"8px 10px",
+                      color:"white", fontSize:14, fontWeight:700, outline:"none" }} />
+                </div>
+                {/* Colour pickers */}
+                <div style={{ display:"flex", gap:10 }}>
+                  {(["colorA","colorB"] as const).map((field, i) => (
+                    <div key={field} style={{ flex:1 }}>
+                      <label style={{ color:"rgba(255,255,255,0.55)", fontSize:11, fontWeight:700,
+                        display:"block", marginBottom:4, textTransform:"uppercase", letterSpacing:0.5 }}>
+                        {i===0 ? "Primary" : "Secondary"}
+                      </label>
+                      <input type="color" value={customTeam[field]}
+                        onChange={e => onCustomTeamChange({ ...customTeam, [field]:e.target.value })}
+                        style={{ width:"100%", height:36, borderRadius:8, border:"1px solid rgba(255,255,255,0.15)",
+                          cursor:"pointer", background:"rgba(0,0,0,0)", padding:2 }} />
+                    </div>
+                  ))}
+                </div>
+                {/* Preview + select */}
+                <button onClick={onSelectCustom} style={{
+                  ...buyBtnStyle, background: selectedThemeId==="custom"
+                    ? "linear-gradient(135deg,#4ade80,#22d3ee)" : "rgba(255,255,255,0.1)",
+                  color:"white", border: selectedThemeId==="custom" ? "none" : "1px solid rgba(255,255,255,0.2)",
+                }}>
+                  {selectedThemeId==="custom" ? "✓ Selected as active" : "Use my team's block"}
+                </button>
+              </div>
+            ) : (
+              <button style={buyBtnStyle} onClick={onBuyCustom}>Buy Your Team — 99p</button>
+            )}
+          </div>
+
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ── Root component ────────────────────────────────────────────────────────────
 export default function App() {
-  const [activeMode,   setActiveMode]   = useState<ModeKey>("small");
-  const [allBlocks,    setAllBlocks]    = useState<Record<ModeKey,Block[]>>({ atom:[],micro:[],nano:[],small:[],large:[],mega:[] });
-  const [allHistory,   setAllHistory]   = useState<Record<ModeKey,Block[][]>>({ atom:[[]],micro:[[]],nano:[[]],small:[[]],large:[[]],mega:[[]] });
-  const [selectedColor,setSelectedColor]= useState(TEAMS[0].hex);
-  const [eraseMode,    setEraseMode]    = useState(false);
-  const [chaosMode,    setChaosMode]    = useState(false);
-  const [chaosPhysics, setChaosPhysics] = useState<Map<string,PhysicsState>>(new Map());
-  const [sharing,      setSharing]      = useState(false);
+  const [activeMode,    setActiveMode]    = useState<ModeKey>("small");
+  const [allBlocks,     setAllBlocks]     = useState<Record<ModeKey,Block[]>>({ atom:[],micro:[],nano:[],small:[],large:[],mega:[] });
+  const [allHistory,    setAllHistory]    = useState<Record<ModeKey,Block[][]>>({ atom:[[]],micro:[[]],nano:[[]],small:[[]],large:[[]],mega:[[]] });
+  const [selectedThemeId, setSelectedThemeId] = useState<string>(BLOCK_THEMES[0].id);
+  const [eraseMode,     setEraseMode]     = useState(false);
+  const [chaosMode,     setChaosMode]     = useState(false);
+  const [chaosPhysics,  setChaosPhysics]  = useState<Map<string,PhysicsState>>(new Map());
+  const [sharing,       setSharing]       = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const [hasCustomTeam, setHasCustomTeam] = useState(false);
+  const [shopOpen,      setShopOpen]      = useState(false);
+  const [showLock,      setShowLock]      = useState(false);
+  const [customTeam,    setCustomTeam]    = useState({ name:"My Team", colorA:"#FF0000", colorB:"#FFFFFF" });
   const glRef = useRef<THREE.WebGLRenderer | null>(null);
 
   const mode   = MODES.find(m => m.key === activeMode)!;
   const blocks = allBlocks[activeMode];
-  const selectedTeam = TEAMS.find(t => t.hex === selectedColor) ?? TEAMS[0];
+
+  // Derived theme values
+  const selectedTheme = BLOCK_THEMES.find(t => t.id === selectedThemeId) ?? BLOCK_THEMES[0];
+  const activeColor = selectedThemeId === "custom" ? customTeam.colorA : selectedTheme.hex;
+  const activeLogo  = selectedThemeId === "custom"
+    ? `custom|${customTeam.colorA}|${customTeam.colorB}|${encodeURIComponent(customTeam.name)}`
+    : (isPremiumUser ? selectedTheme.premiumLogo : selectedTheme.logo);
+
+  // Keep refs so addBlock closure always has latest values without stale captures
+  const activeColorRef = useRef(activeColor);
+  const activeLogoRef  = useRef(activeLogo);
+  activeColorRef.current = activeColor;
+  activeLogoRef.current  = activeLogo;
 
   const switchMode = (key: ModeKey) => { setActiveMode(key); setEraseMode(false); setChaosMode(false); };
 
@@ -1030,11 +1285,11 @@ export default function App() {
       const cur = prev[activeMode];
       if (cur.some(b=>b.x===x&&b.y===y&&b.z===z)) return prev;
       haptic();
-      const next = [...cur, { id:uid(), x, y, z, color:selectedColor, logo:selectedTeam.logo }];
+      const next = [...cur, { id:uid(), x, y, z, color:activeColorRef.current, logo:activeLogoRef.current }];
       setAllHistory(h=>({ ...h, [activeMode]:[...h[activeMode].slice(-49),next] }));
       return { ...prev, [activeMode]:next };
     });
-  }, [activeMode, selectedColor, selectedTeam.logo]);
+  }, [activeMode]);
 
   const eraseBlock = useCallback((id:string) => {
     setAllBlocks(prev => {
@@ -1107,7 +1362,7 @@ export default function App() {
           maxPolarAngle={Math.PI/2 - 0.03}
           touches={{ ONE:THREE.TOUCH.ROTATE, TWO:THREE.TOUCH.DOLLY_ROTATE }} />
         <Scene
-          blocks={blocks} selectedColor={selectedColor}
+          blocks={blocks} selectedColor={activeColor}
           eraseMode={eraseMode} size={mode.size} gap={mode.gap}
           gridCell={mode.gridCell} gridSection={mode.gridSection} gridFade={mode.gridFade}
           chaosMode={chaosMode} chaosPhysics={chaosPhysics}
@@ -1141,10 +1396,20 @@ export default function App() {
             <span style={{ marginLeft:7, color:"rgba(255,255,255,0.3)", fontSize:10 }}>{mode.desc} · {mode.size}u</span>
           </div>
           <div style={{ display:"flex", gap:5 }}>
-            <Btn onClick={undo}        bg="rgba(255,255,255,0.07)" title="Undo">↩</Btn>
-            <Btn onClick={clear}       bg="rgba(239,68,68,0.22)"   title="Clear">🗑</Btn>
-            <Btn onClick={handleShare} bg={sharing?"rgba(34,197,94,0.5)":"rgba(255,255,255,0.07)"} title="Share screenshot">{sharing?"⏳":"📷"}</Btn>
-            <Btn onClick={toggleChaos} bg={chaosMode?"rgba(239,68,68,0.75)":"rgba(255,255,255,0.07)"} title="Chaos physics!">💥</Btn>
+            <Btn onClick={undo}           bg="rgba(255,255,255,0.07)" title="Undo">↩</Btn>
+            <Btn onClick={clear}          bg="rgba(239,68,68,0.22)"   title="Clear">🗑</Btn>
+            <Btn onClick={handleShare}    bg={sharing?"rgba(34,197,94,0.5)":"rgba(255,255,255,0.07)"} title="Share screenshot">{sharing?"⏳":"📷"}</Btn>
+            <Btn onClick={toggleChaos}    bg={chaosMode?"rgba(239,68,68,0.75)":"rgba(255,255,255,0.07)"} title="Chaos physics!">💥</Btn>
+            <button onClick={()=>setShopOpen(true)} title="Theme Shop"
+              style={{ background:"rgba(255,255,255,0.07)", color:"white",
+                border:"1.5px solid rgba(255,255,255,0.12)", borderRadius:14,
+                padding:"8px 12px", fontSize:16, cursor:"pointer",
+                backdropFilter:"blur(8px)", transition:"all 0.15s",
+                boxShadow: isPremiumUser ? "0 0 10px rgba(251,191,36,0.4)" : "none" }}>
+              🛒{!isPremiumUser && <span style={{ position:"absolute", top:-2, right:-2, background:"#ef4444",
+                borderRadius:"50%", width:8, height:8, display:"inline-block", verticalAlign:"top",
+                marginLeft:-8, marginTop:-4 }} />}
+            </button>
           </div>
         </div>
       </div>
@@ -1196,36 +1461,69 @@ export default function App() {
           </div>
         )}
 
-        {/* Team palette */}
+        {/* Free block palette */}
         {!eraseMode && !chaosMode && (
-          <div style={{ display:"flex", gap:5, justifyContent:"center", flexWrap:"wrap", maxWidth:440, margin:"0 auto" }}>
-            {TEAMS.map(({ hex, name, logo }) => {
-              const active = selectedColor===hex;
-              const isDark = hex==="#1C1C1B";
+          <div style={{ display:"flex", gap:5, justifyContent:"center", flexWrap:"wrap",
+            maxWidth:460, margin:"0 auto", overflowX:"auto" }}>
+            {BLOCK_THEMES.map(t => {
+              const active = selectedThemeId === t.id;
+              const isDark = t.hex === "#1C1C1B" || t.hex === "#888888";
+              const colorB = t.logo.split("|")[2] ?? "#FFFFFF";
               return (
-                <button key={hex} onClick={()=>setSelectedColor(hex)} title={name}
+                <button key={t.id} onClick={()=>setSelectedThemeId(t.id)} title={t.name}
                   style={{ display:"flex", flexDirection:"column", alignItems:"center",
                     gap:3, background:"none", border:"none", cursor:"pointer", padding:0, flexShrink:0, width:42 }}>
                   <div style={{
-                    width:40, height:40, borderRadius:"50%", background:hex,
+                    width:40, height:40, borderRadius:"50%", overflow:"hidden",
+                    background:`linear-gradient(135deg,${t.hex} 50%,${colorB} 50%)`,
                     border: active ? "2.5px solid white" : isDark ? "1.5px solid rgba(255,255,255,0.35)" : "1.5px solid rgba(255,255,255,0.15)",
-                    boxShadow: active ? `0 0 0 2.5px ${hex}88, 0 0 18px ${hex}bb` : "none",
+                    boxShadow: active ? `0 0 0 2.5px ${t.hex}88, 0 0 18px ${t.hex}bb` : "none",
                     transform: active ? "scale(1.22)" : "scale(1)",
                     transition:"all 0.15s",
-                    display:"flex", alignItems:"center", justifyContent:"center",
+                    display:"flex", alignItems:"center", justifyContent:"center", position:"relative",
                   }}>
-                    <img src={logo} alt={name}
-                      onError={(e)=>{ (e.target as HTMLImageElement).style.display="none"; }}
-                      style={{ width:30, height:30, objectFit:"contain", filter:"drop-shadow(0 1px 3px rgba(0,0,0,0.7))" }} />
+                    {isPremiumUser
+                      ? <img src={t.premiumLogo} alt={t.name}
+                          onError={e=>{(e.target as HTMLImageElement).style.display="none";}}
+                          style={{ width:30, height:30, objectFit:"contain",
+                            filter:"drop-shadow(0 1px 3px rgba(0,0,0,0.7))", position:"relative", zIndex:1 }} />
+                      : <span style={{ fontSize:14, position:"relative", zIndex:1 }}>
+                          {t.logo.split("|")[3] ?? "⚽"}
+                        </span>}
                   </div>
                   <span style={{ fontSize:8.5, color:active?"white":"rgba(255,255,255,0.45)",
                     fontWeight:700, width:42, textAlign:"center", lineHeight:1.25,
                     overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}>
-                    {name}
+                    {t.name}
                   </span>
                 </button>
               );
             })}
+            {/* Custom team slot */}
+            {hasCustomTeam && (
+              <button onClick={()=>setSelectedThemeId("custom")} title="My Team"
+                style={{ display:"flex", flexDirection:"column", alignItems:"center",
+                  gap:3, background:"none", border:"none", cursor:"pointer", padding:0, flexShrink:0, width:42 }}>
+                <div style={{
+                  width:40, height:40, borderRadius:"50%", overflow:"hidden",
+                  background:`linear-gradient(135deg,${customTeam.colorA} 50%,${customTeam.colorB} 50%)`,
+                  border: selectedThemeId==="custom" ? "2.5px solid white" : "1.5px solid rgba(255,255,255,0.35)",
+                  boxShadow: selectedThemeId==="custom" ? `0 0 0 2.5px ${customTeam.colorA}88, 0 0 18px ${customTeam.colorA}bb` : "none",
+                  transform: selectedThemeId==="custom" ? "scale(1.22)" : "scale(1)",
+                  transition:"all 0.15s", display:"flex", alignItems:"center", justifyContent:"center",
+                }}>
+                  <span style={{ fontSize:9, fontWeight:900, color:"rgba(255,255,255,0.9)",
+                    textShadow:"0 1px 3px rgba(0,0,0,0.8)", lineHeight:1, textAlign:"center", padding:2 }}>
+                    {customTeam.name.substring(0,4)}
+                  </span>
+                </div>
+                <span style={{ fontSize:8.5, color:selectedThemeId==="custom"?"white":"rgba(255,255,255,0.45)",
+                  fontWeight:700, width:42, textAlign:"center", lineHeight:1.25,
+                  overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}>
+                  My Team
+                </span>
+              </button>
+            )}
           </div>
         )}
         {eraseMode && (
@@ -1234,6 +1532,29 @@ export default function App() {
           </p>
         )}
       </div>
+
+      {/* ── Theme Shop Drawer ── */}
+      <ShopDrawer
+        open={shopOpen}
+        onClose={()=>setShopOpen(false)}
+        isPremiumUser={isPremiumUser}
+        hasCustomTeam={hasCustomTeam}
+        selectedThemeId={selectedThemeId}
+        onSelectPremium={id=>{ setSelectedThemeId(id); setShopOpen(false); }}
+        onBuyPremier={()=>{ setIsPremiumUser(true); }}
+        customTeam={customTeam}
+        onCustomTeamChange={t=>{ _customTexCache.clear(); setCustomTeam(t); }}
+        onBuyCustom={()=>{ setHasCustomTeam(true); }}
+        onSelectCustom={()=>{ setSelectedThemeId("custom"); setShopOpen(false); }}
+      />
+
+      {/* ── Premium lock popup ── */}
+      {showLock && (
+        <PremiumLockPopup
+          onClose={()=>setShowLock(false)}
+          onBuy={()=>{ setIsPremiumUser(true); setShowLock(false); }}
+        />
+      )}
 
       <style>{`
         @keyframes pulse { from{opacity:0.6} to{opacity:1} }
