@@ -50,7 +50,7 @@ function Home() {
       {showPaywall && (
         <PaywallModal
           onClose={() => setShowPaywall(false)}
-          onPurchase={(plan) => { purchasePlan(plan); setShowPaywall(false); }}
+          onUnlock={() => { purchasePlan("yearly"); setShowPaywall(false); }}
         />
       )}
 
