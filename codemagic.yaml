@@ -1,30 +1,20 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # Byte 2 Eat — Codemagic CI/CD for iOS App Store
-# ─────────────────────────────────────────────────────────────────────────────
 #
-# SETUP CHECKLIST (do these once in the Codemagic dashboard before building):
+# SETUP CHECKLIST (do once in the Codemagic dashboard):
 #
 # 1. App Store Connect API Key
 #    Dashboard → Teams → Integrations → App Store Connect
 #    Generate a key at appstoreconnect.apple.com → Users & Access → Keys
-#    Name it "byte2eat_asc" and paste the Key ID, Issuer ID, and .p8 file.
+#    Name it "byte2eat_asc" (Key ID, Issuer ID, .p8 file).
 #
-# 2. Code signing (automatic — Codemagic handles it for you)
+# 2. Code signing
 #    Dashboard → your app → Environment → iOS code signing
-#    Choose "App Store" distribution. Codemagic fetches provisioning
-#    profiles from Apple automatically using your API key.
+#    Choose "App Store" distribution. Codemagic fetches profiles automatically.
 #
-# 3. Environment variable group named "byte2eat_env"
+# 3. Environment variable group "byte2eat_env"
 #    Dashboard → Teams → Global variables & secrets → Add group
-#    Add these variables (mark as secret where indicated):
-#      VITE_SUPABASE_URL             your Supabase project URL
-#      VITE_SUPABASE_PUBLISHABLE_KEY your Supabase anon/public key  [secret]
-#
-# 4. Push the ios/ folder to GitHub
-#    Run locally (or in Replit shell):
-#      pnpm --filter @workspace/culinary-scan-assist run build:capacitor
-#      cd artifacts/culinary-scan-assist && npx cap sync ios
-#    Commit and push everything including the ios/ directory.
+#    Add: VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (mark as secret).
 #
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -36,22 +26,21 @@ workflows:
     instance_type: mac_mini_m2
 
     integrations:
-      app_store_connect: byte2eat_asc   # matches the name you gave the key in step 1
+      app_store_connect: byte2eat_asc
 
     environment:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.bitecooking.app
       groups:
-        - byte2eat_env                  # contains VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY
+        - byte2eat_env
       vars:
         XCODE_WORKSPACE: "artifacts/culinary-scan-assist/ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
         BUNDLE_ID: "com.bitecooking.app"
         APP_VERSION: "1.0.0"
-        BUILD_NUMBER: $PROJECT_BUILD_NUMBER   # auto-incremented by Codemagic
       node: "22"
-      xcode: latest                     # use whatever Xcode version is current stable
+      xcode: latest
       cocoapods: default
 
     scripts:
@@ -82,7 +71,7 @@ workflows:
         script: |
           cd artifacts/culinary-scan-assist/ios/App
           agvtool new-marketing-version $APP_VERSION
-          agvtool new-version -all $BUILD_NUMBER
+          agvtool new-version -all $PROJECT_BUILD_NUMBER
 
       - name: Apply code signing profiles
         script: |
@@ -103,15 +92,9 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-
-        # Sends the build to TestFlight first so you can test before going live.
-        # Once you're happy, flip submit_to_app_store to true.
         submit_to_testflight: true
-        submit_to_app_store: false      # change to true when ready to submit for review
-
-        # Automatically cancels any previous TestFlight submission in progress.
+        submit_to_app_store: false
         cancel_previous_submissions: true
-
       email:
         recipients:
           - support@byte2eat.app
