@@ -49,7 +49,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 mb-3">
             <Sparkles className="h-7 w-7" />
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">Unlock Bite Premium</h2>
+          <h2 className="text-xl font-extrabold tracking-tight">Unlock Byte 2 Eat Premium</h2>
           <p className="mt-1 text-sm opacity-90">
             You've used your free trial scan. Unlock unlimited access.
           </p>

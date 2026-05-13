@@ -76,7 +76,7 @@ function AuthPage() {
       <section className="px-6">
         <div className="flex items-center gap-2 text-primary">
           <Sparkles className="h-5 w-5" />
-          <span className="text-2xl font-extrabold tracking-tight text-foreground">Bite</span>
+          <span className="text-2xl font-extrabold tracking-tight text-foreground">Byte 2 Eat</span>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           {mode === "signin"

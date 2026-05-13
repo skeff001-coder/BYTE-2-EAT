@@ -42,7 +42,7 @@ function HealthScore({ score, tip }: { score: number; tip: string | null }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-bold text-foreground">Bite Health Score</h3>
+          <h3 className="text-sm font-bold text-foreground">Byte 2 Eat Health Score</h3>
         </div>
         <p className="mt-0.5 text-xs font-medium text-muted-foreground">{label}</p>
         {tip && <p className="mt-2 text-sm text-foreground">{tip}</p>}

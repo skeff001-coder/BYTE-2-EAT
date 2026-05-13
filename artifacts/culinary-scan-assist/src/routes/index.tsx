@@ -58,7 +58,7 @@ function Home() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-primary">
             <Sparkles className="h-5 w-5" />
-            <span className="text-2xl font-extrabold tracking-tight text-foreground">Bite</span>
+            <span className="text-2xl font-extrabold tracking-tight text-foreground">Byte 2 Eat</span>
           </div>
           <div className="flex items-center gap-2">
             <Link
@@ -87,7 +87,7 @@ function Home() {
           </div>
         </div>
 
-        <h1 className="mt-3 text-3xl font-bold leading-tight text-foreground">Welcome to Bite</h1>
+        <h1 className="mt-3 text-3xl font-bold leading-tight text-foreground">Welcome to Byte 2 Eat</h1>
         <p className="mt-1 text-sm text-muted-foreground">You Are What You Eat</p>
 
         {monthly > 0 && (
