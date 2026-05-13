@@ -1,0 +1,120 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Byte 2 Eat — Codemagic CI/CD for iOS App Store
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# SETUP CHECKLIST (do these once in the Codemagic dashboard before building):
+#
+# 1. App Store Connect API Key
+#    Dashboard → Teams → Integrations → App Store Connect
+#    Generate a key at appstoreconnect.apple.com → Users & Access → Keys
+#    Name it "byte2eat_asc" and paste the Key ID, Issuer ID, and .p8 file.
+#
+# 2. Code signing (automatic — Codemagic handles it for you)
+#    Dashboard → your app → Environment → iOS code signing
+#    Choose "App Store" distribution. Codemagic fetches provisioning
+#    profiles from Apple automatically using your API key.
+#
+# 3. Environment variable group named "byte2eat_env"
+#    Dashboard → Teams → Global variables & secrets → Add group
+#    Add these variables (mark as secret where indicated):
+#      VITE_SUPABASE_URL             your Supabase project URL
+#      VITE_SUPABASE_PUBLISHABLE_KEY your Supabase anon/public key  [secret]
+#
+# 4. Push the ios/ folder to GitHub
+#    Run locally (or in Replit shell):
+#      pnpm --filter @workspace/culinary-scan-assist run build:capacitor
+#      cd artifacts/culinary-scan-assist && npx cap sync ios
+#    Commit and push everything including the ios/ directory.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+workflows:
+
+  byte2eat-ios-release:
+    name: Byte 2 Eat — iOS App Store Release
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    integrations:
+      app_store_connect: byte2eat_asc   # matches the name you gave the key in step 1
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.bitecooking.app
+      groups:
+        - byte2eat_env                  # contains VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY
+      vars:
+        XCODE_WORKSPACE: "artifacts/culinary-scan-assist/ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+        BUNDLE_ID: "com.bitecooking.app"
+        APP_VERSION: "1.0.0"
+        BUILD_NUMBER: $PROJECT_BUILD_NUMBER   # auto-incremented by Codemagic
+      node: "22"
+      xcode: latest                     # use whatever Xcode version is current stable
+      cocoapods: default
+
+    scripts:
+
+      - name: Install pnpm
+        script: |
+          npm install -g pnpm@10
+
+      - name: Install workspace dependencies
+        script: |
+          pnpm install --frozen-lockfile
+
+      - name: Build Vite web bundle for Capacitor
+        script: |
+          pnpm --filter @workspace/culinary-scan-assist run build:capacitor
+
+      - name: Sync Capacitor iOS project
+        script: |
+          cd artifacts/culinary-scan-assist
+          npx cap sync ios
+
+      - name: Install CocoaPods dependencies
+        script: |
+          cd artifacts/culinary-scan-assist/ios/App
+          pod install
+
+      - name: Set app version and build number
+        script: |
+          cd artifacts/culinary-scan-assist/ios/App
+          agvtool new-marketing-version $APP_VERSION
+          agvtool new-version -all $BUILD_NUMBER
+
+      - name: Apply code signing profiles
+        script: |
+          xcode-project use-profiles
+
+      - name: Build iOS IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME" \
+            --config "Release"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      app_store_connect:
+        auth: integration
+
+        # Sends the build to TestFlight first so you can test before going live.
+        # Once you're happy, flip submit_to_app_store to true.
+        submit_to_testflight: true
+        submit_to_app_store: false      # change to true when ready to submit for review
+
+        # Automatically cancels any previous TestFlight submission in progress.
+        cancel_previous_submissions: true
+
+      email:
+        recipients:
+          - support@byte2eat.app
+        notify:
+          success: true
+          failure: true
