@@ -37,15 +37,15 @@ function Home() {
             <p
               style={{
                 fontFamily: "'Righteous', cursive",
-                fontSize: "0.78rem",
+                fontSize: "0.95rem",
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                background: "linear-gradient(90deg, #4ade80 0%, #22d3ee 100%)",
+                background: "linear-gradient(90deg, #15803d 0%, #0f766e 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                filter: "drop-shadow(0 0 8px rgba(74,222,128,0.35))",
-                margin: 0,
+                filter: "drop-shadow(0 0 6px rgba(21,128,61,0.3))",
+                margin: "15px 0 0 0",
                 lineHeight: 1.4,
               }}
             >
