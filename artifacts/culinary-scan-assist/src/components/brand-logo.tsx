@@ -2,6 +2,7 @@ const SIZE = {
   sm: { fontSize: "1.25rem", letterSpacing: "0.03em" },
   md: { fontSize: "1.6rem",  letterSpacing: "0.03em" },
   lg: { fontSize: "2rem",    letterSpacing: "0.03em" },
+  xl: { fontSize: "3.2rem",  letterSpacing: "0.02em" },
 } as const;
 
 interface Props {

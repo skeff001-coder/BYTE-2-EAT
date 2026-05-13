@@ -57,8 +57,9 @@ function Home() {
 
       <header className="px-6 pt-10 pb-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <BrandLogo size="md" />
+          <div className="flex flex-col leading-none" style={{ width: "33.333%" }}>
+            <BrandLogo size="xl" />
+            <BrandLogo size="xl" />
           </div>
           <div className="flex items-center gap-2">
             <Link
