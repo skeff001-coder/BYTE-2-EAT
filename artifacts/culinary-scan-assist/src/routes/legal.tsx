@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Shield, FileText } from "lucide-react";
 import { useState } from "react";
 
@@ -12,17 +12,18 @@ export const Route = createFileRoute("/legal")({
 function LegalPage() {
   const { tab: initialTab } = Route.useSearch();
   const [tab, setTab] = useState<"privacy" | "terms">(initialTab);
+  const router = useRouter();
 
   return (
     <main className="min-h-screen bg-background pb-16">
       <header className="flex items-center gap-3 px-5 pt-6 pb-4">
-        <Link
-          to="/settings"
+        <button
+          onClick={() => router.history.back()}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground"
           aria-label="Back"
         >
           <ArrowLeft className="h-5 w-5" />
-        </Link>
+        </button>
         <h1 className="text-lg font-bold text-foreground">Legal</h1>
       </header>
 

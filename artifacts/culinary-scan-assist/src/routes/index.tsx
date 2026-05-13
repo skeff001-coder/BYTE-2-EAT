@@ -215,6 +215,22 @@ function Home() {
           ))}
         </ul>
       </section>
+
+      {/* Footer */}
+      <footer className="mt-10 px-5 pb-6 flex flex-col items-center gap-2">
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <Link to="/legal" search={{ tab: "privacy" }} className="hover:text-foreground transition-colors">
+            Privacy Policy
+          </Link>
+          <span className="opacity-30">·</span>
+          <Link to="/legal" search={{ tab: "terms" }} className="hover:text-foreground transition-colors">
+            Medical Disclaimer &amp; Terms
+          </Link>
+        </div>
+        <p className="text-[10px] text-muted-foreground opacity-50 text-center leading-relaxed max-w-xs">
+          For informational purposes only. Not medical advice. Always consult a healthcare professional.
+        </p>
+      </footer>
     </main>
   );
 }
