@@ -9,6 +9,7 @@ import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
 import { GoalModeSelector } from "@/components/goal-mode-selector";
+import { BrandLogo } from "@/components/brand-logo";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -56,9 +57,8 @@ function Home() {
 
       <header className="px-6 pt-10 pb-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-primary">
-            <Sparkles className="h-5 w-5" />
-            <span className="text-2xl font-extrabold tracking-tight text-foreground">Byte 2 Eat</span>
+          <div className="flex items-center gap-2">
+            <BrandLogo size="md" />
           </div>
           <div className="flex items-center gap-2">
             <Link
@@ -87,7 +87,10 @@ function Home() {
           </div>
         </div>
 
-        <h1 className="mt-3 text-3xl font-bold leading-tight text-foreground">Welcome to Byte 2 Eat</h1>
+        <h1 className="mt-3 leading-tight text-foreground">
+          <span className="block text-xl font-semibold text-muted-foreground">Welcome to</span>
+          <BrandLogo size="lg" />
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">You Are What You Eat</p>
 
         {monthly > 0 && (

@@ -1,6 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Camera, Heart, Loader2, Plus, RefreshCw, Sparkles, Clock, X, AlertTriangle, ShoppingCart, CalendarDays, UtensilsCrossed } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { analyzeFridge } from "@/lib/analyze-fridge";
 import type { AnalysisResult } from "@/lib/analyze-fridge";
 import { useFavorites } from "@/lib/favorites";
@@ -42,7 +43,9 @@ function HealthScore({ score, tip }: { score: number; tip: string | null }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-bold text-foreground">Byte 2 Eat Health Score</h3>
+          <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+            <BrandLogo size="sm" /> Health Score
+          </h3>
         </div>
         <p className="mt-0.5 text-xs font-medium text-muted-foreground">{label}</p>
         {tip && <p className="mt-2 text-sm text-foreground">{tip}</p>}

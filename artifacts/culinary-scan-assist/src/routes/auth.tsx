@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 
@@ -74,9 +75,8 @@ function AuthPage() {
       </header>
 
       <section className="px-6">
-        <div className="flex items-center gap-2 text-primary">
-          <Sparkles className="h-5 w-5" />
-          <span className="text-2xl font-extrabold tracking-tight text-foreground">Byte 2 Eat</span>
+        <div className="flex items-center gap-2">
+          <BrandLogo size="md" />
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           {mode === "signin"
