@@ -55,61 +55,60 @@ function Home() {
         />
       )}
 
-      <header className="px-6 pt-10 pb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-1" style={{ width: "50%" }}>
-            <BrandLogo size="2xl" variant="primary" shadow3d />
-            <p
-              style={{
-                fontFamily: "'Righteous', cursive",
-                fontSize: "0.95rem",
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                background: "linear-gradient(90deg, #15803d 0%, #0f766e 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                filter: "drop-shadow(0 0 6px rgba(21,128,61,0.3))",
-                margin: "15px 0 0 0",
-                lineHeight: 1.4,
-              }}
+      <header className="px-5 pt-8 pb-4">
+        {/* Icon row — sits above the logo so the logo gets full width */}
+        <div className="flex items-center justify-end gap-2 mb-4">
+          <Link
+            to="/settings"
+            aria-label="Settings"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-primary ring-1 ring-border"
+          >
+            <Settings className="h-4 w-4" />
+          </Link>
+          <Link
+            to="/favorites"
+            aria-label="Favourites"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-primary ring-1 ring-border"
+          >
+            <Heart className="h-4 w-4" />
+          </Link>
+          {user ? (
+            <button
+              onClick={() => signOut()}
+              className="rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border"
             >
-              Where AI Meets the Frying Pan
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
+              Sign out
+            </button>
+          ) : (
             <Link
-              to="/settings"
-              aria-label="Settings"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-primary ring-1 ring-border"
+              to="/auth"
+              className="rounded-full px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+              style={{ background: "var(--gradient-primary)" }}
             >
-              <Settings className="h-5 w-5" />
+              Sign in
             </Link>
-            <Link
-              to="/favorites"
-              aria-label="Favourites"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-primary ring-1 ring-border"
-            >
-              <Heart className="h-5 w-5" />
-            </Link>
-            {user ? (
-              <button
-                onClick={() => signOut()}
-                className="rounded-full bg-card px-3 py-2 text-xs font-semibold text-foreground ring-1 ring-border"
-              >
-                Sign out
-              </button>
-            ) : (
-              <Link
-                to="/auth"
-                className="rounded-full px-3 py-2 text-xs font-semibold text-primary-foreground"
-                style={{ background: "var(--gradient-primary)" }}
-              >
-                Sign in
-              </Link>
-            )}
-          </div>
+          )}
         </div>
+
+        {/* Logo — full width, never competes with buttons */}
+        <BrandLogo size="2xl" variant="primary" shadow3d />
+        <p
+          style={{
+            fontFamily: "'Righteous', cursive",
+            fontSize: "clamp(0.65rem, 2.4vw, 0.95rem)",
+            letterSpacing: "clamp(0.08em, 0.6vw, 0.22em)",
+            textTransform: "uppercase",
+            background: "linear-gradient(90deg, #15803d 0%, #0f766e 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            filter: "drop-shadow(0 0 6px rgba(21,128,61,0.3))",
+            margin: "10px 0 0 0",
+            lineHeight: 1.4,
+          }}
+        >
+          Where AI Meets the Frying Pan
+        </p>
 
         {monthly > 0 && (
           <div className="mt-4 flex items-center gap-3 rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-200">

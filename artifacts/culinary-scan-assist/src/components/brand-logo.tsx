@@ -1,9 +1,9 @@
 const SIZE = {
-  sm:  { fontSize: "1.25rem", letterSpacing: "0.03em" },
-  md:  { fontSize: "1.6rem",  letterSpacing: "0.03em" },
-  lg:  { fontSize: "2rem",    letterSpacing: "0.03em" },
-  xl:  { fontSize: "3.2rem",  letterSpacing: "0.02em" },
-  "2xl": { fontSize: "5.5rem",  letterSpacing: "0.01em" },
+  sm:  { fontSize: "1.25rem",                      letterSpacing: "0.03em" },
+  md:  { fontSize: "1.6rem",                       letterSpacing: "0.03em" },
+  lg:  { fontSize: "2rem",                         letterSpacing: "0.03em" },
+  xl:  { fontSize: "clamp(2rem, 7vw, 3.2rem)",     letterSpacing: "0.02em" },
+  "2xl": { fontSize: "clamp(2.6rem, 10vw, 5.5rem)", letterSpacing: "0.01em" },
 } as const;
 
 const VARIANT = {
