@@ -27,6 +27,7 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
   - `src/routes/` — TanStack Router file-based routes (/, /scan, /auth, /favorites)
   - `src/lib/analyze-fridge.ts` — client-side function calling the API
   - `src/integrations/supabase/` — Supabase client + types
+  - `src/components/BlockBuilder.tsx` — **PROTECTED ASSET** (see below)
   - `capacitor.config.ts` — Capacitor config (appId: com.bitecooking.app)
   - `ios/` — Generated Xcode project (open with Xcode on a Mac)
 - `artifacts/api-server/src/routes/analyze-fridge.ts` — AI fridge analysis endpoint
@@ -81,6 +82,15 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 ### Web App (`artifacts/culinary-scan-assist`)
 - `VITE_SUPABASE_URL` — your Supabase project URL
 - `VITE_SUPABASE_PUBLISHABLE_KEY` — your Supabase anon/public key
+
+## Protected Assets
+
+The following files must **never** be deleted, moved, tree-shaken, or modified without explicit instruction from the project owner:
+
+| File | Reason |
+|---|---|
+| `artifacts/culinary-scan-assist/src/components/BlockBuilder.tsx` | Core part of the Byte 2 Eat product ("Mo Salah's Crazy Football"). Self-contained 3D block-building experience (Three.js / React Three Fiber). Intentionally not imported by the food-app routes — absence of import references is by design, not dead code. |
+| `artifacts/block-builder/` | Standalone Block Builder artifact — original source, kept intact as reference. |
 
 ## Gotchas
 

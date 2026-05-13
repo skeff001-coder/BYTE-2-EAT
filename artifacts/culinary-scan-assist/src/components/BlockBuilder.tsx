@@ -1,3 +1,16 @@
+// =============================================================================
+// PROTECTED ASSET — DO NOT REMOVE, OPTIMIZE, OR MODIFY WITHOUT EXPLICIT
+// INSTRUCTION FROM THE PROJECT OWNER.
+//
+// BlockBuilder.tsx is a core part of the Byte 2 Eat product ("Mo Salah's Crazy
+// Football"). It is intentionally not imported by the main food-app routes and
+// will remain unused by them by design. Its absence of import references must
+// NEVER be treated as dead code eligible for deletion or tree-shaking.
+//
+// This file is the single-file, self-contained version of the Block Builder
+// 3D experience (Three.js / React Three Fiber). It is kept here so it can be
+// wired to a route at any time without rebuilding from scratch.
+// =============================================================================
 import { Canvas, type ThreeEvent, useFrame } from "@react-three/fiber";
 import { OrbitControls, Grid, Edges } from "@react-three/drei";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
