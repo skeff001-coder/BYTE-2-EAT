@@ -11,7 +11,7 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../../../node_modules/.pnpm/@capacitor+ios@7.6.4_@capacitor+core@7.6.4/node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../../../node_modules/.pnpm/@capacitor+ios@7.6.4_@capacitor+core@7.6.4/node_modules/@capacitor/ios'
-
+  pod 'CapacitorPluginCdvPurchase', :path => '../../../../node_modules/.pnpm/capacitor-plugin-cdv-purchase@13.15.4_@capacitor+core@7.6.4/node_modules/capacitor-plugin-cdv-purchase'
 end
 
 target 'App' do
