@@ -57,8 +57,8 @@ function Home() {
 
       <header className="px-6 pt-10 pb-4">
         <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-0.5" style={{ width: "33.333%" }}>
-            <BrandLogo size="xl" variant="primary" />
+          <div className="flex flex-col gap-1" style={{ width: "50%" }}>
+            <BrandLogo size="2xl" variant="primary" shadow3d />
             <p
               style={{
                 fontFamily: "'Righteous', cursive",

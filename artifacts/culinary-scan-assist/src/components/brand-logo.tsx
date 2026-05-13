@@ -1,8 +1,9 @@
 const SIZE = {
-  sm: { fontSize: "1.25rem", letterSpacing: "0.03em" },
-  md: { fontSize: "1.6rem",  letterSpacing: "0.03em" },
-  lg: { fontSize: "2rem",    letterSpacing: "0.03em" },
-  xl: { fontSize: "3.2rem",  letterSpacing: "0.02em" },
+  sm:  { fontSize: "1.25rem", letterSpacing: "0.03em" },
+  md:  { fontSize: "1.6rem",  letterSpacing: "0.03em" },
+  lg:  { fontSize: "2rem",    letterSpacing: "0.03em" },
+  xl:  { fontSize: "3.2rem",  letterSpacing: "0.02em" },
+  "2xl": { fontSize: "5.5rem",  letterSpacing: "0.01em" },
 } as const;
 
 const VARIANT = {
@@ -16,13 +17,21 @@ const VARIANT = {
   },
 } as const;
 
+const SHADOW_3D =
+  "drop-shadow(1px 2px 0px #064e3b)" +
+  " drop-shadow(2px 4px 0px #065f46)" +
+  " drop-shadow(3px 6px 0px #047857)" +
+  " drop-shadow(4px 8px 0px #059669)" +
+  " drop-shadow(5px 10px 14px rgba(0,60,35,0.45))";
+
 interface Props {
   size?: keyof typeof SIZE;
   variant?: keyof typeof VARIANT;
+  shadow3d?: boolean;
   className?: string;
 }
 
-export function BrandLogo({ size = "md", variant = "neon", className }: Props) {
+export function BrandLogo({ size = "md", variant = "neon", shadow3d = false, className }: Props) {
   const { gradient, glow } = VARIANT[variant];
   return (
     <span
@@ -36,7 +45,7 @@ export function BrandLogo({ size = "md", variant = "neon", className }: Props) {
         WebkitBackgroundClip: "text",
         WebkitTextFillColor: "transparent",
         backgroundClip: "text",
-        filter: glow,
+        filter: shadow3d ? SHADOW_3D : glow,
         display: "inline-block",
       }}
     >
