@@ -57,9 +57,25 @@ function Home() {
 
       <header className="px-6 pt-10 pb-4">
         <div className="flex items-center justify-between">
-          <div className="flex flex-col leading-none" style={{ width: "33.333%" }}>
-            <BrandLogo size="xl" />
-            <BrandLogo size="xl" />
+          <div className="flex flex-col gap-0.5" style={{ width: "33.333%" }}>
+            <BrandLogo size="xl" variant="primary" />
+            <p
+              style={{
+                fontFamily: "'Righteous', cursive",
+                fontSize: "0.78rem",
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                background: "linear-gradient(90deg, #4ade80 0%, #22d3ee 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                filter: "drop-shadow(0 0 8px rgba(74,222,128,0.35))",
+                margin: 0,
+                lineHeight: 1.4,
+              }}
+            >
+              You Are What You Eat
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Link
@@ -87,12 +103,6 @@ function Home() {
             )}
           </div>
         </div>
-
-        <h1 className="mt-3 leading-tight text-foreground">
-          <span className="block text-xl font-semibold text-muted-foreground">Welcome to</span>
-          <BrandLogo size="lg" />
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">You Are What You Eat</p>
 
         {monthly > 0 && (
           <div className="mt-4 flex items-center gap-3 rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-200">
