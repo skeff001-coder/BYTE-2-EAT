@@ -60,6 +60,28 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 - Project imported from GitHub: https://github.com/skeff001-coder/culinary-scan-assist
 - Original app name: Bite (culinary AI recipe app)
 
+## App Store Submission Checklist
+
+- Version: 1.0.0 (update in Xcode before submission — bundle ID: com.bitecooking.app)
+- Premium IAP: £4.99 one-time, product ID `com.owenskeffington.bite.premium` (NON_CONSUMABLE)
+- Trial: 1 free scan on first launch via `bite_scan_credits` in localStorage
+- Restore Purchases: present in paywall modal
+- Account Deletion: implemented in Settings → Delete Account (Apple requirement)
+- Privacy Policy & Terms: in-app at /settings → Legal
+- Health Disclaimer: shown below health score on scan results page
+- Legal contact: privacy@byte2eat.app / support@byte2eat.app
+
+## Environment Variables Required
+
+### API Server (`artifacts/api-server`)
+- `SUPABASE_URL` — your Supabase project URL (e.g. https://xxxx.supabase.co)
+- `SUPABASE_ANON_KEY` — your Supabase anon/public key (for verifying user JWTs on account deletion)
+- `SUPABASE_SERVICE_ROLE_KEY` — your Supabase service role key (required for account deletion endpoint `/api/delete-account`). Without this, account deletion falls back to a support email.
+
+### Web App (`artifacts/culinary-scan-assist`)
+- `VITE_SUPABASE_URL` — your Supabase project URL
+- `VITE_SUPABASE_PUBLISHABLE_KEY` — your Supabase anon/public key
+
 ## Gotchas
 
 - Always run `build:capacitor` then `cap sync ios` before opening in Xcode

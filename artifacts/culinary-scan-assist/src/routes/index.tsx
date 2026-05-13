@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, Clock, Flame, Heart, Search, PiggyBank } from "lucide-react";
+import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings } from "lucide-react";
 import { useState } from "react";
 import { trendingRecipes } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
@@ -78,6 +78,13 @@ function Home() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              to="/settings"
+              aria-label="Settings"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-primary ring-1 ring-border"
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
             <Link
               to="/favorites"
               aria-label="Favourites"

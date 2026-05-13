@@ -70,8 +70,14 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
           ))}
         </ul>
 
+        {/* Price */}
+        <div className="px-6 pt-5 text-center">
+          <p className="text-3xl font-extrabold text-foreground">£4.99</p>
+          <p className="text-xs text-muted-foreground mt-0.5">One-time purchase · Unlock forever · No subscription</p>
+        </div>
+
         {/* Buy button */}
-        <div className="px-6 pt-6 pb-2">
+        <div className="px-6 pt-4 pb-2">
           {isSuccess ? (
             <div className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-bold text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200">
               <ShieldCheck className="h-5 w-5" /> Premium unlocked — enjoy!
@@ -115,8 +121,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
             </button>
           )}
           <p className="text-center text-[10px] text-muted-foreground leading-relaxed mt-1">
-            Payment charged to your Apple ID account at confirmation.
-            Manage or cancel subscriptions in your Account Settings.
+            £4.99 charged to your Apple ID at confirmation of purchase. This is a one-time payment — no recurring subscription. Manage purchases in your Apple ID Account Settings.
           </p>
         </div>
 

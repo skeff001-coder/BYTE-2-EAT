@@ -312,7 +312,12 @@ function ScanPage() {
           )}
 
           {result.healthScore != null && (
-            <HealthScore score={result.healthScore} tip={result.healthTip ?? null} />
+            <>
+              <HealthScore score={result.healthScore} tip={result.healthTip ?? null} />
+              <p className="mt-2 px-1 text-[10px] text-muted-foreground leading-relaxed">
+                ⚠️ Health scores are for informational purposes only and do not constitute medical or dietary advice. Always consult a qualified healthcare professional before making changes to your diet.
+              </p>
+            </>
           )}
 
           <div className="mt-5 flex gap-1 rounded-2xl bg-card p-1 ring-1 ring-border">
