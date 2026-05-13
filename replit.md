@@ -1,4 +1,4 @@
-# Byte 2 Eat — AI Culinary Scan App
+# Bite — Culinary Scan Assist
 
 An AI-powered iOS app that scans your fridge with the camera and suggests personalized recipes using the ingredients it detects.
 
@@ -24,13 +24,12 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 ## Where things live
 
 - `artifacts/culinary-scan-assist/` — React/Vite SPA (the main app)
-  - `src/routes/` — TanStack Router file-based routes (/, /scan, /auth, /favorites, /settings, /legal)
+  - `src/routes/` — TanStack Router file-based routes (/, /scan, /auth, /favorites)
   - `src/lib/analyze-fridge.ts` — client-side function calling the API
   - `src/integrations/supabase/` — Supabase client + types
   - `capacitor.config.ts` — Capacitor config (appId: com.bitecooking.app)
   - `ios/` — Generated Xcode project (open with Xcode on a Mac)
 - `artifacts/api-server/src/routes/analyze-fridge.ts` — AI fridge analysis endpoint
-- `artifacts/api-server/src/routes/delete-account.ts` — DELETE /api/delete-account endpoint
 
 ## Architecture decisions
 
@@ -42,25 +41,24 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 
 ## Product
 
-- Home screen: trending recipes, search, quick "Scan My Fridge" button, Settings gear icon
+- Home screen: trending recipes, search, quick "Scan My Fridge" button
 - Scan screen: live camera or photo upload → AI ingredient detection → recipe suggestions with health score
 - Favorites: save/sync recipes (requires Supabase auth)
 - Auth: email/password sign-in & sign-up via Supabase
-- Settings: account management, sign out, delete account, legal links
-- Legal: Privacy Policy (UK GDPR) + Terms of Service at /legal
 
 ## iOS App Store Setup (requires a Mac with Xcode)
 
-1. Deploy the API server and confirm `VITE_API_BASE_URL` points to it
-2. Run `pnpm run build:capacitor` in `artifacts/culinary-scan-assist/`
-3. Run `npx cap sync ios`
-4. Run `npx cap open ios` to open the Xcode project
-5. In Xcode: set your Apple Developer Team, bundle ID (`com.bitecooking.app`), and build for device
+1. Set up Supabase and add `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY` to env
+2. Deploy the API server and update the `analyzeFridge` fetch URL in `src/lib/analyze-fridge.ts`
+3. Run `pnpm run build:capacitor` in `artifacts/culinary-scan-assist/`
+4. Run `npx cap sync ios`
+5. Run `npx cap open ios` to open the Xcode project
+6. In Xcode: set your Apple Developer Team, bundle ID (`com.bitecooking.app`), and build for device
 
 ## User preferences
 
 - Project imported from GitHub: https://github.com/skeff001-coder/culinary-scan-assist
-- Original app name: Bite (rebranded to Byte 2 Eat)
+- Original app name: Bite (culinary AI recipe app)
 
 ## App Store Submission Checklist
 
@@ -76,14 +74,13 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 ## Environment Variables Required
 
 ### API Server (`artifacts/api-server`)
-- `SUPABASE_URL` — Supabase project URL ✅ configured
-- `SUPABASE_ANON_KEY` — Supabase anon/public key ✅ configured
-- `SUPABASE_SERVICE_ROLE_KEY` — Supabase service role key (for account deletion) ✅ configured
+- `SUPABASE_URL` — your Supabase project URL (e.g. https://xxxx.supabase.co)
+- `SUPABASE_ANON_KEY` — your Supabase anon/public key (for verifying user JWTs on account deletion)
+- `SUPABASE_SERVICE_ROLE_KEY` — your Supabase service role key (required for account deletion endpoint `/api/delete-account`). Without this, account deletion falls back to a support email.
 
 ### Web App (`artifacts/culinary-scan-assist`)
-- `VITE_SUPABASE_URL` — Supabase project URL ✅ configured
-- `VITE_SUPABASE_PUBLISHABLE_KEY` — Supabase anon/public key ✅ configured
-- `VITE_API_BASE_URL` — deployed API server URL ✅ configured
+- `VITE_SUPABASE_URL` — your Supabase project URL
+- `VITE_SUPABASE_PUBLISHABLE_KEY` — your Supabase anon/public key
 
 ## Gotchas
 
