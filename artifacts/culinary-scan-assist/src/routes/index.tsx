@@ -1,11 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Clock, Flame, Heart, Search, PiggyBank } from "lucide-react";
+import { Camera, Clock, Flame, Heart, Search, PiggyBank } from "lucide-react";
 import { useState } from "react";
 import { trendingRecipes } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
+import { useScanCredits } from "@/lib/use-scan-credits";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
+import { PaywallModal } from "@/components/paywall-modal";
 import { GoalModeSelector } from "@/components/goal-mode-selector";
 import { BrandLogo } from "@/components/brand-logo";
 
@@ -15,9 +17,11 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const [query, setQuery] = useState("");
+  const [showPaywall, setShowPaywall] = useState(false);
   const navigate = useNavigate();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
+  const { credits, canScan, purchasePlan } = useScanCredits();
   const { goalMode, setGoalMode } = useGoalMode();
   const { monthly } = useSavingsTracker();
 
@@ -28,8 +32,29 @@ function Home() {
       )
     : trendingRecipes;
 
+  const handleScanPress = () => {
+    if (canScan) {
+      navigate({ to: "/scan" });
+    } else {
+      setShowPaywall(true);
+    }
+  };
+
+  const creditLabel =
+    credits === -1 ? "Unlimited scans" :
+    credits === 1  ? "1 free scan remaining" :
+    credits === 0  ? "No scans left" :
+                     `${credits} scans remaining`;
+
   return (
     <main className="min-h-screen bg-background pb-12">
+      {showPaywall && (
+        <PaywallModal
+          onClose={() => setShowPaywall(false)}
+          onUnlock={() => { purchasePlan("yearly"); setShowPaywall(false); }}
+        />
+      )}
+
       <header className="px-6 pt-10 pb-4">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1" style={{ width: "50%" }}>
@@ -110,7 +135,27 @@ function Home() {
         <GoalModeSelector selected={goalMode} onChange={setGoalMode} />
       </header>
 
-      <section className="mt-6 px-6">
+      <section className="px-6">
+        <button
+          onClick={handleScanPress}
+          className="group relative flex w-full items-center justify-between overflow-hidden rounded-3xl p-6 text-primary-foreground transition-transform active:scale-[0.98]"
+          style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-soft)" }}
+        >
+          <div className="text-left">
+            <div className="text-xs font-medium uppercase tracking-wider opacity-90">Tap to start</div>
+            <div className="mt-1 text-2xl font-bold">Scan My Fridge</div>
+            <div className="mt-1 text-sm opacity-90">AI finds recipes in seconds</div>
+            <div className={`mt-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${credits === 0 ? "bg-red-500/30" : "bg-white/20"}`}>
+              {creditLabel}
+            </div>
+          </div>
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+            <Camera className="h-8 w-8" />
+          </div>
+        </button>
+      </section>
+
+      <section className="mt-10 px-6">
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-bold text-foreground">
             <Flame className="h-5 w-5 text-primary" />
