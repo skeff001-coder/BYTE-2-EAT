@@ -1,5 +1,10 @@
 uploads = []
-generated = []
+
+[[generated]]
+id = "Bu_YYxvJfXI2yKejeXLus"
+uri = "file://attached_assets/generated_images/byte2eat-app-icon.png"
+type = "image"
+title = "byte2eat app icon fridge leaf"
 
 [[outputs]]
 id = "fySZ4H8nblvavBIAAIU9E"
