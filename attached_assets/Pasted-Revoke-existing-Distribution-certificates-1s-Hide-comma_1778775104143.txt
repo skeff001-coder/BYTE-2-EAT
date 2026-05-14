@@ -1,0 +1,62 @@
+Revoke existing Distribution certificates
+1s
+
+
+
+Hide command
+#!/usr/bin/env bash
+
+pip3 install cryptography --quiet
+python3 .codemagic/revoke_certs.py
+
+[notice] A new release of pip is available: 24.2 -> 26.1.1
+[notice] To update, run: pip install --upgrade pip
+Certificate cleanup failed: ('Could not deserialize key data. The data may be in an incorrect format, the provided password may be incorrect, it may be encrypted with an unsupported algorithm, or it may be an unsupported key type (e.g. EC curves with explicit parameters).', [<OpenSSLError(code=503841036, lib=60, reason=524556, reason_text=unsupported)>])
+Traceback (most recent call last):
+  File "/Users/builder/clone/.codemagic/revoke_certs.py", line 98, in <module>
+    main()
+  File "/Users/builder/clone/.codemagic/revoke_certs.py", line 63, in main
+    token   = generate_jwt()
+              ^^^^^^^^^^^^^^
+  File "/Users/builder/clone/.codemagic/revoke_certs.py", line 47, in generate_jwt
+    key = serialization.load_pem_private_key(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: ('Could not deserialize key data. The data may be in an incorrect format, the provided password may be incorrect, it may be encrypted with an unsupported algorithm, or it may be an unsupported key type (e.g. EC curves with explicit parameters).', [<OpenSSLError(code=503841036, lib=60, reason=524556, reason_text=unsupported)>])
+
+
+Build failed :|
+Step 6 script `Revoke existing Distribution certificates` exited with status code 1
+
+[notice] A new release of pip is available: 24.2 -> 26.1.1
+[notice] To update, run: pip install --upgrade pip
+Certificate cleanup failed: ('Could not deserialize key data. The data may be in an incorrect format, the provided password may be incorrect, it may be encrypted with an unsupported algorithm, or it may be an unsupported key type (e.g. EC curves with explicit parameters).', [<OpenSSLError(code=503841036, lib=60, reason=524556, reason_text=unsupported)>])
+Traceback (most recent call last):
+  File "/Users/builder/clone/.codemagic/revoke_certs.py", line 98, in <module>
+    main()
+  File "/Users/builder/clone/.codemagic/revoke_certs.py", line 63, in main
+    token   = generate_jwt()
+              ^^^^^^^^^^^^^^
+  File "/Users/builder/clone/.codemagic/revoke_certs.py", line 47, in generate_jwt
+    key = serialization.load_pem_private_key(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: ('Could not deserialize key data. The data may be in an incorrect format, the provided password may be incorrect, it may be encrypted with an unsupported algorithm, or it may be an unsupported key type (e.g. EC curves with explicit parameters).', [<OpenSSLError(code=503841036, lib=60, reason=524556, reason_text=unsupported)>])
+
+
+Build failed :|
+Step 6 script `Revoke existing Distribution certificates` exited with status code 1
+
+Set up keychain
+< 1s
+Fetch or create signing certificate and provisioning profile
+< 1s
+Add certificates to keychain
+< 1s
+Apply code signing profiles
+< 1s
+Build iOS IPA
+< 1s
+Publishing
+< 1s
+Cleaning up
+< 1s
+Step 6 script `Revoke existing Distribution certificates` exited with status code 1

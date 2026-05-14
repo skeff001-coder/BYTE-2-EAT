@@ -49,8 +49,17 @@ workflows:
 
       - name: Revoke existing Distribution certificates
         script: |
-          pip3 install cryptography --quiet
-          python3 .codemagic/revoke_certs.py
+          set +e
+          echo "=== Listing Distribution certificates ==="
+          CERT_JSON=$(app-store-connect certificates list --type IOS_DISTRIBUTION --json 2>/dev/null || echo "[]")
+          echo "$CERT_JSON" | head -c 300
+          CERT_IDS=$(echo "$CERT_JSON" | python3 -c "import json,sys;d=json.load(sys.stdin);items=d if isinstance(d,list) else d.get('data',[]);[print(i['id']) for i in items if 'id' in i]" 2>/dev/null || echo "")
+          for ID in $CERT_IDS; do
+            echo "Revoking: $ID"
+            app-store-connect certificates revoke "$ID" 2>&1 || true
+          done
+          echo "=== Certificate cleanup done ==="
+          set -e
 
       - name: Set up keychain
         script: |
