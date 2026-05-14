@@ -36,29 +36,29 @@ workflows:
           # lockfiles generated on Linux. Detect the actual resolved versions from the
           # pnpm virtual store, then download the macOS ARM64 native binaries directly
           # from the npm registry via curl and extract them into root node_modules.
-          # This avoids any npm/pnpm workspace conflicts.
+          install_native() {
+            local PKG="$1" TARBALL_NAME="$2" DEST="$3"
+            echo "→ Installing ${PKG}@${4} → node_modules/${DEST}"
+            rm -rf "/tmp/native-${TARBALL_NAME}" && mkdir -p "/tmp/native-${TARBALL_NAME}"
+            curl -fsSL "https://registry.npmjs.org/${PKG}/-/${TARBALL_NAME}-${4}.tgz" \
+              | tar -xz --strip-components=1 -C "/tmp/native-${TARBALL_NAME}"
+            mkdir -p "$(dirname "node_modules/${DEST}")"
+            rm -rf "node_modules/${DEST}"
+            mv "/tmp/native-${TARBALL_NAME}" "node_modules/${DEST}"
+          }
+
           ROLLUP_VERSION=$(ls node_modules/.pnpm/ | grep '^rollup@[0-9]' | sort -V | tail -1 | sed 's/rollup@//')
-          LIGHTNINGCSS_VERSION=$(ls node_modules/.pnpm/ | grep '^lightningcss@[0-9]' | sort -V | tail -1 | sed 's/lightningcss@//')
-          echo "Detected: rollup@${ROLLUP_VERSION}  lightningcss@${LIGHTNINGCSS_VERSION}"
+          LCSS_VERSION=$(ls node_modules/.pnpm/ | grep '^lightningcss@[0-9]' | sort -V | tail -1 | sed 's/lightningcss@//')
+          OXIDE_VERSION=$(ls node_modules/.pnpm/ | grep '^@tailwindcss+oxide@' | sort -V | tail -1 | sed 's/@tailwindcss+oxide@//')
+          ESBUILD_VERSION=$(ls node_modules/.pnpm/ | grep '^esbuild@[0-9]' | sort -V | tail -1 | sed 's/esbuild@//')
+          echo "Detected versions: rollup=${ROLLUP_VERSION} lightningcss=${LCSS_VERSION} oxide=${OXIDE_VERSION} esbuild=${ESBUILD_VERSION}"
 
-          # @rollup/rollup-darwin-arm64
-          rm -rf /tmp/rollup-native && mkdir -p /tmp/rollup-native
-          curl -fsSL "https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-${ROLLUP_VERSION}.tgz" \
-            | tar -xz --strip-components=1 -C /tmp/rollup-native
-          mkdir -p node_modules/@rollup
-          rm -rf node_modules/@rollup/rollup-darwin-arm64
-          mv /tmp/rollup-native node_modules/@rollup/rollup-darwin-arm64
+          install_native "@rollup/rollup-darwin-arm64"    "rollup-darwin-arm64"    "@rollup/rollup-darwin-arm64"       "${ROLLUP_VERSION}"
+          install_native "lightningcss-darwin-arm64"      "lightningcss-darwin-arm64" "lightningcss-darwin-arm64"      "${LCSS_VERSION}"
+          install_native "@tailwindcss/oxide-darwin-arm64" "oxide-darwin-arm64"    "@tailwindcss/oxide-darwin-arm64"   "${OXIDE_VERSION}"
+          install_native "@esbuild/darwin-arm64"          "darwin-arm64"           "@esbuild/darwin-arm64"             "${ESBUILD_VERSION}"
 
-          # lightningcss-darwin-arm64
-          rm -rf /tmp/lcss-native && mkdir -p /tmp/lcss-native
-          curl -fsSL "https://registry.npmjs.org/lightningcss-darwin-arm64/-/lightningcss-darwin-arm64-${LIGHTNINGCSS_VERSION}.tgz" \
-            | tar -xz --strip-components=1 -C /tmp/lcss-native
-          rm -rf node_modules/lightningcss-darwin-arm64
-          mv /tmp/lcss-native node_modules/lightningcss-darwin-arm64
-
-          echo "Native addons ready:"
-          ls node_modules/@rollup/rollup-darwin-arm64/
-          ls node_modules/lightningcss-darwin-arm64/
+          echo "All native addons installed."
 
       - name: Build Vite web bundle for Capacitor
         script: |

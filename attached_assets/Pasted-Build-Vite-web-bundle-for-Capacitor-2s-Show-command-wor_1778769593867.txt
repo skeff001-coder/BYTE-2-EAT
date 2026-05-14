@@ -1,0 +1,52 @@
+Build Vite web bundle for Capacitor
+2s
+
+
+
+Show command
+
+> @workspace/culinary-scan-assist@1.0.0 build:capacitor /Users/builder/clone/artifacts/culinary-scan-assist
+> vite build --config vite.config.ts --base /
+
+failed to load config from /Users/builder/clone/artifacts/culinary-scan-assist/vite.config.ts
+error during build:
+Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+    at Object.<anonymous> (/Users/builder/clone/node_modules/.pnpm/@tailwindcss+oxide@4.3.0/node_modules/@tailwindcss/oxide/index.js:563:11)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:335:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:235:7)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+/Users/builder/clone/artifacts/culinary-scan-assist:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/culinary-scan-assist@1.0.0 build:capacitor: `vite build --config vite.config.ts --base /`
+Exit status 1
+
+Build failed :|
+Step 3 script `Build Vite web bundle for Capacitor` exited with status code 1
+
+> @workspace/culinary-scan-assist@1.0.0 build:capacitor /Users/builder/clone/artifacts/culinary-scan-assist
+> vite build --config vite.config.ts --base /
+
+failed to load config from /Users/builder/clone/artifacts/culinary-scan-assist/vite.config.ts
+error during build:
+Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+    at Object.<anonymous> (/Users/builder/clone/node_modules/.pnpm/@tailwindcss+oxide@4.3.0/node_modules/@tailwindcss/oxide/index.js:563:11)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:335:3)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:235:7)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+/Users/builder/clone/artifacts/culinary-scan-assist:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/culinary-scan-assist@1.0.0 build:capacitor: `vite build --config vite.config.ts --base /`
+Exit status 1
+
+Build failed :|
+Step 3 script `Build Vite web bundle for Capacitor` exited with status code 1
