@@ -28,8 +28,7 @@ workflows:
 
       - name: Install pnpm
         script: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+          npm install -g pnpm
 
       - name: Install workspace dependencies
         script: |
