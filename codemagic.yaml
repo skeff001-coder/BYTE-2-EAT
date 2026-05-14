@@ -50,18 +50,9 @@ workflows:
       - name: Revoke existing Distribution certificates
         script: |
           set +e
-          echo "=== ALL certificates in account ==="
-          ALL_JSON=$(app-store-connect certificates list --json 2>/dev/null || echo "[]")
-          echo "$ALL_JSON" | head -c 1000
-          echo ""
-          echo "=== Revoking distribution certs ==="
-          CERT_IDS=$(echo "$ALL_JSON" | python3 -c "import json,sys;d=json.load(sys.stdin);items=d if isinstance(d,list) else d.get('data',[]);[print(i['id']) for i in items if 'DIST' in i.get('attributes',{}).get('certificateType','')]" 2>/dev/null || echo "")
-          echo "IDs to revoke: $CERT_IDS"
-          for ID in $CERT_IDS; do
-            echo "Revoking $ID..."
-            app-store-connect certificates revoke "$ID" 2>&1 || true
-          done
-          echo "=== Certificate cleanup done ==="
+          echo "Revoking all IOS_DISTRIBUTION certificates..."
+          app-store-connect certificates revoke --type IOS_DISTRIBUTION 2>&1
+          echo "Done (no error above = none existed or all revoked)"
           set -e
 
       - name: Set up keychain
