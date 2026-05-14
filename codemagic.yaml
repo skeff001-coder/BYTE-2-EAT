@@ -70,6 +70,11 @@ workflows:
         script: |
           keychain add-certificates
 
+      - name: Switch Xcode project to manual code signing
+        script: |
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' \
+            "$CM_BUILD_DIR/artifacts/culinary-scan-assist/ios/App/App.xcodeproj/project.pbxproj"
+
       - name: Apply code signing profiles
         script: |
           xcode-project use-profiles
