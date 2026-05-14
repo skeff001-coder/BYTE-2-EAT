@@ -18,7 +18,7 @@ workflows:
       vars:
         XCODE_WORKSPACE: "artifacts/culinary-scan-assist/ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
-        BUNDLE_ID: "com.owenskeffington.bite"
+        BUNDLE_ID: "com.bitecooking.app"
         APP_VERSION: "1.0.0"
         PNPM: "npx --yes pnpm@10.26.1"
       node: "22"
