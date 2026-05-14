@@ -1,22 +1,6 @@
-# ─────────────────────────────────────────────────────────────────────────────
 # Byte 2 Eat — Codemagic CI/CD for iOS App Store
-#
-# SETUP CHECKLIST (do once in the Codemagic dashboard):
-#
-# 1. App Store Connect API Key
-#    Dashboard → Teams → Integrations → App Store Connect
-#    Generate a key at appstoreconnect.apple.com → Users & Access → Keys
-#    Name it "byte2eat_asc" (Key ID, Issuer ID, .p8 file).
-#
-# 2. Code signing
-#    Dashboard → your app → Environment → iOS code signing
-#    Choose "App Store" distribution. Codemagic fetches profiles automatically.
-#
-# 3. Environment variable group "byte2eat_env"
-#    Dashboard → Teams → Global variables & secrets → Add group
-#    Add: VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (mark as secret).
-#
-# ─────────────────────────────────────────────────────────────────────────────
+# Developer Portal integration "byte2eat_asc" must be connected in
+# Settings → Integrations → Developer Portal before running this workflow.
 
 workflows:
 
@@ -29,9 +13,6 @@ workflows:
       app_store_connect: byte2eat_asc
 
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.bitecooking.app
       groups:
         - byte2eat_env
       vars:
@@ -72,6 +53,21 @@ workflows:
           cd artifacts/culinary-scan-assist/ios/App
           agvtool new-marketing-version $APP_VERSION
           agvtool new-version -all $PROJECT_BUILD_NUMBER
+
+      - name: Set up keychain
+        script: |
+          keychain initialize
+
+      - name: Fetch or create App Store signing certificate and profile
+        script: |
+          app-store-connect fetch-signing-files \
+            "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+
+      - name: Add certificates to keychain
+        script: |
+          keychain add-certificates
 
       - name: Apply code signing profiles
         script: |
