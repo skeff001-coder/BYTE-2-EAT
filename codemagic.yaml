@@ -29,7 +29,8 @@ workflows:
 
       - name: Install workspace dependencies
         script: |
-          npx --yes pnpm@10.26.1 install --frozen-lockfile
+          rm -f pnpm-lock.yaml
+          npx --yes pnpm@10.26.1 install
 
       - name: Build Vite web bundle for Capacitor
         script: |
