@@ -74,7 +74,9 @@ workflows:
 
       - name: Apply code signing profiles
         script: |
-          xcode-project use-profiles
+          xcode-project use-profiles \
+            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
 
       - name: Build iOS IPA
         script: |
