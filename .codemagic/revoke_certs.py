@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
 Revoke all existing iOS Distribution certificates via the App Store Connect API.
-Run before fetch-signing-files --create so Codemagic can create a fresh
-certificate with its own private key (avoids 'Cannot save Signing Certificates
-without certificate private key' errors caused by certs created on other machines).
+Handles private key newline normalisation and fetches all cert types.
 """
 import time
 import base64
 import json
 import os
+import sys
 import urllib.request
 import urllib.error
 
@@ -33,6 +32,12 @@ def generate_jwt():
     issuer_id = os.environ['APP_STORE_CONNECT_ISSUER_ID']
     pem       = os.environ['APP_STORE_CONNECT_PRIVATE_KEY']
 
+    # Normalise escaped newlines that some CI systems inject
+    pem = pem.replace('\\n', '\n')
+    if not pem.strip().startswith('-----'):
+        # Might be base64-only; wrap it
+        pem = f"-----BEGIN PRIVATE KEY-----\n{pem.strip()}\n-----END PRIVATE KEY-----\n"
+
     now     = int(time.time())
     header  = {'alg': 'ES256', 'kid': key_id, 'typ': 'JWT'}
     payload = {'iss': issuer_id, 'iat': now, 'exp': now + 1200,
@@ -46,32 +51,53 @@ def generate_jwt():
     return f"{unsigned}.{b64url(r.to_bytes(32, 'big') + s.to_bytes(32, 'big'))}"
 
 
+DISTRIBUTION_TYPES = {
+    'IOS_DISTRIBUTION',
+    'DISTRIBUTION',
+    'APPLE_DISTRIBUTION',
+    'MAC_APP_DISTRIBUTION',
+}
+
+
 def main():
     token   = generate_jwt()
+    print(f'JWT generated OK')
     headers = {'Authorization': f'Bearer {token}'}
 
-    url  = ('https://api.appstoreconnect.apple.com/v1/certificates'
-            '?filter[certificateType]=IOS_DISTRIBUTION&limit=200')
+    # Fetch ALL certificates (no type filter) so we don't miss any
+    url  = 'https://api.appstoreconnect.apple.com/v1/certificates?limit=200'
     req  = urllib.request.Request(url, headers=headers)
     data = json.loads(urllib.request.urlopen(req).read())
-    certs = data.get('data', [])
-    print(f'Found {len(certs)} Distribution certificate(s) — revoking all')
+    all_certs = data.get('data', [])
+    print(f'Total certificates in account: {len(all_certs)}')
 
-    for cert in certs:
-        cid = cert['id']
+    to_revoke = []
+    for cert in all_certs:
+        cert_type = cert.get('attributes', {}).get('certificateType', 'UNKNOWN')
+        cert_name = cert.get('attributes', {}).get('name', '')
+        print(f'  Found: {cert["id"]} type={cert_type} name={cert_name}')
+        if cert_type in DISTRIBUTION_TYPES:
+            to_revoke.append(cert['id'])
+
+    print(f'Revoking {len(to_revoke)} Distribution certificate(s)...')
+    for cid in to_revoke:
         del_req = urllib.request.Request(
             f'https://api.appstoreconnect.apple.com/v1/certificates/{cid}',
             method='DELETE',
             headers=headers)
         try:
             urllib.request.urlopen(del_req)
-            print(f'  Revoked {cid}')
+            print(f'  Revoked {cid} OK')
         except urllib.error.HTTPError as e:
-            print(f'  {cid}: {e.code} {e.reason} (continuing)')
+            body = e.read().decode(errors='replace')
+            print(f'  {cid}: HTTP {e.code} {e.reason} — {body}')
 
 
 if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        print(f'Certificate cleanup skipped: {e}')
+        import traceback
+        print(f'Certificate cleanup failed: {e}', file=sys.stderr)
+        traceback.print_exc()
+        sys.exit(1)   # Fail loudly so we can see what went wrong
