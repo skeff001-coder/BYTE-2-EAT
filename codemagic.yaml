@@ -70,10 +70,11 @@ workflows:
 
       - name: Fetch or create signing certificate and provisioning profile
         script: |
+          openssl genrsa -out /tmp/cert_key.pem 2048
           app-store-connect fetch-signing-files \
             "$BUNDLE_ID" \
             --type IOS_APP_STORE \
-            --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
+            --certificate-key /tmp/cert_key.pem \
             --create
 
       - name: Add certificates to keychain
