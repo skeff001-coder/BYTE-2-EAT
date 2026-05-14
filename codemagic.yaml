@@ -50,9 +50,11 @@ workflows:
       - name: Revoke existing Distribution certificates
         script: |
           set +e
-          echo "Revoking all IOS_DISTRIBUTION certificates..."
-          app-store-connect certificates revoke --type IOS_DISTRIBUTION 2>&1
-          echo "Done (no error above = none existed or all revoked)"
+          echo "Revoking IOS_DISTRIBUTION certificates..."
+          app-store-connect certificates revoke --type IOS_DISTRIBUTION 2>&1 || true
+          echo "Revoking DISTRIBUTION certificates..."
+          app-store-connect certificates revoke --type DISTRIBUTION 2>&1 || true
+          echo "Done"
           set -e
 
       - name: Set up keychain
