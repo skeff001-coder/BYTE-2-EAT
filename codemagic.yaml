@@ -30,6 +30,13 @@ workflows:
       - name: Install workspace dependencies
         script: |
           npx --yes pnpm@10.26.1 install --frozen-lockfile
+          # pnpm marks all non-current-platform optional native packages as '-' (excluded)
+          # when the lockfile is generated on Linux. Detect the actual installed versions
+          # from the pnpm store and install matching macOS ARM64 native binaries via npm.
+          ROLLUP_VERSION=$(ls node_modules/.pnpm/ | grep '^rollup@' | sort -V | tail -1 | sed 's/rollup@//')
+          LIGHTNINGCSS_VERSION=$(ls node_modules/.pnpm/ | grep '^lightningcss@' | sort -V | tail -1 | sed 's/lightningcss@//')
+          echo "Installing macOS ARM64 native addons: rollup@${ROLLUP_VERSION} lightningcss@${LIGHTNINGCSS_VERSION}"
+          npm install --no-save "@rollup/rollup-darwin-arm64@${ROLLUP_VERSION}" "lightningcss-darwin-arm64@${LIGHTNINGCSS_VERSION}"
 
       - name: Build Vite web bundle for Capacitor
         script: |
