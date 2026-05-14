@@ -49,9 +49,8 @@ workflows:
 
       - name: Revoke existing Distribution certificates
         script: |
-          set +e
+          pip3 install cryptography --quiet
           python3 .codemagic/revoke_certs.py
-          set -e
 
       - name: Set up keychain
         script: |
