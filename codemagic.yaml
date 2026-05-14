@@ -50,11 +50,7 @@ workflows:
       - name: Revoke existing Distribution certificates
         script: |
           set +e
-          echo "Revoking IOS_DISTRIBUTION certificates..."
-          app-store-connect certificates revoke --type IOS_DISTRIBUTION 2>&1 || true
-          echo "Revoking DISTRIBUTION certificates..."
-          app-store-connect certificates revoke --type DISTRIBUTION 2>&1 || true
-          echo "Done"
+          bash .codemagic/revoke_certs.sh
           set -e
 
       - name: Set up keychain
