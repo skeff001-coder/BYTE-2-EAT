@@ -24,6 +24,9 @@ workflows:
       node: "22"
       xcode: latest
       cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.bitecooking.app
 
     scripts:
 
@@ -47,20 +50,15 @@ workflows:
           agvtool new-marketing-version $APP_VERSION
           agvtool new-version -all $PROJECT_BUILD_NUMBER
 
-      - name: Set up keychain
+      - name: Create App Store provisioning profile
         script: |
-          keychain initialize
-
-      - name: Fetch or create signing certificate and provisioning profile
-        script: |
+          # ios_signing already set up the keychain and certificate.
+          # This step creates the provisioning profile (which ios_signing
+          # alone does not create when none exists yet).
           app-store-connect fetch-signing-files \
             "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
-
-      - name: Add certificates to keychain
-        script: |
-          keychain add-certificates
 
       - name: Apply code signing profiles
         script: |
