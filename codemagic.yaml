@@ -29,8 +29,7 @@ workflows:
 
       - name: Install workspace dependencies
         script: |
-          npx --yes pnpm@10.26.1 install --no-frozen-lockfile
-          npx --yes pnpm@10.26.1 add -Dw @rollup/rollup-darwin-arm64
+          npx --yes pnpm@10.26.1 install --frozen-lockfile
 
       - name: Build Vite web bundle for Capacitor
         script: |
