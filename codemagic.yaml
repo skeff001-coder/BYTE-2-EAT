@@ -28,7 +28,8 @@ workflows:
 
       - name: Install pnpm
         script: |
-          npm install -g pnpm@10.26.1
+          npm install -g pnpm@10.26.1 || true
+          pnpm --version
 
       - name: Install workspace dependencies
         script: |
