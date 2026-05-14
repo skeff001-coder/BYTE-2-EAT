@@ -75,16 +75,49 @@ workflows:
           sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' \
             "$CM_BUILD_DIR/artifacts/culinary-scan-assist/ios/App/App.xcodeproj/project.pbxproj"
 
-      - name: Apply code signing profiles
+      - name: Apply code signing profiles and build iOS IPA
         script: |
-          xcode-project use-profiles
+          WORKSPACE="$CM_BUILD_DIR/$XCODE_WORKSPACE"
+          ARCHIVE_PATH="$CM_BUILD_DIR/build/ios/xcarchive/App.xcarchive"
+          IPA_DIR="$CM_BUILD_DIR/build/ios/ipa"
 
-      - name: Build iOS IPA
-        script: |
-          xcode-project build-ipa \
-            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME" \
-            --config "Release"
+          # Find the installed provisioning profile and extract its UUID
+          PROFILE_PATH=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | head -1)
+          echo "Profile path: $PROFILE_PATH"
+          PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['UUID'])")
+          echo "Profile UUID: $PROFILE_UUID"
+
+          # Archive
+          xcodebuild \
+            -workspace "$WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -config "Release" \
+            -archivePath "$ARCHIVE_PATH" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="J6N9GAHK44" \
+            PROVISIONING_PROFILE="$PROFILE_UUID" \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            archive
+
+          # Export IPA
+          mkdir -p "$IPA_DIR"
+          cat > /tmp/exportOptions.plist << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>J6N9GAHK44</string>
+          </dict>
+          </plist>
+PLIST
+          xcodebuild \
+            -exportArchive \
+            -archivePath "$ARCHIVE_PATH" \
+            -exportPath "$IPA_DIR" \
+            -exportOptionsPlist /tmp/exportOptions.plist
 
     artifacts:
       - build/ios/ipa/*.ipa

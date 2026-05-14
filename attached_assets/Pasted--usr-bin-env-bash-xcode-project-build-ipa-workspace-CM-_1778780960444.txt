@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+xcode-project build-ipa \
+  --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+  --scheme "$XCODE_SCHEME" \
+  --config "Release"
+Using Xcode 26.4.1 (17E202)
+Check App.xcworkspace build settings
+Execute "xcodebuild -workspace /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcworkspace -scheme App -config Release -showBuildSettings"
+
+Archive App.xcworkspace
+Execute "xcodebuild -workspace /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcworkspace -scheme App -config Release -archivePath /Users/builder/clone/build/ios/xcarchive/App_c3ldsgq4.xcarchive archive COMPILER_INDEX_STORE_ENABLE=NO CODE_SIGN_STYLE=Manual"
+
+Using Xcode 26.4.1 (17E202)
+Check App.xcworkspace build settings
+Execute "xcodebuild -workspace /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcworkspace -scheme App -config Release -showBuildSettings"
+
+Archive App.xcworkspace
+Execute "xcodebuild -workspace /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcworkspace -scheme App -config Release -archivePath /Users/builder/clone/build/ios/xcarchive/App_c3ldsgq4.xcarchive archive COMPILER_INDEX_STORE_ENABLE=NO CODE_SIGN_STYLE=Manual"
+
+
+❌  /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcodeproj: error: "App" requires a provisioning profile. Select a provisioning profile in the Signing & Capabilities editor. (in target 'App' from project 'App')
+
+
+    Run script build phase '[CP] Embed Pods Frameworks' will be run during every build because it does not specify any outputs. To address this issue, either add output dependencies to the script phase, or configure it to run in every build by unchecking "Based on dependency analysis" in the script phase. (in target 'App' from project 'App')
+Failed to archive /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcworkspace
+
+
+Build failed :|
+Step 12 script `Build iOS IPA` exited with status code 65
+
+❌  /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcodeproj: error: "App" requires a provisioning profile. Select a provisioning profile in the Signing & Capabilities editor. (in target 'App' from project 'App')
+
+
+    Run script build phase '[CP] Embed Pods Frameworks' will be run during every build because it does not specify any outputs. To address this issue, either add output dependencies to the script phase, or configure it to run in every build by unchecking "Based on dependency analysis" in the script phase. (in target 'App' from project 'App')
+Failed to archive /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcworkspace
+
+
+Build failed :|
+Step 12 script `Build iOS IPA` exited with status code 65
