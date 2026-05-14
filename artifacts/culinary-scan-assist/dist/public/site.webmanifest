@@ -1,0 +1,17 @@
+{
+  "name": "Byte 2 Eat — AI Recipe Scanner",
+  "short_name": "Byte 2 Eat",
+  "description": "Scan your fridge and get personalised recipes, meal plans and shopping lists in seconds.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020209",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "/app-icon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

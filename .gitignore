@@ -1,8 +1,11 @@
 # See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # compiled output
-dist
 tmp
+# dist is ignored globally but the Capacitor web bundle must be committed
+# so Codemagic can skip the Vite build step (avoids macOS native-package issues)
+dist
+!artifacts/culinary-scan-assist/dist/
 out-tsc
 *.tsbuildinfo
 .expo
