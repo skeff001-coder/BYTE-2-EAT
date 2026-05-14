@@ -3,8 +3,6 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import path from "path";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
-
 const rawPort = process.env.PORT;
 const port = rawPort ? Number(rawPort) : 3000;
 
@@ -16,13 +14,17 @@ export default defineConfig({
     TanStackRouterVite({ routesDirectory: "./src/routes", generatedRouteTree: "./src/routeTree.gen.ts", autoCodeSplitting: true }),
     react(),
     tailwindcss(),
-    runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
+    ...(process.env.REPL_ID !== undefined
       ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer({ root: path.resolve(import.meta.dirname, "..") }),
-          ),
-          await import("@replit/vite-plugin-dev-banner").then((m) => m.devBanner()),
+          await import("@replit/vite-plugin-runtime-error-modal").then((m) => m.default()),
+          ...(process.env.NODE_ENV !== "production"
+            ? [
+                await import("@replit/vite-plugin-cartographer").then((m) =>
+                  m.cartographer({ root: path.resolve(import.meta.dirname, "..") }),
+                ),
+                await import("@replit/vite-plugin-dev-banner").then((m) => m.devBanner()),
+              ]
+            : []),
         ]
       : []),
   ],
