@@ -101,18 +101,7 @@ workflows:
 
           # Export IPA
           mkdir -p "$IPA_DIR"
-          cat > /tmp/exportOptions.plist << 'PLIST'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>J6N9GAHK44</string>
-          </dict>
-          </plist>
-PLIST
+          python3 -c "import plistlib; plistlib.dump({'method':'app-store','teamID':'J6N9GAHK44'}, open('/tmp/exportOptions.plist','wb'))"
           xcodebuild \
             -exportArchive \
             -archivePath "$ARCHIVE_PATH" \
