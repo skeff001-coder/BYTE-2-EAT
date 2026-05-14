@@ -28,7 +28,7 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
   - `src/lib/analyze-fridge.ts` — client-side function calling the API
   - `src/integrations/supabase/` — Supabase client + types
   - `src/components/BlockBuilder.tsx` — **PROTECTED ASSET** (see below)
-  - `capacitor.config.ts` — Capacitor config (appId: com.bitecooking.app)
+  - `capacitor.config.ts` — Capacitor config (appId: com.owenskeffington.bite)
   - `ios/` — Generated Xcode project (open with Xcode on a Mac)
 - `artifacts/api-server/src/routes/analyze-fridge.ts` — AI fridge analysis endpoint
 
@@ -54,7 +54,7 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 3. Run `pnpm run build:capacitor` in `artifacts/culinary-scan-assist/`
 4. Run `npx cap sync ios`
 5. Run `npx cap open ios` to open the Xcode project
-6. In Xcode: set your Apple Developer Team, bundle ID (`com.bitecooking.app`), and build for device
+6. In Xcode: set your Apple Developer Team, bundle ID (`com.owenskeffington.bite`), and build for device
 
 ## User preferences
 
@@ -63,7 +63,7 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 
 ## App Store Submission Checklist
 
-- Version: 1.0.0 (update in Xcode before submission — bundle ID: com.bitecooking.app)
+- Version: 1.0.0 (update in Xcode before submission — bundle ID: com.owenskeffington.bite)
 - Premium IAP: £4.99 one-time, product ID `com.owenskeffington.bite.premium` (NON_CONSUMABLE)
 - Trial: 1 free scan on first launch via `bite_scan_credits` in localStorage
 - Restore Purchases: present in paywall modal
