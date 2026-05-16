@@ -1,6 +1,8 @@
 # Byte 2 Eat — Codemagic CI/CD for iOS App Store
-# Developer Portal integration "byte2eat_asc" must be connected in
-# Settings → Integrations → Developer Portal before running this workflow.
+# Requires:
+#   - App Store Connect integration named "byte2eat_asc" in Codemagic integrations
+#   - iOS Distribution certificate stored in Codemagic code signing identities
+#   - Environment group "byte2eat_env" with VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY
 
 workflows:
 
@@ -21,6 +23,9 @@ workflows:
         BUNDLE_ID: "com.bitecooking.app"
         APP_VERSION: "1.0.0"
         PNPM: "npx --yes pnpm@10.26.1"
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.bitecooking.app
       node: "22"
       xcode: latest
       cocoapods: default
@@ -47,95 +52,13 @@ workflows:
           agvtool new-marketing-version $APP_VERSION
           agvtool new-version -all $PROJECT_BUILD_NUMBER
 
-      - name: Revoke existing Distribution certificates
+      - name: Build iOS IPA
         script: |
-          set +e
-          for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
-            CERT_IDS=$(app-store-connect certificates list --type "$TYPE" --json 2>/dev/null | \
-              python3 -c "import json,sys; [print(c['id']) for c in json.load(sys.stdin)]" 2>/dev/null)
-            if [ -n "$CERT_IDS" ]; then
-              echo "Revoking $TYPE certs: $CERT_IDS"
-              app-store-connect certificates revoke $CERT_IDS || echo "  (revoke returned non-zero)"
-            else
-              echo "No $TYPE certificates found to revoke"
-            fi
-          done
-          set -e
-
-      - name: Set up keychain
-        script: |
-          keychain initialize
-
-      - name: Fetch or create signing certificate and provisioning profile
-        script: |
-          openssl genrsa -out /tmp/cert_key.pem 2048
-          app-store-connect fetch-signing-files \
-            "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --certificate-key @file:/tmp/cert_key.pem \
-            --create
-
-      - name: Add certificates to keychain
-        script: |
-          keychain add-certificates
-
-      - name: Apply code signing profiles and build iOS IPA
-        script: |
-          set -euo pipefail
-          WORKSPACE="$CM_BUILD_DIR/$XCODE_WORKSPACE"
-          ARCHIVE_PATH="$CM_BUILD_DIR/build/ios/xcarchive/App.xcarchive"
-          IPA_DIR="$CM_BUILD_DIR/build/ios/ipa"
-          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
-
-          echo "--- Profiles dir contents ---"
-          ls -la "$PROFILES_DIR" 2>/dev/null || echo "Dir missing: $PROFILES_DIR"
-          echo "--- HOME is: $HOME ---"
-
-          # Find the downloaded profile
-          PROFILE_PATH=$(ls "$PROFILES_DIR"/*.mobileprovision 2>/dev/null | head -1 || true)
-          echo "Profile path: $PROFILE_PATH"
-
-          if [ -z "$PROFILE_PATH" ]; then
-            echo "ERROR: no .mobileprovision found in $PROFILES_DIR"
-            echo "Searching entire machine..."
-            find / -name "*.mobileprovision" -not -path "*/Xcode.app/*" 2>/dev/null | head -20 || true
-            exit 1
-          fi
-
-          # Extract UUID and Name from profile
-          PROFILE_PLIST=$(security cms -D -i "$PROFILE_PATH")
-          PROFILE_UUID=$(echo "$PROFILE_PLIST" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['UUID'])")
-          PROFILE_NAME=$(echo "$PROFILE_PLIST" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['Name'])")
-          echo "UUID: $PROFILE_UUID  Name: $PROFILE_NAME"
-
-          # Ensure the profile is installed with UUID-based filename (required by Xcode)
-          cp "$PROFILE_PATH" "$PROFILES_DIR/$PROFILE_UUID.mobileprovision"
-
-          # Update Xcode project with the installed profile
           xcode-project use-profiles
-
-          # Archive
-          mkdir -p "$(dirname "$ARCHIVE_PATH")"
-          xcodebuild \
-            -workspace "$WORKSPACE" \
-            -scheme "$XCODE_SCHEME" \
-            -config "Release" \
-            -archivePath "$ARCHIVE_PATH" \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM="J6N9GAHK44" \
-            PROVISIONING_PROFILE="$PROFILE_UUID" \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            archive
-
-          # Export IPA
-          mkdir -p "$IPA_DIR"
-          python3 -c "import plistlib; plistlib.dump({'method':'app-store','teamID':'J6N9GAHK44','signingStyle':'manual','provisioningProfiles':{'com.bitecooking.app':'$PROFILE_NAME'}}, open('/tmp/exportOptions.plist','wb'))"
-          xcodebuild \
-            -exportArchive \
-            -archivePath "$ARCHIVE_PATH" \
-            -exportPath "$IPA_DIR" \
-            -exportOptionsPlist /tmp/exportOptions.plist
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME" \
+            --config "Release"
 
     artifacts:
       - build/ios/ipa/*.ipa
