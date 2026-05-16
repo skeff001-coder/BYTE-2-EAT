@@ -71,37 +71,61 @@ workflows:
           ARCHIVE_PATH="$CM_BUILD_DIR/build/ios/xcarchive/App.xcarchive"
           IPA_DIR="$CM_BUILD_DIR/build/ios/ipa"
           mkdir -p "$IPA_DIR"
-          # Archive
+          # Write profile specifier only into the App target Release config
+          python3 - <<PYEOF
+import re, sys
+path = "artifacts/culinary-scan-assist/ios/App/App.xcodeproj/project.pbxproj"
+profile = open("/tmp/profile_name.txt").read().strip()
+content = open(path).read()
+# Target the App target Release section (has DEVELOPMENT_TEAM and com.bitecooking.app)
+old = 'CODE_SIGN_IDENTITY = "Apple Distribution";\n\t\t\t\t\tCODE_SIGN_STYLE = Manual;\n\t\t\t\t\tCURRENT_PROJECT_VERSION'
+new = f'CODE_SIGN_IDENTITY = "Apple Distribution";\n\t\t\t\t\tCODE_SIGN_STYLE = Manual;\n\t\t\t\t\tCURRENT_PROJECT_VERSION'
+# Add PROVISIONING_PROFILE_SPECIFIER if not already present
+if 'PROVISIONING_PROFILE_SPECIFIER' not in content:
+    content = content.replace(
+        'CODE_SIGN_STYLE = Manual;\n\t\t\t\t\tCURRENT_PROJECT_VERSION = 1;\n\t\t\t\t\tINFOPLIST_FILE',
+        f'CODE_SIGN_STYLE = Manual;\n\t\t\t\t\tCURRENT_PROJECT_VERSION = 1;\n\t\t\t\t\tINFOPLIST_FILE'
+    )
+    content = content.replace(
+        'DEVELOPMENT_TEAM = J6N9GAHK44;\n\t\t\t\t\tINFOPLIST_FILE',
+        f'DEVELOPMENT_TEAM = J6N9GAHK44;\n\t\t\t\t\tINFOPLIST_FILE'
+    )
+    # Insert before PRODUCT_BUNDLE_IDENTIFIER in the Release target config
+    content = content.replace(
+        '\t\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER = com.bitecooking.app;\n\t\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";\n\t\t\t\t\tSWIFT_ACTIVE_COMPILATION_CONDITIONS = ""',
+        f'\t\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER = com.bitecooking.app;\n\t\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";\n\t\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{profile}";\n\t\t\t\t\tSWIFT_ACTIVE_COMPILATION_CONDITIONS = ""'
+    )
+open(path, 'w').write(content)
+print("pbxproj updated")
+PYEOF
+          # Archive — no global profile override so Pods use Automatic
           xcodebuild \
             -workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
             -config Release \
             -archivePath "$ARCHIVE_PATH" \
             archive \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
-            DEVELOPMENT_TEAM=J6N9GAHK44 \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
             COMPILER_INDEX_STORE_ENABLE=NO
-          # Create export options plist
+          # Export
           cat > /tmp/ExportOptions.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>J6N9GAHK44</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.bitecooking.app</key>
-              <string>$PROFILE_NAME</string>
-            </dict>
-          </dict>
-          </plist>
-          EOF
-          # Export IPA
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>method</key>
+  <string>app-store</string>
+  <key>teamID</key>
+  <string>J6N9GAHK44</string>
+  <key>signingStyle</key>
+  <string>manual</string>
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>com.bitecooking.app</key>
+    <string>$PROFILE_NAME</string>
+  </dict>
+</dict>
+</plist>
+EOF
           xcodebuild -exportArchive \
             -archivePath "$ARCHIVE_PATH" \
             -exportOptionsPlist /tmp/ExportOptions.plist \

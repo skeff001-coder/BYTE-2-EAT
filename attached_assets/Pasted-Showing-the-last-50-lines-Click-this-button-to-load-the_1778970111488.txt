@@ -1,0 +1,114 @@
+Showing the last 50 lines. Click this button to load the full log
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode-26.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-26.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/usr/bin/ibtool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode-26.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x objective-c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -V
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: e0af62d35f565800861ecaed0da7804d
+Build description path: /Users/builder/Library/Developer/Xcode/DerivedData/App-agpnlhlrlpdhoifdcdmmebpnylgo/Build/Intermediates.noindex/ArchiveIntermediates/App/IntermediateBuildFilesPath/XCBuildData/e0af62d35f565800861ecaed0da7804d.xcbuilddata
+/Users/builder/clone/artifacts/culinary-scan-assist/ios/App/Pods/Pods.xcodeproj: error: CapacitorPluginCdvPurchase does not support provisioning profiles. CapacitorPluginCdvPurchase does not support provisioning profiles, but provisioning profile Byte 2 eat ios_app_store 1778969753 has been manually specified. Set the provisioning profile value to "Automatic" in the build settings editor. (in target 'CapacitorPluginCdvPurchase' from project 'Pods')
+/Users/builder/clone/artifacts/culinary-scan-assist/ios/App/Pods/Pods.xcodeproj: error: Pods-App does not support provisioning profiles. Pods-App does not support provisioning profiles, but provisioning profile Byte 2 eat ios_app_store 1778969753 has been manually specified. Set the provisioning profile value to "Automatic" in the build settings editor. (in target 'Pods-App' from project 'Pods')
+/Users/builder/clone/artifacts/culinary-scan-assist/ios/App/Pods/Pods.xcodeproj: error: CapacitorCordova does not support provisioning profiles. CapacitorCordova does not support provisioning profiles, but provisioning profile Byte 2 eat ios_app_store 1778969753 has been manually specified. Set the provisioning profile value to "Automatic" in the build settings editor. (in target 'CapacitorCordova' from project 'Pods')
+/Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcodeproj: error: Provisioning profile "Byte 2 eat ios_app_store 1778969753" has app ID "Com.bitecooking.app", which does not match the bundle ID "com.bitecooking.app". (in target 'App' from project 'App')
+warning: Run script build phase '[CP] Embed Pods Frameworks' will be run during every build because it does not specify any outputs. To address this issue, either add output dependencies to the script phase, or configure it to run in every build by unchecking "Based on dependency analysis" in the script phase. (in target 'App' from project 'App')
+/Users/builder/clone/artifacts/culinary-scan-assist/ios/App/Pods/Pods.xcodeproj: error: Capacitor does not support provisioning profiles. Capacitor does not support provisioning profiles, but provisioning profile Byte 2 eat ios_app_store 1778969753 has been manually specified. Set the provisioning profile value to "Automatic" in the build settings editor. (in target 'Capacitor' from project 'Pods')
+** ARCHIVE FAILED **
+
+
+The following build commands failed:
+	Archiving workspace App with scheme App
+(1 failure)
+error: error: archive not found at path '/Users/builder/clone/build/ios/xcarchive/App.xcarchive'
+
+** EXPORT FAILED **
+
+
+
+Build failed :|
+Step 7 script `Build iOS IPA` exited with status code 65
+
+
+Build failed :|
+Step 7 script `Build iOS IPA` exited with status code 65
+
+Personal Account
+Personal Account
+Applications
+Builds
+OTA Updates
+NEW
+App Preview
+Settings
+Billing
+
+
+BYTE-2-EAT
+BYTE-2-EAT
+github.com/skeff001-coder/BYTE-2-EAT
+
+
+Start new build
+Build overview
+ID:
+6a08ed44324741e8f8195f85
+
+Please provide this ID when you contact our support team
+Index:
+26
+Status:
+failed
+Workflow:
+Byte 2 Eat — iOS App Store Release
+Started by:
+skeff001@yahoo.com
+
+skeff001@yahoo.com
+Started:
+2 minutes ago
+May 16th, 2026 at 23:18 BST
+Duration:
+1m 41s
+Machine:
+Mac mini M2
+Branch:
+main
+Commit:
+5514d83
+Click on the build steps for details.
+Preparing build machine
+36s
+Fetching app sources
+29s
+Install workspace dependencies
+20s
+Sync Capacitor iOS project
+4s
+Install CocoaPods dependencies
+1s
+Set app version and build number
+1s
+Fetch signing files
+2s
+Publishing
+< 1s
+Cleaning up
+< 1s
+Step 7 script `Build iOS IP
