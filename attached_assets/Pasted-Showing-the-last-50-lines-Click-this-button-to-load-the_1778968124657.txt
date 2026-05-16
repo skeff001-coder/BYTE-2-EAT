@@ -1,0 +1,50 @@
+Showing the last 50 lines. Click this button to load the full log
+Create keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_r33mi2vj.keychain-db
+Set keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_r33mi2vj.keychain-db timeout to "no timeout"
+Set keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_r33mi2vj.keychain-db to system default keychain
+Unlock keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_r33mi2vj.keychain-db
++ app-store-connect fetch-signing-files com.bitecooking.app --type IOS_APP_STORE --certificate-key @env:CERTIFICATE_PRIVATE_KEY --create
+Found 1 Bundle ID matching specified filters: identifier=com.bitecooking.app, platform=IOS.
+- Byte 2 eat Com.bitecooking.app (LL9Q4LPWZH)
+
+Found 1 Signing Certificate matching specified filters: certificateType=DISTRIBUTION,IOS_DISTRIBUTION.
+Filtered out 1 Signing Certificate for given private key
+- Apple Distribution: owen skeffington (4AV2FZXUHP)
+
+Get Profiles for Bundle ID LL9Q4LPWZH
+Found 1 Profile for Bundle ID LL9Q4LPWZH matching specified filters: profileState=ACTIVE, profileType=IOS_APP_STORE.
+
+Filtered out 1 Profile that contain Signing Certificate Apple Distribution: owen skeffington (4AV2FZXUHP)
+- IOS_APP_STORE Byte 2 eat ios_app_store 1778966895 (67477Q9T7N)
+
+Saved Signing Certificate Apple Distribution: owen skeffington (4AV2FZXUHP) to /Users/builder/Library/Developer/Xcode/UserData/Certificates/DISTRIBUTION_4AV2FZXUHP_4nofx9i2.p12
+Saved Profile IOS_APP_STORE Byte 2 eat ios_app_store 1778966895 (67477Q9T7N) to '/Users/builder/Library/Developer/Xcode/UserData/Provisioning Profiles/IOS_APP_STORE_67477Q9T7N_ljmadb2i.mobileprovision'
++ keychain add-certificates
+Add certificates to keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_r33mi2vj.keychain-db
+Searching for files matching /Users/builder/Library/Developer/Xcode/UserData/Certificates/*.p12
+Searching for files matching /Users/builder/Library/MobileDevice/Certificates/*.p12
+Add certificate /Users/builder/Library/Developer/Xcode/UserData/Certificates/DISTRIBUTION_4AV2FZXUHP_4nofx9i2.p12 to keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_r33mi2vj.keychain-db
+security: SecKeychainItemImport: Unable to decode the provided data.
+1 key imported.
+1 certificate imported.
++ echo '=== Profiles installed ==='
+=== Profiles installed ===
++ ls -la '/Users/builder/Library/MobileDevice/Provisioning Profiles/'
+total 0
+drwxr-xr-x  2 builder  staff  64 May 16 21:47 .
+drwxr-xr-x  3 builder  staff  96 May 16 21:47 ..
+++ ls '/Users/builder/Library/MobileDevice/Provisioning Profiles/*.mobileprovision'
+++ head -1
++ PROFILE_PATH=
++ '[' -z '' ']'
++ echo 'ERROR: No .mobileprovision found!'
+ERROR: No .mobileprovision found!
++ exit 1
+
+
+Build failed :|
+Step 6 script `Fetch signing files` exited with status code 1
+
+
+Build failed :|
+Step 6 script `Fetch signing files` exited with status code 1
