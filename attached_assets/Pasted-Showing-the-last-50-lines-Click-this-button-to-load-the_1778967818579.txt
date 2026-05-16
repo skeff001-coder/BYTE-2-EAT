@@ -1,0 +1,50 @@
+Showing the last 50 lines. Click this button to load the full log
+	<string>6cadffa5-d566-4379-979c-d81db527c012</string>
+	<key>Version</key>
+	<integer>1</integer>
+</dict>
+</plist>
+Configure code signing settings for project 'artifacts/culinary-scan-assist/ios/App/App.xcodeproj'
+
+==================================================
+Handling dependencies for target 'App' of type com.apple.product-type.application
+	Target App has no dependencies
+
+--------------------------------------------------
+Resolved bundle id 'com.bitecooking.app' from build settings for build configuration 'Debug'
+Did not find suitable provisioning profile for
+	target 'App'
+	build configuration 'Debug'
+	bundle id 'com.bitecooking.app'
+	specifier 'N/A'
+	code sign style 'N/A'
+	development team 'N/A'
+
+--------------------------------------------------
+Resolved bundle id 'com.bitecooking.app' from build settings for build configuration 'Release'
+Did not find suitable provisioning profile for
+	target 'App'
+	build configuration 'Release'
+	bundle id 'com.bitecooking.app'
+	specifier 'N/A'
+	code sign style 'N/A'
+	development team 'N/A'
+[21:40:53] DEBUG > Completed "/Users/builder/.local/share/uv/tools/codemagic-cli-tools/lib/python3.13/site-packages/codemagic/scripts/code_signing_manager.rb --xcode-project artifacts/culinary-scan-assist/ios/App/App.xcodeproj --result-path /var/folders/w2/rrf5p87d1bbfyphxc7jdnyvh0000gn/T/use_profiles_result_q_ploicx.json --profiles '[{"certificate_common_name": "Apple Distribution: owen skeffington (J6N9GAHK44)", "name": "Byte 2 eat ios_app_store 1778966895", "team_id": "J6N9GAHK44", "team_name": "owen skeffington", "bundle_id": "Com.bitecooking.app", "specifier": "6cadffa5-d566-4379-979c-d81db527c012", "xcode_managed": false, "certificates": [129027761750051429089688494165162770189]}]' --verbose" with returncode 0 in 00:00
+[21:40:53] INFO  > Completed configuring code signing settings
+[21:40:53] WARNING > Did not find matching provisioning profiles for code signing!
+[21:40:53] INFO  > Generated options for exporting the project
+[21:40:53] INFO  >  - Method: ad-hoc
+[21:40:53] INFO  >  - Provisioning Profiles: []
+[21:40:53] INFO  >  - Signing Certificate: 
+[21:40:53] INFO  >  - Signing Style: manual
+[21:40:53] INFO  >  - Team Id: 
+[21:40:53] INFO  > Saved export options to /Users/builder/export_options.plist
++ echo '=== Release signing config after use-profiles ==='
+=== Release signing config after use-profiles ===
++ grep -E 'CODE_SIGN_|PROVISIONING_PROFILE|DEVELOPMENT_TEAM' artifacts/culinary-scan-assist/ios/App/App.xcodeproj/project.pbxproj
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = J6N9GAHK44;
