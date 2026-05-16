@@ -81,33 +81,41 @@ workflows:
 
       - name: Apply code signing profiles and build iOS IPA
         script: |
+          set -euo pipefail
           WORKSPACE="$CM_BUILD_DIR/$XCODE_WORKSPACE"
           ARCHIVE_PATH="$CM_BUILD_DIR/build/ios/xcarchive/App.xcarchive"
           IPA_DIR="$CM_BUILD_DIR/build/ios/ipa"
+          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
 
-          # Debug: find all provisioning profiles on the machine
-          echo "=== Provisioning profiles found ==="
-          find /Users/builder/Library/MobileDevice/Provisioning\ Profiles \
-               ~/Library/MobileDevice/Provisioning\ Profiles \
-               -name "*.mobileprovision" 2>/dev/null || echo "None found in default locations"
-          find /tmp /Users/builder -name "*.mobileprovision" 2>/dev/null | head -10 || true
+          echo "--- Profiles dir contents ---"
+          ls -la "$PROFILES_DIR" 2>/dev/null || echo "Dir missing: $PROFILES_DIR"
+          echo "--- HOME is: $HOME ---"
 
-          # Find profile and extract UUID
-          PROFILE_PATH=$(find /Users/builder/Library/MobileDevice/Provisioning\ Profiles \
-                              ~/Library/MobileDevice/Provisioning\ Profiles \
-                              -name "*.mobileprovision" 2>/dev/null | head -1)
+          # Find the downloaded profile
+          PROFILE_PATH=$(ls "$PROFILES_DIR"/*.mobileprovision 2>/dev/null | head -1 || true)
           echo "Profile path: $PROFILE_PATH"
+
           if [ -z "$PROFILE_PATH" ]; then
-            echo "ERROR: No provisioning profile found. Listing app-store-connect output dirs..."
-            ls -la "$HOME/.appstoreconnect/" 2>/dev/null || true
-            ls -la "$HOME/.appstoreconnect/profiles/" 2>/dev/null || true
+            echo "ERROR: no .mobileprovision found in $PROFILES_DIR"
+            echo "Searching entire machine..."
+            find / -name "*.mobileprovision" -not -path "*/Xcode.app/*" 2>/dev/null | head -20 || true
             exit 1
           fi
-          PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['UUID'])")
-          echo "Profile UUID: $PROFILE_UUID"
 
-          # Apply profile to Xcode project then archive
+          # Extract UUID and Name from profile
+          PROFILE_PLIST=$(security cms -D -i "$PROFILE_PATH")
+          PROFILE_UUID=$(echo "$PROFILE_PLIST" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['UUID'])")
+          PROFILE_NAME=$(echo "$PROFILE_PLIST" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['Name'])")
+          echo "UUID: $PROFILE_UUID  Name: $PROFILE_NAME"
+
+          # Ensure the profile is installed with UUID-based filename (required by Xcode)
+          cp "$PROFILE_PATH" "$PROFILES_DIR/$PROFILE_UUID.mobileprovision"
+
+          # Update Xcode project with the installed profile
           xcode-project use-profiles
+
+          # Archive
+          mkdir -p "$(dirname "$ARCHIVE_PATH")"
           xcodebuild \
             -workspace "$WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
@@ -116,12 +124,13 @@ workflows:
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM="J6N9GAHK44" \
             PROVISIONING_PROFILE="$PROFILE_UUID" \
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
             COMPILER_INDEX_STORE_ENABLE=NO \
             archive
 
           # Export IPA
           mkdir -p "$IPA_DIR"
-          python3 -c "import plistlib; plistlib.dump({'method':'app-store','teamID':'J6N9GAHK44'}, open('/tmp/exportOptions.plist','wb'))"
+          python3 -c "import plistlib; plistlib.dump({'method':'app-store','teamID':'J6N9GAHK44','signingStyle':'manual','provisioningProfiles':{'com.bitecooking.app':'$PROFILE_NAME'}}, open('/tmp/exportOptions.plist','wb'))"
           xcodebuild \
             -exportArchive \
             -archivePath "$ARCHIVE_PATH" \
