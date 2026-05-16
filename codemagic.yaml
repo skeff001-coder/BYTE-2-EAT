@@ -1,9 +1,7 @@
 # Byte 2 Eat — Codemagic CI/CD for iOS App Store
 # Requires environment group "byte2eat_env" with:
-#   CERTIFICATE_BASE64         — base64-encoded .p12 certificate file
-#   CERTIFICATE_PASSWORD       — password for the .p12 file (jPdbEPNN)
-#   PROVISIONING_PROFILE_BASE64 — base64-encoded .mobileprovision file
-#   VITE_SUPABASE_URL          — Supabase project URL
+#   CERTIFICATE_PRIVATE_KEY       — RSA private key (PEM) for certificate signing
+#   VITE_SUPABASE_URL             — Supabase project URL
 #   VITE_SUPABASE_PUBLISHABLE_KEY — Supabase anon key
 
 workflows:
@@ -50,24 +48,14 @@ workflows:
           agvtool new-marketing-version $APP_VERSION
           agvtool new-version -all $PROJECT_BUILD_NUMBER
 
-      - name: Install certificate and provisioning profile
+      - name: Fetch signing files
         script: |
-          # Set up keychain
           keychain initialize
-
-          # Install distribution certificate from base64
-          echo "$CERTIFICATE_BASE64" | base64 --decode > /tmp/cert.p12
-          keychain add-certificates --certificate /tmp/cert.p12 --certificate-password "$CERTIFICATE_PASSWORD"
-
-          # Install provisioning profile from base64
-          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
-          mkdir -p "$PROFILES_DIR"
-          echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > /tmp/profile.mobileprovision
-          UUID=$(security cms -D -i /tmp/profile.mobileprovision | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['UUID'])")
-          echo "Installing profile UUID: $UUID"
-          cp /tmp/profile.mobileprovision "$PROFILES_DIR/$UUID.mobileprovision"
-
-          # Apply profile to Xcode project
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
+            --create
+          keychain add-certificates
           xcode-project use-profiles
 
       - name: Build iOS IPA
