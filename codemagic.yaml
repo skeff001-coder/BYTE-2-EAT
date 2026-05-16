@@ -56,7 +56,8 @@ workflows:
             --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
             --create
           keychain add-certificates
-          xcode-project use-profiles
+          xcode-project use-profiles \
+            --project "$CM_BUILD_DIR/artifacts/culinary-scan-assist/ios/App/App.xcodeproj"
 
       - name: Build iOS IPA
         script: |
