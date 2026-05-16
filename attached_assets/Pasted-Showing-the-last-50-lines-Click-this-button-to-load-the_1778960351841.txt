@@ -1,0 +1,103 @@
+Showing the last 50 lines. Click this button to load the full log
+Build description signature: 34e3fbdfd095ba8e06e57e89a9c9bfe8
+Build description path: /Users/builder/Library/Developer/Xcode/DerivedData/App-agpnlhlrlpdhoifdcdmmebpnylgo/Build/Intermediates.noindex/ArchiveIntermediates/App/IntermediateBuildFilesPath/XCBuildData/34e3fbdfd095ba8e06e57e89a9c9bfe8.xcbuilddata
+/Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcodeproj: error: "App" requires a provisioning profile. Select a provisioning profile in the Signing & Capabilities editor. (in target 'App' from project 'App')
+warning: Run script build phase '[CP] Embed Pods Frameworks' will be run during every build because it does not specify any outputs. To address this issue, either add output dependencies to the script phase, or configure it to run in every build by unchecking "Based on dependency analysis" in the script phase. (in target 'App' from project 'App')
+** ARCHIVE FAILED **
+
+
+The following build commands failed:
+	Archiving workspace App with scheme App
+(1 failure)
+error: error: archive not found at path '/Users/builder/clone/build/ios/xcarchive/App.xcarchive'
+
+** EXPORT FAILED **
+
+
+
+Build failed :|
+Step 10 script `Apply code signing profiles and build iOS IPA` exited with status code 65
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/usr/bin/ibtool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode-26.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x objective-c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -V
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode-26.4.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: 34e3fbdfd095ba8e06e57e89a9c9bfe8
+Build description path: /Users/builder/Library/Developer/Xcode/DerivedData/App-agpnlhlrlpdhoifdcdmmebpnylgo/Build/Intermediates.noindex/ArchiveIntermediates/App/IntermediateBuildFilesPath/XCBuildData/34e3fbdfd095ba8e06e57e89a9c9bfe8.xcbuilddata
+/Users/builder/clone/artifacts/culinary-scan-assist/ios/App/App.xcodeproj: error: "App" requires a provisioning profile. Select a provisioning profile in the Signing & Capabilities editor. (in target 'App' from project 'App')
+warning: Run script build phase '[CP] Embed Pods Frameworks' will be run during every build because it does not specify any outputs. To address this issue, either add output dependencies to the script phase, or configure it to run in every build by unchecking "Based on dependency analysis" in the script phase. (in target 'App' from project 'App')
+** ARCHIVE FAILED **
+
+
+The following build commands failed:
+	Archiving workspace App with scheme App
+(1 failure)
+error: error: archive not found at path '/Users/builder/clone/build/ios/xcarchive/App.xcarchive'
+
+** EXPORT FAILED **
+
+
+
+Build failed :|
+Step 10 script `Apply code signing profiles and build iOS IPA` exited with status code 65
+
+Personal Account
+Personal Account
+Personal Account
+Personal Account
+Create new team
+Applications
+Builds
+OTA Updates
+NEW
+App Preview
+Settings
+Billing
+CodePush is now self serve on the Pay as you go plan
+Learn more
+All systems operational
+
+User preferences
+skeff001@yahoo.com
+
+Log out
+BYTE-2-EAT
+BYTE-2-EAT
+github.com/skeff001-coder/BYTE-2-EAT
+
+
+Start new build
+Build overview
+ID:
+6a08c622c3b244ab58f8b55d
+
+Please provide this ID when you contact our support team
+Index:
+3
+Status:
+failed
+Workflow:
+Byte 2 Eat — iOS App Store Release
+Started by:
+skeff001@yahoo.com
+
+skeff001@yahoo.com
+Started:
+7 minutes ago
+May 16th, 2026 at 20:31 BST
+Duration:
+1m 18s
+Machine:
+Mac mini M2
+Branch:
+main
+Commit:
+5ebaeea
