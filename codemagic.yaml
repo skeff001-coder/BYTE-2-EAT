@@ -20,7 +20,7 @@ workflows:
       vars:
         XCODE_WORKSPACE: "artifacts/culinary-scan-assist/ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
-        BUNDLE_ID: "com.bitecooking.app"
+        BUNDLE_ID: "Com.bitecooking.app"
         APP_VERSION: "1.0.0"
       node: "22"
       xcode: latest
@@ -92,8 +92,8 @@ if 'PROVISIONING_PROFILE_SPECIFIER' not in content:
     )
     # Insert before PRODUCT_BUNDLE_IDENTIFIER in the Release target config
     content = content.replace(
-        '\t\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER = com.bitecooking.app;\n\t\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";\n\t\t\t\t\tSWIFT_ACTIVE_COMPILATION_CONDITIONS = ""',
-        f'\t\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER = com.bitecooking.app;\n\t\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";\n\t\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{profile}";\n\t\t\t\t\tSWIFT_ACTIVE_COMPILATION_CONDITIONS = ""'
+        '\t\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER = Com.bitecooking.app;\n\t\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";\n\t\t\t\t\tSWIFT_ACTIVE_COMPILATION_CONDITIONS = ""',
+        f'\t\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER = Com.bitecooking.app;\n\t\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";\n\t\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{profile}";\n\t\t\t\t\tSWIFT_ACTIVE_COMPILATION_CONDITIONS = ""'
     )
 open(path, 'w').write(content)
 print("pbxproj updated")
@@ -120,7 +120,7 @@ PYEOF
   <string>manual</string>
   <key>provisioningProfiles</key>
   <dict>
-    <key>com.bitecooking.app</key>
+    <key>Com.bitecooking.app</key>
     <string>$PROFILE_NAME</string>
   </dict>
 </dict>
