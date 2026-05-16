@@ -85,13 +85,29 @@ workflows:
           ARCHIVE_PATH="$CM_BUILD_DIR/build/ios/xcarchive/App.xcarchive"
           IPA_DIR="$CM_BUILD_DIR/build/ios/ipa"
 
-          # Find the installed provisioning profile and extract its UUID
-          PROFILE_PATH=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision 2>/dev/null | head -1)
+          # Debug: find all provisioning profiles on the machine
+          echo "=== Provisioning profiles found ==="
+          find /Users/builder/Library/MobileDevice/Provisioning\ Profiles \
+               ~/Library/MobileDevice/Provisioning\ Profiles \
+               -name "*.mobileprovision" 2>/dev/null || echo "None found in default locations"
+          find /tmp /Users/builder -name "*.mobileprovision" 2>/dev/null | head -10 || true
+
+          # Find profile and extract UUID
+          PROFILE_PATH=$(find /Users/builder/Library/MobileDevice/Provisioning\ Profiles \
+                              ~/Library/MobileDevice/Provisioning\ Profiles \
+                              -name "*.mobileprovision" 2>/dev/null | head -1)
           echo "Profile path: $PROFILE_PATH"
+          if [ -z "$PROFILE_PATH" ]; then
+            echo "ERROR: No provisioning profile found. Listing app-store-connect output dirs..."
+            ls -la "$HOME/.appstoreconnect/" 2>/dev/null || true
+            ls -la "$HOME/.appstoreconnect/profiles/" 2>/dev/null || true
+            exit 1
+          fi
           PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['UUID'])")
           echo "Profile UUID: $PROFILE_UUID"
 
-          # Archive
+          # Apply profile to Xcode project then archive
+          xcode-project use-profiles
           xcodebuild \
             -workspace "$WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
