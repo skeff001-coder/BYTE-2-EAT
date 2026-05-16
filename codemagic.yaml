@@ -55,25 +55,32 @@ workflows:
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --certificate-key @env:CERTIFICATE_PRIVATE_KEY \
-            --create \
-            --verbose
+            --create
           keychain add-certificates
           echo "=== Profiles installed ==="
           ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/" || true
-          echo "=== Running use-profiles ==="
-          xcode-project use-profiles \
-            --project "artifacts/culinary-scan-assist/ios/App/App.xcodeproj" \
-            --verbose
-          echo "=== Release signing config after use-profiles ==="
-          grep -E "CODE_SIGN_|PROVISIONING_PROFILE|DEVELOPMENT_TEAM" \
-            artifacts/culinary-scan-assist/ios/App/App.xcodeproj/project.pbxproj || true
+          # Extract the profile name for use in build
+          PROFILE_PATH=$(ls "$HOME/Library/MobileDevice/Provisioning Profiles/"*.mobileprovision 2>/dev/null | head -1)
+          if [ -z "$PROFILE_PATH" ]; then
+            echo "ERROR: No .mobileprovision found!"
+            exit 1
+          fi
+          PROFILE_NAME=$(security cms -D -i "$PROFILE_PATH" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['Name'])")
+          PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(d['UUID'])")
+          echo "Profile name: $PROFILE_NAME"
+          echo "Profile UUID: $PROFILE_UUID"
+          echo "$PROFILE_NAME" > /tmp/profile_name.txt
+          echo "$PROFILE_UUID" > /tmp/profile_uuid.txt
 
       - name: Build iOS IPA
         script: |
+          PROFILE_NAME=$(cat /tmp/profile_name.txt)
+          echo "Using profile: $PROFILE_NAME"
           xcode-project build-ipa \
             --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
             --scheme "$XCODE_SCHEME" \
-            --config "Release"
+            --config "Release" \
+            --xcargs "PROVISIONING_PROFILE_SPECIFIER='$PROFILE_NAME' DEVELOPMENT_TEAM=J6N9GAHK44 CODE_SIGN_IDENTITY='Apple Distribution'"
 
     artifacts:
       - build/ios/ipa/*.ipa
