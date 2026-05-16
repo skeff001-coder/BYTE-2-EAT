@@ -1,0 +1,48 @@
+Showing the last 50 lines. Click this button to load the full log
+    raise InvalidFileException()
+plistlib.InvalidFileException: Invalid file
+Installing profile UUID: 
+Configure code signing settings
+Searching for files matching /Users/builder/Library/Developer/Xcode/UserData/Provisioning Profiles/*.mobileprovision
+Searching for files matching /Users/builder/Library/Developer/Xcode/UserData/Provisioning Profiles/*.provisionprofile
+Searching for files matching /Users/builder/Library/MobileDevice/Provisioning Profiles/*.mobileprovision
+Invalid provisioning profile /Users/builder/Library/MobileDevice/Provisioning Profiles/.mobileprovision:
+Error reading S/MIME message
+Initialize new keychain to store code signing certificates at /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db
+Create keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db
+Set keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db timeout to "no timeout"
+Set keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db to system default keychain
+Unlock keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db
+base64: stdin: (null): error decoding base64 input stream
+Add certificates to keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db
+Searching for files matching /private/tmp/cert.p12
+Add certificate /private/tmp/cert.p12 to keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db
+security: SecKeychainItemImport: Unable to decode the provided data.
+security: SecKeychainItemImport: One or more parameters passed to a function were not valid.
+Unable to add certificate /private/tmp/cert.p12 to keychain /Users/builder/Library/codemagic-cli-tools/keychains/16-05-26_0au3wu57.keychain-db
+base64: stdin: (null): error decoding base64 input stream
+security: failed to decode message: UNKNOWN (-8183(d)
+security: problem decoding
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/Users/builder/.pyenv/versions/3.12.7/lib/python3.12/plistlib.py", line 892, in loads
+    return load(fp, fmt=fmt, dict_type=dict_type)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/builder/.pyenv/versions/3.12.7/lib/python3.12/plistlib.py", line 878, in load
+    raise InvalidFileException()
+plistlib.InvalidFileException: Invalid file
+Installing profile UUID: 
+Configure code signing settings
+Searching for files matching /Users/builder/Library/Developer/Xcode/UserData/Provisioning Profiles/*.mobileprovision
+Searching for files matching /Users/builder/Library/Developer/Xcode/UserData/Provisioning Profiles/*.provisionprofile
+Searching for files matching /Users/builder/Library/MobileDevice/Provisioning Profiles/*.mobileprovision
+Invalid provisioning profile /Users/builder/Library/MobileDevice/Provisioning Profiles/.mobileprovision:
+Error reading S/MIME message
+
+
+Build failed :|
+Step 6 script `Install certificate and provisioning profile` exited with status code 1
+
+
+Build failed :|
+Step 6 script `Install certificate and provisioning profile` exited with status code 1
