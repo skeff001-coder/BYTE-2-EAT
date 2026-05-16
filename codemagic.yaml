@@ -50,7 +50,16 @@ workflows:
       - name: Revoke existing Distribution certificates
         script: |
           set +e
-          bash .codemagic/revoke_certs.sh
+          for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
+            CERT_IDS=$(app-store-connect certificates list --type "$TYPE" --json 2>/dev/null | \
+              python3 -c "import json,sys; [print(c['id']) for c in json.load(sys.stdin)]" 2>/dev/null)
+            if [ -n "$CERT_IDS" ]; then
+              echo "Revoking $TYPE certs: $CERT_IDS"
+              app-store-connect certificates revoke $CERT_IDS || echo "  (revoke returned non-zero)"
+            else
+              echo "No $TYPE certificates found to revoke"
+            fi
+          done
           set -e
 
       - name: Set up keychain
