@@ -158,14 +158,19 @@ function Home() {
           style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-soft)" }}
         >
           <div className="text-left">
-            <div className="text-xs font-medium uppercase tracking-wider opacity-90">Tap to start</div>
-            <div className="mt-1 text-2xl font-bold">Scan My Fridge</div>
-            <div className="mt-1 text-sm opacity-90">AI finds recipes in seconds</div>
-            <div className={`mt-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${credits === 0 ? "bg-red-500/30" : "bg-white/20"}`}>
-              {creditLabel}
+            <div className="text-[10px] font-bold uppercase tracking-widest opacity-80">📸 Point. Snap. Cook.</div>
+            <div className="mt-1.5 text-2xl font-extrabold leading-tight">
+              Scan Your Fridge<br />
+              <span className="text-yellow-300">Get Instant Recipes</span>
+            </div>
+            <div className="mt-1.5 text-sm opacity-90 leading-snug">
+              AI reads your ingredients &amp; builds<br />a personalised meal plan in seconds
+            </div>
+            <div className={`mt-2.5 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${credits === 0 ? "bg-red-500/40" : "bg-white/25"}`}>
+              {credits === 0 ? "⛔ " : "⚡ "}{creditLabel}
             </div>
           </div>
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm ring-2 ring-white/30">
             <Camera className="h-8 w-8" />
           </div>
         </button>
