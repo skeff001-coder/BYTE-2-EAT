@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings } from "lucide-react";
 import { useState } from "react";
-import { trendingRecipes, type Recipe } from "@/lib/recipes";
+import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { useScanCredits } from "@/lib/use-scan-credits";
@@ -20,6 +20,7 @@ function Home() {
   const [query, setQuery] = useState("");
   const [showPaywall, setShowPaywall] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [recipes] = useState<Recipe[]>(() => getTrendingRecipes(4));
   const navigate = useNavigate();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
@@ -29,10 +30,10 @@ function Home() {
 
   const q = query.trim().toLowerCase();
   const filtered = q
-    ? trendingRecipes.filter(
+    ? recipes.filter(
         (r) => r.title.toLowerCase().includes(q) || r.tag.toLowerCase().includes(q),
       )
-    : trendingRecipes;
+    : recipes;
 
   const handleScanPress = () => {
     if (canScan) {
