@@ -30,7 +30,7 @@ workflows:
 
       - name: Install workspace dependencies
         script: |
-          npx --yes pnpm@10.26.1 install --frozen-lockfile
+          npx --yes pnpm@10.26.1 install --no-frozen-lockfile
 
       - name: Build web app for Capacitor
         script: |
