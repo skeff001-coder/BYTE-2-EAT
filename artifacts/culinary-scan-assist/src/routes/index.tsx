@@ -97,23 +97,28 @@ function Home() {
 
         {/* Logo — full width, never competes with buttons */}
         <BrandLogo size="2xl" variant="primary" shadow3d />
-        <p
-          style={{
-            fontFamily: "'Righteous', cursive",
-            fontSize: "clamp(0.65rem, 2.4vw, 0.95rem)",
-            letterSpacing: "clamp(0.08em, 0.6vw, 0.22em)",
-            textTransform: "uppercase",
-            background: "linear-gradient(90deg, #15803d 0%, #0f766e 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            filter: "drop-shadow(0 0 6px rgba(21,128,61,0.3))",
-            margin: "10px 0 0 0",
-            lineHeight: 1.4,
-          }}
-        >
-          Where AI Meets the Frying Pan
-        </p>
+        <div className="mt-3 flex items-center gap-2">
+          <span style={{ fontSize: "1.2rem" }}>🍳</span>
+          <p
+            style={{
+              fontFamily: "'Righteous', cursive",
+              fontSize: "clamp(0.72rem, 2.6vw, 1rem)",
+              letterSpacing: "clamp(0.06em, 0.5vw, 0.18em)",
+              textTransform: "uppercase",
+              background: "linear-gradient(90deg, #16a34a 0%, #0d9488 50%, #15803d 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              filter: "drop-shadow(0 1px 8px rgba(21,128,61,0.45))",
+              margin: 0,
+              lineHeight: 1.4,
+              fontWeight: 700,
+            }}
+          >
+            Where AI Meets the Frying Pan
+          </p>
+          <span style={{ fontSize: "1.2rem" }}>✨</span>
+        </div>
 
         {monthly > 0 && (
           <div className="mt-4 flex items-center gap-3 rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-200">
