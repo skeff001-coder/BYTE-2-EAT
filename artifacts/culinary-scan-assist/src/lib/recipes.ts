@@ -1,8 +1,3 @@
-import r1 from "@/assets/recipe-1.jpg";
-import r2 from "@/assets/recipe-2.jpg";
-import r3 from "@/assets/recipe-3.jpg";
-import r4 from "@/assets/recipe-4.jpg";
-
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -36,7 +31,7 @@ export const trendingRecipes: Recipe[] = [
     time: "20 min",
     difficulty: "Easy",
     tag: "Vegan",
-    image: r1,
+    image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop&auto=format",
     calories: 320,
     servings: 2,
     ingredients: [
@@ -66,7 +61,7 @@ export const trendingRecipes: Recipe[] = [
     time: "15 min",
     difficulty: "Easy",
     tag: "Quick",
-    image: r2,
+    image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop&auto=format",
     calories: 490,
     servings: 2,
     ingredients: [
@@ -93,7 +88,7 @@ export const trendingRecipes: Recipe[] = [
     time: "10 min",
     difficulty: "Easy",
     tag: "Healthy",
-    image: r3,
+    image: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop&auto=format",
     calories: 280,
     servings: 1,
     ingredients: [
@@ -116,7 +111,7 @@ export const trendingRecipes: Recipe[] = [
     time: "30 min",
     difficulty: "Medium",
     tag: "Protein",
-    image: r4,
+    image: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&h=300&fit=crop&auto=format",
     calories: 410,
     servings: 2,
     ingredients: [
@@ -143,7 +138,7 @@ export const trendingRecipes: Recipe[] = [
     time: "25 min",
     difficulty: "Easy",
     tag: "Vegan",
-    image: r1,
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=300&fit=crop&auto=format",
     calories: 290,
     servings: 3,
     ingredients: [
@@ -171,7 +166,7 @@ export const trendingRecipes: Recipe[] = [
     time: "15 min",
     difficulty: "Easy",
     tag: "Healthy",
-    image: r3,
+    image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop&auto=format",
     calories: 340,
     servings: 2,
     ingredients: [
@@ -196,7 +191,7 @@ export const trendingRecipes: Recipe[] = [
     time: "20 min",
     difficulty: "Medium",
     tag: "Protein",
-    image: r4,
+    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=300&fit=crop&auto=format",
     calories: 460,
     servings: 2,
     ingredients: [
@@ -222,7 +217,7 @@ export const trendingRecipes: Recipe[] = [
     time: "30 min",
     difficulty: "Medium",
     tag: "Vegan",
-    image: r2,
+    image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop&auto=format",
     calories: 380,
     servings: 3,
     ingredients: [
@@ -250,7 +245,7 @@ export const trendingRecipes: Recipe[] = [
     time: "15 min",
     difficulty: "Easy",
     tag: "Quick",
-    image: r3,
+    image: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&h=300&fit=crop&auto=format",
     calories: 310,
     servings: 2,
     ingredients: [
@@ -277,7 +272,7 @@ export const trendingRecipes: Recipe[] = [
     time: "10 min",
     difficulty: "Easy",
     tag: "Healthy",
-    image: r3,
+    image: "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=400&h=300&fit=crop&auto=format",
     calories: 240,
     servings: 2,
     ingredients: [
@@ -301,7 +296,7 @@ export const trendingRecipes: Recipe[] = [
     time: "25 min",
     difficulty: "Easy",
     tag: "Quick",
-    image: r1,
+    image: "https://images.unsplash.com/photo-1590412200988-a436970781fa?w=400&h=300&fit=crop&auto=format",
     calories: 290,
     servings: 2,
     ingredients: [
@@ -330,7 +325,7 @@ export const trendingRecipes: Recipe[] = [
     time: "15 min",
     difficulty: "Easy",
     tag: "Protein",
-    image: r4,
+    image: "https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&h=300&fit=crop&auto=format",
     calories: 420,
     servings: 2,
     ingredients: [
