@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings } from "lucide-react";
 import { useState } from "react";
-import { trendingRecipes } from "@/lib/recipes";
+import { trendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { useScanCredits } from "@/lib/use-scan-credits";
@@ -10,6 +10,7 @@ import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
 import { GoalModeSelector } from "@/components/goal-mode-selector";
 import { BrandLogo } from "@/components/brand-logo";
+import { RecipeModal } from "@/components/recipe-modal";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [query, setQuery] = useState("");
   const [showPaywall, setShowPaywall] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const navigate = useNavigate();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
@@ -53,6 +55,9 @@ function Home() {
           onClose={() => setShowPaywall(false)}
           onUnlock={() => { purchasePlan("yearly"); setShowPaywall(false); }}
         />
+      )}
+      {selectedRecipe && (
+        <RecipeModal recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
       )}
 
       <header className="px-5 pt-8 pb-4">
@@ -179,26 +184,32 @@ function Home() {
           {filtered.map((r) => (
             <li
               key={r.id}
-              className="flex items-center gap-4 rounded-2xl bg-card p-3 shadow-sm ring-1 ring-border transition-shadow hover:shadow-md"
+              className="flex items-center gap-4 rounded-2xl bg-card p-3 shadow-sm ring-1 ring-border transition-shadow hover:shadow-md active:scale-[0.98]"
             >
-              <img
-                src={r.image}
-                alt={r.title}
-                width={768}
-                height={512}
-                loading="lazy"
-                className="h-20 w-20 flex-shrink-0 rounded-xl object-cover"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
-                  {r.tag}
+              <button
+                onClick={() => setSelectedRecipe(r)}
+                className="flex flex-1 items-center gap-4 min-w-0 text-left"
+                aria-label={`View ${r.title} recipe`}
+              >
+                <img
+                  src={r.image}
+                  alt={r.title}
+                  width={768}
+                  height={512}
+                  loading="lazy"
+                  className="h-20 w-20 flex-shrink-0 rounded-xl object-cover"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
+                    {r.tag}
+                  </div>
+                  <h3 className="mt-1 truncate text-base font-semibold text-foreground">{r.title}</h3>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {r.time}</span>
+                    <span>{r.difficulty}</span>
+                  </div>
                 </div>
-                <h3 className="mt-1 truncate text-base font-semibold text-foreground">{r.title}</h3>
-                <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {r.time}</span>
-                  <span>{r.difficulty}</span>
-                </div>
-              </div>
+              </button>
               <button
                 onClick={async () => {
                   if (!isAuthed) { navigate({ to: "/auth" }); return; }

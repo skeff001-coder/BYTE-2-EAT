@@ -54,7 +54,7 @@ function HealthScore({ score, tip }: { score: number; tip: string | null }) {
   );
 }
 
-const TABS: { id: ResultTab; label: string; icon: React.ElementType }[] = [
+const TABS: { id: ResultTab; label: string; icon: React.FC<{ className?: string }> }[] = [
   { id: "recipes",   label: "Recipes",    icon: UtensilsCrossed },
   { id: "mealplan",  label: "Meal Plan",  icon: CalendarDays },
   { id: "shopping",  label: "Shopping",   icon: ShoppingCart },
