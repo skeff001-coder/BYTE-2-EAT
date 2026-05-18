@@ -32,11 +32,6 @@ workflows:
         script: |
           npx --yes pnpm@10.26.1 install --no-frozen-lockfile
 
-      - name: Build web app for Capacitor
-        script: |
-          cd artifacts/culinary-scan-assist
-          npx --yes pnpm@10.26.1 run build:capacitor
-
       - name: Sync Capacitor iOS project
         script: |
           cd artifacts/culinary-scan-assist
