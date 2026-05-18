@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, ChevronRight, FileText, Shield, Trash2, LogOut, Info, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, FileText, Shield, Trash2, LogOut, Info, Loader2, Zap } from "lucide-react";
 import { useState } from "react";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { useScanCredits } from "@/lib/use-scan-credits";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -15,6 +16,13 @@ function SettingsPage() {
   const navigate = useNavigate();
   const [deleteState, setDeleteState] = useState<DeleteState>("idle");
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { credits, purchasePlan } = useScanCredits();
+  const [scansRestored, setScansRestored] = useState(false);
+
+  const handleRestoreScans = () => {
+    purchasePlan("yearly");
+    setScansRestored(true);
+  };
 
   const handleDeleteAccount = async () => {
     setDeleteState("deleting");
@@ -199,6 +207,30 @@ function SettingsPage() {
           </p>
         </div>
 
+        {/* Scans section */}
+        <div className="rounded-3xl bg-card ring-1 ring-border overflow-hidden">
+          <div className="px-5 pt-4 pb-3 border-b border-border">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Scans</p>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+            <div className="flex items-center gap-3 text-sm text-foreground">
+              <Zap className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              Scans remaining
+            </div>
+            <span className="text-sm font-semibold text-foreground">
+              {credits === -1 ? "Unlimited" : credits}
+            </span>
+          </div>
+          <button
+            onClick={handleRestoreScans}
+            disabled={credits === -1 || scansRestored}
+            className="flex w-full items-center gap-3 px-5 py-4 text-sm font-medium text-primary hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <Zap className="h-4 w-4 flex-shrink-0" />
+            {scansRestored || credits === -1 ? "Unlimited scans active ✓" : "Restore Purchases / Unlimited Scans"}
+          </button>
+        </div>
+
         {/* App Info */}
         <div className="rounded-3xl bg-card ring-1 ring-border overflow-hidden">
           <div className="px-5 pt-4 pb-3 border-b border-border">
@@ -213,7 +245,7 @@ function SettingsPage() {
           </div>
           <div className="flex items-center justify-between px-5 py-4">
             <span className="text-sm text-foreground">Bundle ID</span>
-            <span className="text-xs text-muted-foreground font-mono">com.bitecooking.app</span>
+            <span className="text-xs text-muted-foreground font-mono">Com.bitecooking.app</span>
           </div>
         </div>
 

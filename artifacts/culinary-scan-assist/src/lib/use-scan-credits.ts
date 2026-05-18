@@ -5,8 +5,8 @@ const STORAGE_KEY = "bite_scan_credits";
 function readCredits(): number {
   const val = localStorage.getItem(STORAGE_KEY);
   if (val === null) {
-    localStorage.setItem(STORAGE_KEY, "1");
-    return 1;
+    localStorage.setItem(STORAGE_KEY, "3");
+    return 3;
   }
   return Number(val);
 }
