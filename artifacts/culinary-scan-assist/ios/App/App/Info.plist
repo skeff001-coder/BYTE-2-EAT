@@ -7,7 +7,7 @@
         <key>CFBundleDevelopmentRegion</key>
         <string>en</string>
         <key>CFBundleDisplayName</key>
-        <string>Bite</string>
+        <string>Byte 2 Eat</string>
         <key>CFBundleExecutable</key>
         <string>$(EXECUTABLE_NAME)</string>
         <key>CFBundleIdentifier</key>
@@ -48,8 +48,8 @@
         <key>UIViewControllerBasedStatusBarAppearance</key>
         <true/>
         <key>NSCameraUsageDescription</key>
-        <string>Bite uses your camera to scan your fridge and identify ingredients for recipe suggestions.</string>
+        <string>Byte 2 Eat uses your camera to scan your fridge and identify ingredients for recipe suggestions.</string>
         <key>NSPhotoLibraryUsageDescription</key>
-        <string>Bite accesses your photo library so you can upload a fridge photo for ingredient detection.</string>
+        <string>Byte 2 Eat accesses your photo library so you can upload a fridge photo for ingredient detection.</string>
 </dict>
 </plist>
