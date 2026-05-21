@@ -1,0 +1,62 @@
+import { Router, type IRouter } from "express";
+
+const router: IRouter = Router();
+
+router.get("/support", (_req, res) => {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Byte 2 Eat — Support</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 640px; margin: 0 auto; padding: 2rem 1.5rem; color: #1a1a1a; background: #f9f9f9; }
+    h1 { color: #2d6a4f; }
+    h2 { color: #2d6a4f; margin-top: 2rem; }
+    a { color: #2d6a4f; }
+    .card { background: #fff; border-radius: 12px; padding: 1.5rem; margin-top: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    p { line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <h1>Byte 2 Eat — Support</h1>
+  <p>Welcome to Byte 2 Eat support. We are happy to help with any questions about the app.</p>
+
+  <div class="card">
+    <h2>Contact Us</h2>
+    <p>Email: <a href="mailto:support@byte2eat.app">support@byte2eat.app</a></p>
+    <p>We aim to respond within 1–2 business days.</p>
+  </div>
+
+  <div class="card">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>How do I scan my fridge?</h3>
+    <p>Tap the <strong>Scan My Fridge</strong> button on the home screen. You can use your camera or upload a photo from your photo library. The AI will detect ingredients and suggest recipes.</p>
+
+    <h3>How many free scans do I get?</h3>
+    <p>New users receive <strong>1 free scan</strong>. After that, you can unlock unlimited scans by purchasing the Premium plan.</p>
+
+    <h3>How do I get unlimited scans?</h3>
+    <p>When your free scan is used, a paywall screen will appear offering the <strong>Premium plan (£4.99 one-time purchase)</strong> for unlimited scans. Tap <em>Unlock Premium</em> to purchase. You can also tap <em>Restore Purchases</em> in Settings if you have already paid on another device.</p>
+
+    <h3>How do I restore my purchase?</h3>
+    <p>Go to <strong>Settings → Restore Purchases</strong> inside the app and tap the Restore button.</p>
+
+    <h3>How do I delete my account?</h3>
+    <p>Go to <strong>Settings → Delete Account</strong>. This will permanently delete your account and all associated data.</p>
+
+    <h3>Do I need an account to use the app?</h3>
+    <p>No — you can scan your fridge and get recipe suggestions without creating an account. An account is only needed to save favourite recipes and access scan history across devices.</p>
+  </div>
+
+  <div class="card">
+    <h2>Privacy &amp; Legal</h2>
+    <p>Email: <a href="mailto:privacy@byte2eat.app">privacy@byte2eat.app</a></p>
+  </div>
+</body>
+</html>`);
+});
+
+export default router;

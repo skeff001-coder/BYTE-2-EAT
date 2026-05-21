@@ -1,0 +1,62 @@
+
+Thank you for your resubmission. Upon further review, we identified additional issues that need your attention. See below for more information.
+
+If you have any questions, we are here to help. Reply to this message in App Store Connect and let us know.
+
+Review Environment
+Submission ID: 85d93dd7-2aa5-4eaf-8080-ddb2b43ecd68
+Review date: May 21, 2026
+Review Device: iPad Air 11-inch (M3)
+Version reviewed: 1.0.1 (37)
+
+Guideline 1.5 - Safety
+Issue Description
+
+The Support URL provided in App Store Connect, https://github.com/skeff001-coder/BYTE-2-EAT, still does not direct to a website with information users can use to ask questions and request support.
+
+Next Steps
+
+Update the specified Support URL to direct users to a functional webpage with support information.
+
+Guideline 2.1 - Information Needed
+
+We need more information to continue the review.
+
+Next Steps
+
+Provide detailed answers to the following questions:
+
+- How do users top up number of scans?
+
+
+Guideline 2.1(a) - Performance - App Completeness
+Issue Description
+
+The app exhibited one or more bugs that would negatively impact users.
+
+Bug description: App still remained on the same screen after creating an account.
+
+Review device details:
+
+- Device type: iPad Air 11-inch (M3) 
+- OS version: iPadOS 26.4.2
+- Internet Connection: Active
+
+Next Steps
+
+Test the app on supported devices to identify and resolve bugs and stability issues before submitting for review.
+
+If the bug cannot be reproduced, try the following:
+
+- For new apps, uninstall all previous versions of the app from a device, then install and follow the steps to reproduce.
+- For app updates, install the new version as an update to the previous version, then follow the steps to reproduce.
+
+Note that users expect apps they download to function on all the devices where they are available. For example, apps that may be downloaded onto iPad devices should function as expected for iPad users. 
+
+Resources
+
+- For information about testing apps and preparing them for review, see Testing a Release Build.
+- To learn about troubleshooting networking issues, see Networking Overview.
+
+
+Support

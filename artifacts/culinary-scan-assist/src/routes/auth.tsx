@@ -37,12 +37,15 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
             data: { display_name: displayName || email.split("@")[0] },
           },
         });
         if (error) throw error;
-        setInfo("Account created! Signing you in…");
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) {
+          setInfo("Account created! Please check your email to confirm, then sign in.");
+          return;
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

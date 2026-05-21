@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "Culinary Scan Assist"
+title = "byte"
 version = "1.0.0"
 id = "artifacts/culinary-scan-assist"
 router = "path"
