@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as LegalRouteImport } from './routes/legal'
@@ -16,6 +17,11 @@ import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/legal': typeof LegalRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/legal': typeof LegalRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +79,27 @@ export interface FileRoutesById {
   '/legal': typeof LegalRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/favorites' | '/legal' | '/scan' | '/settings'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/favorites'
+    | '/legal'
+    | '/scan'
+    | '/settings'
+    | '/support'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/favorites' | '/legal' | '/scan' | '/settings'
+  to:
+    | '/'
+    | '/auth'
+    | '/favorites'
+    | '/legal'
+    | '/scan'
+    | '/settings'
+    | '/support'
   id:
     | '__root__'
     | '/'
@@ -85,6 +108,7 @@ export interface FileRouteTypes {
     | '/legal'
     | '/scan'
     | '/settings'
+    | '/support'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,10 +118,18 @@ export interface RootRouteChildren {
   LegalRoute: typeof LegalRoute
   ScanRoute: typeof ScanRoute
   SettingsRoute: typeof SettingsRoute
+  SupportRoute: typeof SupportRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -150,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalRoute: LegalRoute,
   ScanRoute: ScanRoute,
   SettingsRoute: SettingsRoute,
+  SupportRoute: SupportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
