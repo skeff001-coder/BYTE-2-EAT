@@ -1,0 +1,79 @@
+Guideline 2.3.3 - Performance - Accurate Metadata
+Issue Description
+
+The 6.5-inch iPhone and 13-inch iPad screenshots do not show the actual app in use in the majority of the screenshots. Screenshots should highlight the app's core concept to help users understand the app’s functionality and value. 
+
+Next Steps
+
+Upload new screenshots that resolve the issues identified above and accurately reflect the app in use on each of the supported devices.
+
+Note some screenshots may only be viewed and updated by selecting "View All Sizes in Media Manager" in the Previews and Screenshots section of App Store Connect.
+
+Resources
+
+Follow these general requirements when adding or updating screenshots:
+
+- Marketing or promotional materials that do not reflect the UI of the app are not appropriate for screenshots.
+- The majority of the screenshots should highlight the app's main features and functionality. Note that splash and login screens are generally not considered to show the app in use.
+
+Learn more about creating great screenshots for your product page on the App Store or how to upload screenshots in App Store Connect.
+Guideline 1.5 - Safety
+Issue Description
+
+The Support URL provided in App Store Connect, https://capacitor-i-os-builder.replit.app/support, is currently not functional and/or displays an error. 
+
+Next Steps
+
+Update the specified Support URL to direct users to a functional webpage with support information.
+
+Resources
+
+- Learn about Support URLs and other platform version information on App Store Connect Help.
+- Learn more about developer information requirements in guideline 1.5.
+Guideline 2.1(a) - Performance - App Completeness
+Issue Description
+
+The app exhibited one or more bugs that would negatively impact users.
+
+Bug description: 
+(1) we were unable to create an account due to an error.
+(2) we were unable to purchase the premium content due to an error.
+
+Review device details:
+
+- Device type: iPhone 17 Pro Max 
+- OS version: iOS 26.5
+- Internet Connection: Active
+
+Next Steps
+
+Test the app on supported devices to identify and resolve bugs and stability issues before submitting for review.
+
+If the bug cannot be reproduced, try the following:
+
+- For new apps, uninstall all previous versions of the app from a device, then install and follow the steps to reproduce.
+- For app updates, install the new version as an update to the previous version, then follow the steps to reproduce.
+
+Note that users expect apps they download to function on all the devices where they are available. For example, apps that may be downloaded onto iPad devices should function as expected for iPad users. 
+
+Resources
+
+- For information about testing apps and preparing them for review, see Testing a Release Build.
+- To learn about troubleshooting networking issues, see Networking Overview.
+
+
+Guideline 2.1(b) - Performance - App Completeness
+
+Issue Description
+
+We are unable to complete the review of the app because one or more of the In-App Purchase products have not been submitted for review.
+
+Specifically, the app includes references to paid content but the associated In-App Purchase products have not been submitted for review. 
+
+Next Steps
+
+To resolve this issue, please be sure to take action and submit your In-App Purchases and upload a new binary in App Store Connect so we can proceed with our review. 
+
+Note you must provide an App Review screenshot in App Store Connect in order to submit In-App Purchases for review. Learn more about required In-App Purchase metadata.
+
+Resources 
