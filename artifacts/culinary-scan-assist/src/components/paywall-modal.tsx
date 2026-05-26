@@ -12,11 +12,12 @@ const PLANS: {
   price: string;
   scans: number;
   expiry: string;
+  perScan?: string;
   badge?: string;
 }[] = [
   { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.99", scans: 1,  expiry: "30 days" },
   { productId: PRODUCT_SCAN10, label: "Monthly Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "1 month",  badge: "Popular" },
-  { productId: PRODUCT_SCAN30, label: "30 Scan Saver Pack",        price: "£8.99", scans: 30, expiry: "3 months", badge: "Best Value" },
+  { productId: PRODUCT_SCAN30, label: "30 Scan Saver Pack",        price: "£11.99", scans: 30, expiry: "3 months", perScan: "Only 39p/scan", badge: "Best Value" },
 ];
 
 export function PaywallModal({ onClose, onUnlock }: Props) {
@@ -92,6 +93,9 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
                   <div className="text-left">
                     <p className="text-sm font-bold text-foreground">{plan.label}</p>
                     <p className="text-xs text-muted-foreground">{plan.scans} {plan.scans === 1 ? "scan" : "scans"} · expires in {plan.expiry}</p>
+                    {plan.perScan && (
+                      <p className="text-[11px] font-semibold text-primary mt-0.5">{plan.perScan}</p>
+                    )}
                   </div>
                 </div>
                 <div className="text-right">
