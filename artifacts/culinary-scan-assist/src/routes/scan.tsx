@@ -323,9 +323,39 @@ function ScanPage() {
           {result.healthScore != null && (
             <>
               <HealthScore score={result.healthScore} tip={result.healthTip ?? null} />
-              <p className="mt-2 px-1 text-[10px] text-muted-foreground leading-relaxed">
-                ⚠️ Health scores are for informational purposes only and do not constitute medical or dietary advice. Always consult a qualified healthcare professional before making changes to your diet.
-              </p>
+              <div className="mt-3 rounded-2xl bg-amber-50 px-4 py-3 ring-1 ring-amber-200">
+                <p className="text-[11px] font-bold text-amber-800 uppercase tracking-wide mb-1.5">⚠️ Health &amp; Allergy Disclaimer</p>
+                <p className="text-[11px] text-amber-700 leading-relaxed">
+                  Health scores and nutritional tips are AI-generated estimates for informational purposes only. They are <strong>not</strong> medical or dietary advice. Always check for allergens before cooking and consult a qualified healthcare professional before changing your diet.
+                </p>
+                <p className="text-[11px] font-semibold text-amber-800 mt-2 mb-1">Sources &amp; Further Reading:</p>
+                <ul className="space-y-1">
+                  <li>
+                    <a href="https://www.nhs.uk/live-well/eat-well/food-guidelines-and-food-labels/the-eatwell-guide/" target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] text-blue-700 underline underline-offset-2">
+                      NHS Eatwell Guide — Healthy eating guidelines (NHS.uk)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.fda.gov/food/nutrition-information-food-labeling/food-labeling-nutrition" target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] text-blue-700 underline underline-offset-2">
+                      FDA — Food Labelling &amp; Nutrition (FDA.gov)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.who.int/news-room/fact-sheets/detail/healthy-diet" target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] text-blue-700 underline underline-offset-2">
+                      WHO — Healthy Diet Fact Sheet (WHO.int)
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.food.gov.uk/safety-hygiene/food-allergies-and-intolerances" target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] text-blue-700 underline underline-offset-2">
+                      Food Standards Agency — Allergies &amp; Intolerances (food.gov.uk)
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </>
           )}
 

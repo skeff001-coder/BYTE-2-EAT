@@ -1,0 +1,44 @@
+Hello,
+
+Thank you for your resubmission. Upon further review, we identified additional issues that need your attention. See below for more information.
+
+If you have any questions, we are here to help. Reply to this message in App Store Connect and let us know.
+
+Review Environment
+Submission ID: 15c2dc54-1f00-4cf0-a138-3f609be4b472
+Review date: May 25, 2026
+Review Device: iPhone 17 Pro Max
+Version reviewed: 1.0.1 (40)
+
+Guideline 1.4.1 - Safety - Physical Harm
+
+Issue Description
+
+The app includes medical information but does not include citations for the medical information. 
+
+Specifically, the app provides health or medical recommendations and wellness reports in the app without citations, such as links to sources for this information.
+
+All apps with medical and health information should include citations to ensure users are provided accurate information.
+
+Next Steps
+
+Include citations in the app of the sources of the recommendations or information, such as links to those sources. The citations to the sources should be easy for the user to find. 
+
+Resources 
+
+Learn more about requirements for medical apps in guideline 1.4.1.
+Support
+- Reply to this message in your preferred language if you need assistance. If you need additional support, use the Contact Us module.
+- Consult with fellow developers and Apple engineers on the Apple Developer Forums.
+- Request an App Review Appointment at Meet with Apple to discuss your app's review. Appointments subject to availability during your local business hours on Tuesdays and Thursdays.
+- Provide feedback on this message and your review experience by completing a short survey.
+
+
+owen skeffingtonYesterday 8:01 PM
+I have addressed Guideline 1.4.1 in Build 41 by adding a visible medical and allergy disclaimer to the recipe results screen, along with citations and links to FDA food safety guidelines. I have also confirmed in the App Information settings that Byte 2 Eat is not a regulated medical device. Please re-review the new build."
+Date Submitted
+May 25, 2026 at 8:02 PM
+Submission ID
+15c2dc54-1f00-4cf0-a138-3f609be4b472
+Submitted By
+owen skeffington
