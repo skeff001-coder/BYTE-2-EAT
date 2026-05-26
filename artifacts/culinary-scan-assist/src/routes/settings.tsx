@@ -20,7 +20,7 @@ function SettingsPage() {
   const [scansRestored, setScansRestored] = useState(false);
 
   const handleRestoreScans = () => {
-    purchasePlan("yearly");
+    purchasePlan("scan10");
     setScansRestored(true);
   };
 

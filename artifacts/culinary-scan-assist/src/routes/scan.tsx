@@ -7,7 +7,8 @@ import type { AnalysisResult } from "@/lib/analyze-fridge";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { useScanCredits } from "@/lib/use-scan-credits";
+import { useScanCredits, type ScanPlan } from "@/lib/use-scan-credits";
+import { PRODUCT_SCAN1, PRODUCT_SCAN10, PRODUCT_SCAN30, type PurchasedProduct } from "@/lib/use-iap";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
@@ -163,14 +164,22 @@ function ScanPage() {
     setNewIngredient("");
   };
 
-  const creditLabel = credits === -1 ? "Unlimited" : credits === 1 ? "1 scan left" : credits === 0 ? "No scans left" : `${credits} scans left`;
+  const creditLabel = credits === 1 ? "1 scan left" : credits === 0 ? "No scans left" : `${credits} scans left`;
 
   return (
     <main className="min-h-screen bg-background">
       {showPaywall && (
         <PaywallModal
           onClose={() => setShowPaywall(false)}
-          onUnlock={() => { purchasePlan("yearly"); setShowPaywall(false); }}
+          onUnlock={(productId: PurchasedProduct) => {
+            const planMap: Record<PurchasedProduct, ScanPlan> = {
+              [PRODUCT_SCAN1]:  "scan1",
+              [PRODUCT_SCAN10]: "scan10",
+              [PRODUCT_SCAN30]: "scan30",
+            };
+            purchasePlan(planMap[productId]);
+            setShowPaywall(false);
+          }}
         />
       )}
 

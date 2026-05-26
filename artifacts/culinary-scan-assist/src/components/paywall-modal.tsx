@@ -1,18 +1,22 @@
-import { Loader2, Sparkles, X, Infinity, ShieldCheck, CalendarDays, ShoppingCart, Zap } from "lucide-react";
-import { useIAP } from "@/lib/use-iap";
-
-const FEATURES = [
-  { icon: Infinity,      label: "Unlimited fridge scans" },
-  { icon: Sparkles,      label: "AI recipe suggestions" },
-  { icon: CalendarDays,  label: "Personalised meal plans" },
-  { icon: ShoppingCart,  label: "Auto shopping lists" },
-  { icon: Zap,           label: "Health scores & tips" },
-];
+import { Loader2, Sparkles, X, ShieldCheck, Zap } from "lucide-react";
+import { useIAP, PRODUCT_SCAN1, PRODUCT_SCAN10, PRODUCT_SCAN30, type PurchasedProduct } from "@/lib/use-iap";
 
 interface Props {
   onClose: () => void;
-  onUnlock: () => void;
+  onUnlock: (productId: PurchasedProduct) => void;
 }
+
+const PLANS: {
+  productId: PurchasedProduct;
+  label: string;
+  price: string;
+  scans: number;
+  badge?: string;
+}[] = [
+  { productId: PRODUCT_SCAN1,  label: "Single Scan",     price: "£0.49", scans: 1 },
+  { productId: PRODUCT_SCAN10, label: "10 Scans",        price: "£4.99", scans: 10, badge: "Popular" },
+  { productId: PRODUCT_SCAN30, label: "30 Scans",        price: "£8.99", scans: 30, badge: "Best Value" },
+];
 
 export function PaywallModal({ onClose, onUnlock }: Props) {
   const { purchase, restore, reset, state, errorMsg, isNative } = useIAP(onUnlock);
@@ -49,60 +53,57 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 mb-3">
             <Sparkles className="h-7 w-7" />
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">Unlock Byte 2 Eat Premium</h2>
+          <h2 className="text-xl font-extrabold tracking-tight">Get More Scans</h2>
           <p className="mt-1 text-sm opacity-90">
-            You've used your free trial scan. Unlock unlimited access.
+            Choose a scan pack — use them whenever you like, they never expire.
           </p>
         </div>
 
-        {/* Feature list */}
-        <ul className="px-6 pt-5 space-y-3">
-          {FEATURES.map(({ icon: Icon, label }) => (
-            <li key={label} className="flex items-center gap-3 text-sm text-foreground">
-              <span
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl"
-                style={{ background: "var(--gradient-primary)" }}
+        {/* Plan options */}
+        {isSuccess ? (
+          <div className="m-6 flex items-center justify-center gap-2 rounded-2xl py-5 text-sm font-bold text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200">
+            <ShieldCheck className="h-5 w-5" /> Scans added — enjoy!
+          </div>
+        ) : (
+          <div className="px-5 pt-5 pb-2 space-y-3">
+            {PLANS.map((plan) => (
+              <button
+                key={plan.productId}
+                disabled={isBusy || !isNative}
+                onClick={() => purchase(plan.productId)}
+                className="relative flex w-full items-center justify-between rounded-2xl bg-card px-4 py-4 ring-1 ring-border transition-transform active:scale-[0.98] disabled:opacity-60"
               >
-                <Icon className="h-4 w-4 text-primary-foreground" />
-              </span>
-              {label}
-            </li>
-          ))}
-        </ul>
-
-        {/* Price */}
-        <div className="px-6 pt-5 text-center">
-          <p className="text-3xl font-extrabold text-foreground">£4.99</p>
-          <p className="text-xs text-muted-foreground mt-0.5">One-time purchase · Unlock forever · No subscription</p>
-        </div>
-
-        {/* Buy button */}
-        <div className="px-6 pt-4 pb-2">
-          {isSuccess ? (
-            <div className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-bold text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200">
-              <ShieldCheck className="h-5 w-5" /> Premium unlocked — enjoy!
-            </div>
-          ) : (
-            <button
-              disabled={isBusy}
-              onClick={purchase}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-bold text-primary-foreground transition-transform active:scale-[0.98] disabled:opacity-60"
-              style={{ background: "var(--gradient-primary)" }}
-            >
-              {isBusy ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  {isPurchasing ? "Opening App Store…" : "Restoring…"}
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4" />
-                  {isNative ? "Unlock Premium" : "Available on iOS App"}
-                </>
-              )}
-            </button>
-          )}
-        </div>
+                {plan.badge && (
+                  <span
+                    className="absolute -top-2 right-4 rounded-full px-2.5 py-0.5 text-[10px] font-bold text-primary-foreground"
+                    style={{ background: "var(--gradient-primary)" }}
+                  >
+                    {plan.badge}
+                  </span>
+                )}
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex h-9 w-9 items-center justify-center rounded-xl text-primary-foreground"
+                    style={{ background: "var(--gradient-primary)" }}
+                  >
+                    <Zap className="h-4 w-4" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm font-bold text-foreground">{plan.label}</p>
+                    <p className="text-xs text-muted-foreground">{plan.scans} {plan.scans === 1 ? "scan" : "scans"} · never expire</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  {isBusy ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  ) : (
+                    <p className="text-base font-extrabold text-foreground">{isNative ? plan.price : "iOS only"}</p>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Error */}
         {errorMsg && (
@@ -121,7 +122,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
             </button>
           )}
           <p className="text-center text-[10px] text-muted-foreground leading-relaxed mt-1">
-            £4.99 charged to your Apple ID at confirmation of purchase. This is a one-time payment — no recurring subscription. Manage purchases in your Apple ID Account Settings.
+            Charged to your Apple ID at confirmation of purchase. Scan packs are one-time purchases — no subscription. Manage in your Apple ID Account Settings.
           </p>
         </div>
 

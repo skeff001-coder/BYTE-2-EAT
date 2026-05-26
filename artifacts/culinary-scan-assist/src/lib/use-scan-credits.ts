@@ -15,29 +15,33 @@ function writeCredits(n: number) {
   localStorage.setItem(STORAGE_KEY, String(n));
 }
 
+export type ScanPlan = "scan1" | "scan10" | "scan30";
+
+export const PLAN_CREDITS: Record<ScanPlan, number> = {
+  scan1:  1,
+  scan10: 10,
+  scan30: 30,
+};
+
 export function useScanCredits() {
   const [credits, setCredits] = useState<number>(() => readCredits());
 
-  const canScan = credits === -1 || credits > 0;
+  const canScan = credits > 0;
 
   const consumeCredit = useCallback(() => {
     const c = readCredits();
-    if (c === -1) return;
+    if (c <= 0) return;
     const next = Math.max(0, c - 1);
     writeCredits(next);
     setCredits(next);
   }, []);
 
-  const purchasePlan = useCallback((plan: "pack5" | "monthly" | "yearly") => {
-    if (plan === "pack5") {
-      const c = readCredits();
-      const next = c === -1 ? -1 : c + 5;
-      writeCredits(next);
-      setCredits(next);
-    } else {
-      writeCredits(-1);
-      setCredits(-1);
-    }
+  const purchasePlan = useCallback((plan: ScanPlan) => {
+    const toAdd = PLAN_CREDITS[plan];
+    const c = readCredits();
+    const next = c + toAdd;
+    writeCredits(next);
+    setCredits(next);
   }, []);
 
   return { credits, canScan, consumeCredit, purchasePlan };

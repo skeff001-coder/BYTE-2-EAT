@@ -4,7 +4,8 @@ import { useState } from "react";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
-import { useScanCredits } from "@/lib/use-scan-credits";
+import { useScanCredits, type ScanPlan } from "@/lib/use-scan-credits";
+import { PRODUCT_SCAN1, PRODUCT_SCAN10, PRODUCT_SCAN30, type PurchasedProduct } from "@/lib/use-iap";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
@@ -44,17 +45,24 @@ function Home() {
   };
 
   const creditLabel =
-    credits === -1 ? "Unlimited scans" :
-    credits === 1  ? "1 free scan remaining" :
-    credits === 0  ? "No scans left" :
-                     `${credits} scans remaining`;
+    credits === 1 ? "1 scan remaining" :
+    credits === 0 ? "No scans left" :
+                    `${credits} scans remaining`;
 
   return (
     <main className="min-h-screen bg-background pb-12">
       {showPaywall && (
         <PaywallModal
           onClose={() => setShowPaywall(false)}
-          onUnlock={() => { purchasePlan("yearly"); setShowPaywall(false); }}
+          onUnlock={(productId: PurchasedProduct) => {
+            const planMap: Record<PurchasedProduct, ScanPlan> = {
+              [PRODUCT_SCAN1]:  "scan1",
+              [PRODUCT_SCAN10]: "scan10",
+              [PRODUCT_SCAN30]: "scan30",
+            };
+            purchasePlan(planMap[productId]);
+            setShowPaywall(false);
+          }}
         />
       )}
       {selectedRecipe && (
