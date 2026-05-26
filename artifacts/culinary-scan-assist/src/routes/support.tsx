@@ -23,10 +23,10 @@ function SupportPage() {
         <p className="text-sm text-muted-foreground mt-1">Tap the <strong>Scan My Fridge</strong> button on the home screen. Use your camera or upload a photo. The AI will detect ingredients and suggest recipes.</p>
 
         <h3 className="font-semibold text-sm text-foreground mt-3">How many free scans do I get?</h3>
-        <p className="text-sm text-muted-foreground mt-1">New users receive <strong>1 free scan</strong>. After that, unlock unlimited scans by purchasing the Premium plan.</p>
+        <p className="text-sm text-muted-foreground mt-1">New users receive <strong>1 free scan</strong>. After that, top up with a scan pack whenever you need more.</p>
 
-        <h3 className="font-semibold text-sm text-foreground mt-3">How do I get unlimited scans?</h3>
-        <p className="text-sm text-muted-foreground mt-1">When your free scan is used, a paywall screen appears offering the <strong>Premium plan (£4.99 one-time)</strong> for unlimited scans. Tap <em>Unlock Premium</em> to purchase.</p>
+        <h3 className="font-semibold text-sm text-foreground mt-3">How do I get more scans?</h3>
+        <p className="text-sm text-muted-foreground mt-1">When your scans run out, a screen appears with three options: <strong>Single Scan (£0.49)</strong>, <strong>10 Scans (£4.99)</strong>, or <strong>30 Scans (£8.99)</strong>. Scans never expire, so stock up at whatever pace suits you.</p>
 
         <h3 className="font-semibold text-sm text-foreground mt-3">How do I restore my purchase?</h3>
         <p className="text-sm text-muted-foreground mt-1">Go to <strong>Settings → Restore Purchases</strong> inside the app.</p>

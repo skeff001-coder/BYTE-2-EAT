@@ -218,16 +218,16 @@ function SettingsPage() {
               Scans remaining
             </div>
             <span className="text-sm font-semibold text-foreground">
-              {credits === -1 ? "Unlimited" : credits}
+              {credits}
             </span>
           </div>
           <button
             onClick={handleRestoreScans}
-            disabled={credits === -1 || scansRestored}
+            disabled={scansRestored}
             className="flex w-full items-center gap-3 px-5 py-4 text-sm font-medium text-primary hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Zap className="h-4 w-4 flex-shrink-0" />
-            {scansRestored || credits === -1 ? "Unlimited scans active ✓" : "Restore Purchases / Unlimited Scans"}
+            {scansRestored ? "Purchases restored ✓" : "Restore Purchases"}
           </button>
         </div>
 
