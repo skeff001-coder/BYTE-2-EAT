@@ -66,7 +66,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function PrivacyPolicy() {
   return (
     <article>
-      <p className="text-xs text-muted-foreground mb-6">Last updated: May 2025 · Byte 2 Eat is operated under UK law and this policy complies with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.</p>
+      <p className="text-xs text-muted-foreground mb-6">Last updated: May 2026 · Byte 2 Eat is operated under UK law and this policy complies with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.</p>
 
       <Section title="1. Who We Are">
         <p>Byte 2 Eat ("we", "us", "our") is an AI-powered recipe application. For data protection enquiries, contact us at <strong>privacy@byte2eat.app</strong>.</p>
@@ -78,6 +78,8 @@ function PrivacyPolicy() {
         <p><strong>Ingredient & food data:</strong> The ingredients detected from your scan, along with AI-generated recipes, health scores, and meal plans.</p>
         <p><strong>Scan history:</strong> If you are signed in, we store your scan results (detected ingredients, suggested recipes, and health scores) so you can review past scans.</p>
         <p><strong>Saved recipes:</strong> Recipes you mark as favourites are stored against your account.</p>
+        <p><strong>Scan credits:</strong> The number of scan credits you hold is stored locally on your device. When you sign in, we check your scan history on our server to prevent abuse of the free trial.</p>
+        <p><strong>In-app purchases:</strong> Scan pack purchases are processed entirely by Apple. We do not receive or store your payment card details. We receive only a confirmation that a purchase was approved, which is used to add credits to your account.</p>
         <p><strong>Preferences:</strong> Your selected dietary goal (e.g. Balanced, Vegan, High Protein) is stored locally on your device.</p>
         <p><strong>Usage data:</strong> Standard server logs (request timestamps, IP addresses, error reports) are retained for up to 30 days for security and debugging purposes.</p>
       </Section>
@@ -146,7 +148,7 @@ function PrivacyPolicy() {
 function TermsOfService() {
   return (
     <article>
-      <p className="text-xs text-muted-foreground mb-6">Last updated: May 2025 · These Terms govern your use of the Byte 2 Eat application. By using the app, you agree to these Terms. If you do not agree, please do not use the app.</p>
+      <p className="text-xs text-muted-foreground mb-6">Last updated: May 2026 · These Terms govern your use of the Byte 2 Eat application. By using the app, you agree to these Terms. If you do not agree, please do not use the app.</p>
 
       <Section title="1. The Service">
         <p>Byte 2 Eat is an AI-powered application that analyses photos of your fridge and suggests recipes based on the detected ingredients. The service is provided on an "as is" basis.</p>
@@ -156,19 +158,18 @@ function TermsOfService() {
         <p>You must be at least 13 years old to use Byte 2 Eat. By using the app, you confirm you meet this requirement.</p>
       </Section>
 
-      <Section title="3. Premium Access — £4.99 One-Time Purchase">
-        <p>Byte 2 Eat offers a one-time Premium upgrade for <strong>£4.99</strong>, which unlocks:</p>
-        <p>• Unlimited fridge scans</p>
-        <p>• AI recipe suggestions (unrestricted)</p>
-        <p>• Personalised meal plans</p>
-        <p>• Auto shopping lists</p>
-        <p>• Health scores &amp; tips</p>
-        <p>Payment is charged to your Apple ID at the time of purchase. Premium access is tied to your Apple ID and can be restored on any device signed in to the same Apple ID using the "Restore Purchases" button.</p>
-        <p>Refunds are subject to Apple's standard refund policy. Contact Apple Support to request a refund.</p>
+      <Section title="3. Scan Packs — In-App Purchases">
+        <p>Byte 2 Eat offers the following scan packs, purchased through Apple's App Store:</p>
+        <p>• <strong>Single Scan Top-up</strong> — £0.49 for 1 scan</p>
+        <p>• <strong>Monthly Premium (10 Scans)</strong> — £4.99 for 10 scans</p>
+        <p>• <strong>30 Scan Saver Pack</strong> — £8.99 for 30 scans</p>
+        <p>All purchases are consumable — scans are added to your account balance and never expire. You can top up at any time if you run out.</p>
+        <p>Payment is charged to your Apple ID at the time of purchase and is processed entirely by Apple. We do not store payment card details.</p>
+        <p>Purchases can be restored using the "Restore Purchases" button in the app. Refunds are subject to Apple's standard refund policy — contact Apple Support to request a refund.</p>
       </Section>
 
       <Section title="4. Free Trial">
-        <p>New users receive <strong>one free fridge scan</strong> upon downloading the app. After the free scan is used, a Premium subscription is required to continue scanning.</p>
+        <p>New users receive <strong>one free fridge scan</strong> upon creating an account. The free scan is tied to your registered email address and can only be used once. After the free scan is used, scan packs must be purchased to continue scanning.</p>
       </Section>
 
       <Section title="5. Health Disclaimer — Important">
