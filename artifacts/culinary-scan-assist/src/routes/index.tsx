@@ -32,7 +32,12 @@ function Home() {
   const q = query.trim().toLowerCase();
   const filtered = q
     ? recipes.filter(
-        (r) => r.title.toLowerCase().includes(q) || r.tag.toLowerCase().includes(q),
+        (r) =>
+          r.title.toLowerCase().includes(q) ||
+          r.tag.toLowerCase().includes(q) ||
+          r.difficulty.toLowerCase().includes(q) ||
+          r.ingredients.some((ing) => ing.toLowerCase().includes(q)) ||
+          r.steps.some((step) => step.toLowerCase().includes(q)),
       )
     : recipes;
 
