@@ -11,11 +11,12 @@ const PLANS: {
   label: string;
   price: string;
   scans: number;
+  expiry: string;
   badge?: string;
 }[] = [
-  { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.49", scans: 1 },
-  { productId: PRODUCT_SCAN10, label: "Monthly Premium 10 Scans",  price: "£4.99", scans: 10, badge: "Popular" },
-  { productId: PRODUCT_SCAN30, label: "30 Scan Saver Pack",        price: "£8.99", scans: 30, badge: "Best Value" },
+  { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.49", scans: 1,  expiry: "30 days" },
+  { productId: PRODUCT_SCAN10, label: "Monthly Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "1 month",  badge: "Popular" },
+  { productId: PRODUCT_SCAN30, label: "30 Scan Saver Pack",        price: "£8.99", scans: 30, expiry: "3 months", badge: "Best Value" },
 ];
 
 export function PaywallModal({ onClose, onUnlock }: Props) {
@@ -55,7 +56,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
           </div>
           <h2 className="text-xl font-extrabold tracking-tight">Get More Scans</h2>
           <p className="mt-1 text-sm opacity-90">
-            Choose a scan pack — use them whenever you like, they never expire.
+            Choose a scan pack — use them before they expire.
           </p>
         </div>
 
@@ -90,7 +91,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-bold text-foreground">{plan.label}</p>
-                    <p className="text-xs text-muted-foreground">{plan.scans} {plan.scans === 1 ? "scan" : "scans"} · never expire</p>
+                    <p className="text-xs text-muted-foreground">{plan.scans} {plan.scans === 1 ? "scan" : "scans"} · expires in {plan.expiry}</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -122,7 +123,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
             </button>
           )}
           <p className="text-center text-[10px] text-muted-foreground leading-relaxed mt-1">
-            Charged to your Apple ID at confirmation of purchase. Scan packs are one-time purchases — no subscription. Manage in your Apple ID Account Settings.
+            Charged to your Apple ID at confirmation of purchase. Scan packs are one-time purchases — no subscription. Single scan and 10-scan pack expire in 1 month; 30-scan pack expires in 3 months. Manage in your Apple ID Account Settings.
           </p>
         </div>
 
