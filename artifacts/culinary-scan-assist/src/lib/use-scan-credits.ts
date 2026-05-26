@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY        = "bite_scan_credits";
 const STORAGE_EXPIRY_KEY = "bite_scan_expiry";
+const CREDITS_CHANGED    = "bite_credits_changed";
 
 function addDays(days: number): string {
   const d = new Date();
@@ -37,12 +38,21 @@ export async function syncCreditsForUser(userId: string): Promise<void> {
       .from("scans")
       .select("id", { count: "exact", head: true })
       .eq("user_id", userId);
-    if ((count ?? 0) > 0) {
-      const current = Number(localStorage.getItem("bite_scan_credits") ?? "1");
-      if (current === 1) {
-        localStorage.setItem("bite_scan_credits", "0");
-      }
+    const scanCount = count ?? 0;
+    const current = Number(localStorage.getItem(STORAGE_KEY) ?? "-1");
+
+    let changed = false;
+    if (scanCount === 0 && current <= 0) {
+      // Brand-new account with no scans — ensure they get their 1 free scan
+      localStorage.setItem(STORAGE_KEY, "1");
+      changed = true;
+    } else if (scanCount > 0 && current === 1) {
+      // Returning user still showing 1 credit — they already used their free scan
+      // on a previous session/device; zero it out to prevent double-dipping
+      localStorage.setItem(STORAGE_KEY, "0");
+      changed = true;
     }
+    if (changed) window.dispatchEvent(new Event(CREDITS_CHANGED));
   } catch {
     // non-critical — silently ignore
   }
@@ -62,6 +72,12 @@ const PLAN_EXPIRY_DAYS: Record<ScanPlan, number> = {
 
 export function useScanCredits() {
   const [credits, setCredits] = useState<number>(() => readCredits());
+
+  useEffect(() => {
+    const refresh = () => setCredits(readCredits());
+    window.addEventListener(CREDITS_CHANGED, refresh);
+    return () => window.removeEventListener(CREDITS_CHANGED, refresh);
+  }, []);
 
   const canScan = credits > 0;
 
