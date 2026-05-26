@@ -97,7 +97,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
                   {isBusy ? (
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
                   ) : (
-                    <p className="text-base font-extrabold text-foreground">{isNative ? plan.price : "iOS only"}</p>
+                    <p className="text-base font-extrabold text-foreground">{plan.price}</p>
                   )}
                 </div>
               </button>
