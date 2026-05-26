@@ -14,7 +14,7 @@ const PLANS: {
   expiry: string;
   badge?: string;
 }[] = [
-  { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.49", scans: 1,  expiry: "30 days" },
+  { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.99", scans: 1,  expiry: "30 days" },
   { productId: PRODUCT_SCAN10, label: "Monthly Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "1 month",  badge: "Popular" },
   { productId: PRODUCT_SCAN30, label: "30 Scan Saver Pack",        price: "£8.99", scans: 30, expiry: "3 months", badge: "Best Value" },
 ];
