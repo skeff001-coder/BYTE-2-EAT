@@ -1,0 +1,135 @@
+
+
+Sent from Yahoo Mail for iPhone
+
+Begin forwarded message:
+
+On Tuesday, May 26, 2026, 11:22 pm, Stripe <notifications@stripe.com> wrote:
+
+ 
+ 
+ 
+Stripe	
+ 
+ 
+ 
+ 
+ 
+Hello,	
+ 
+ 
+ 
+ 
+We’ve had some trouble sending requests in live mode to a webhook endpoint associated with your ONJJEM account. Stripe sends webhook events to your server to notify you of activity in your Stripe account, such as a completed payout or a newly created invoice.	
+ 
+ 
+ 
+ 
+The URL of the failing webhook endpoint is: https://66b36b09-174f-4a92-9753-24f8cec1d5c6-00-3jfnvsk4ipryp.worf.replit.dev/api/stripe/webhook	
+ 
+ 
+ 
+ 
+You (or someone on your team) configured your Stripe account to send events to that URL. You can change your account's webhook endpoints from the Dashboard.	
+ 
+ 
+ 
+ 
+In most cases, a failing webhook does not impact your payments or payouts. However:	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+If you use subscriptions, we rely on your webhook endpoint to notify you of new invoices. These invoices may be delayed for up to three days if your endpoint is unable to successfully receive them.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+If you use Checkout and rely on the checkout.session.completed event as part of your purchase fulfilment process, you should review your completed payments to ensure you have fulfilled all recent purchases.
+
+ 
+ 
+ 
+ 
+ 
+We've attempted to send event notifications to this endpoint 223 times since the first failure on May 23, 2026 at 10:21:52 PM UTC. If this endpoint is important to your application, please try and fix the issue. If you do not need this webhook endpoint, you can remove it from your Stripe webhook settings. We will stop sending event notifications to this webhook endpoint by June 1, 2026 at 10:21:52 PM UTC.	
+ 
+ 
+ 
+ 
+Here is the summary of errors we received while attempting to send webhook events:	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+196 requests returned HTTP 404, indicating the URL doesn’t exist. You should verify the endpoint URL is correct in your Stripe webhook settings.	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+27 requests had other errors while sending the webhook event.	
+ 
+ 
+ 
+ 
+ 
+You need to return any status code between HTTP 200 to 299 for Stripe to consider the webhook event successfully delivered.	
+ 
+ 
+ 
+ 
+For more details on these errors and to review your account's recent activity, you can find the full set of events and request logs on the Dashboard.	
+ 
+ 
+ 
+ 
+For more in-depth information on how to use webhooks, we recommend reviewing our documentation.	
+ 
+ 
+ 
+ 
+– The Stripe team	
+ 
+ 
+ 
+ 
+ 
+This email relates to your ONJJEM Stripe account.
+Account ID: acct_1TZdaBLkpMwsJmFN
+Need to refer to this message? Use this ID: em_z88bxw3dngdesniyeh6npflmrx0pq1	
+ 
+ 
+ 
+Stripe Payments UK Limited is a company registered in England and Wales. Registered number: 08480771. Registered office: 9th Floor, 107 Cheapside, London, EC2V 6DN	
+ 
+ 
+ 
+You are currently subscribed to "Webhook failures" emails. To unsubscribe, manage your communication preferences.	
+ 
+ 
+ 
