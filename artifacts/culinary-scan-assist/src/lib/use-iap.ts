@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 
-export const PRODUCT_SCAN1   = "com.owenskeffington.bite.scan1";
-export const PRODUCT_SCAN10  = "com.owenskeffington.bite.scan10";
-export const PRODUCT_SCAN30  = "com.owenskeffington.bite.scan30";
+export const PRODUCT_SCAN1   = "com.byte2eat.single";
+export const PRODUCT_SCAN10  = "com.byte2eat.premium10";
+export const PRODUCT_SCAN30  = "com.byte2eat.saver";
 
 export type PurchasedProduct = typeof PRODUCT_SCAN1 | typeof PRODUCT_SCAN10 | typeof PRODUCT_SCAN30;
 
