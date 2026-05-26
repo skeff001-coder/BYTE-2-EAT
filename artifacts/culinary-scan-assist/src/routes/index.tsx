@@ -107,18 +107,18 @@ function Home() {
         {/* Logo — full width, never competes with buttons */}
         <BrandLogo size="2xl" variant="primary" shadow3d />
         <div className="mt-3 flex items-center gap-2">
-          <span style={{ fontSize: "1.2rem" }}>🍳</span>
+          <span style={{ fontSize: "1.7rem" }}>🍳</span>
           <p
             style={{
               fontFamily: "'Righteous', cursive",
-              fontSize: "clamp(0.72rem, 2.6vw, 1rem)",
-              letterSpacing: "clamp(0.06em, 0.5vw, 0.18em)",
+              fontSize: "clamp(0.9rem, 3.4vw, 1.2rem)",
+              letterSpacing: "clamp(0.06em, 0.5vw, 0.16em)",
               textTransform: "uppercase",
-              background: "linear-gradient(90deg, #16a34a 0%, #0d9488 50%, #15803d 100%)",
+              background: "linear-gradient(90deg, #4ade80 0%, #22d3ee 50%, #4ade80 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              filter: "drop-shadow(0 1px 8px rgba(21,128,61,0.45))",
+              filter: "drop-shadow(0 0 10px rgba(74,222,128,0.5))",
               margin: 0,
               lineHeight: 1.4,
               fontWeight: 700,
@@ -126,7 +126,7 @@ function Home() {
           >
             Where AI Meets the Frying Pan
           </p>
-          <span style={{ fontSize: "1.2rem" }}>✨</span>
+          <span style={{ fontSize: "1.7rem" }}>✨</span>
         </div>
 
         {monthly > 0 && (

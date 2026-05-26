@@ -47,49 +47,49 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* LIGHT MODE */
+/* LIGHT MODE — rich dark charcoal theme */
 :root {
-  --background: 40 30% 97%;
-  --foreground: 20 15% 10%;
+  --background: 222 20% 10%;
+  --foreground: 210 20% 94%;
 
-  --card: 0 0% 100%;
-  --card-foreground: 20 15% 10%;
+  --card: 222 16% 14%;
+  --card-foreground: 210 20% 94%;
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 15% 10%;
+  --popover: 222 16% 14%;
+  --popover-foreground: 210 20% 94%;
 
-  --primary: 142 60% 32%;
+  --primary: 142 58% 46%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 142 20% 92%;
-  --secondary-foreground: 142 50% 20%;
+  --secondary: 222 14% 19%;
+  --secondary-foreground: 210 15% 80%;
 
-  --muted: 40 15% 92%;
-  --muted-foreground: 20 10% 45%;
+  --muted: 222 12% 18%;
+  --muted-foreground: 220 8% 56%;
 
-  --accent: 142 30% 88%;
-  --accent-foreground: 142 50% 20%;
+  --accent: 142 22% 18%;
+  --accent-foreground: 142 45% 72%;
 
-  --destructive: 0 72% 51%;
+  --destructive: 0 68% 55%;
   --destructive-foreground: 0 0% 100%;
 
-  --border: 40 15% 88%;
-  --input: 40 15% 88%;
-  --ring: 142 60% 32%;
+  --border: 222 12% 22%;
+  --input: 222 12% 22%;
+  --ring: 142 58% 46%;
 
-  --chart-1: 142 60% 32%;
-  --chart-2: 174 60% 40%;
-  --chart-3: 45 80% 50%;
-  --chart-4: 20 70% 55%;
-  --chart-5: 280 50% 55%;
+  --chart-1: 142 58% 46%;
+  --chart-2: 174 58% 48%;
+  --chart-3: 45 80% 55%;
+  --chart-4: 20 70% 58%;
+  --chart-5: 280 50% 60%;
 
   --app-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
   --radius: 0.5rem;
 
-  --gradient-primary: linear-gradient(135deg, hsl(142 60% 32%), hsl(160 55% 38%));
-  --shadow-soft: 0 4px 24px -4px hsl(142 60% 32% / 0.35);
+  --gradient-primary: linear-gradient(135deg, hsl(142 60% 40%), hsl(162 58% 46%));
+  --shadow-soft: 0 4px 24px -4px hsl(142 60% 40% / 0.45);
 }
 
 .dark {

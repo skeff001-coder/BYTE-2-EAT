@@ -12,17 +12,17 @@ const VARIANT = {
     glow: "drop-shadow(0 0 14px rgba(189,147,249,0.55)) drop-shadow(0 0 4px rgba(255,121,198,0.35))",
   },
   primary: {
-    gradient: "var(--gradient-primary)",
-    glow: "drop-shadow(0 0 16px rgba(34,197,94,0.4)) drop-shadow(0 0 5px rgba(16,185,129,0.3))",
+    gradient: "linear-gradient(135deg, #4ade80 0%, #22d3ee 100%)",
+    glow: "drop-shadow(0 0 22px rgba(74,222,128,0.65)) drop-shadow(0 0 8px rgba(34,211,238,0.45))",
   },
 } as const;
 
 const SHADOW_3D =
-  "drop-shadow(1px 2px 0px #064e3b)" +
-  " drop-shadow(2px 4px 0px #065f46)" +
-  " drop-shadow(3px 6px 0px #047857)" +
-  " drop-shadow(4px 8px 0px #059669)" +
-  " drop-shadow(5px 10px 14px rgba(0,60,35,0.45))";
+  "drop-shadow(1px 2px 0px #15803d)" +
+  " drop-shadow(2px 4px 0px #0e7490)" +
+  " drop-shadow(3px 6px 0px #0f766e)" +
+  " drop-shadow(4px 8px 0px #14532d)" +
+  " drop-shadow(5px 10px 18px rgba(0,0,0,0.6))";
 
 interface Props {
   size?: keyof typeof SIZE;
