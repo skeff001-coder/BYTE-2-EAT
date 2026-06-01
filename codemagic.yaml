@@ -12,12 +12,11 @@ workflows:
     instance_type: mac_mini_m2
 
     integrations:
-      # byte2eat_asc_new — App Store Connect API key stored in Codemagic Personal Account → Integrations.
-      # The key has no built-in expiry warning; rotate it every 6 months to avoid 401 NOT_AUTHORIZED
-      # upload failures. Name keys with the creation date in App Store Connect (e.g. byte2eat_codemagic_YYYY-MM).
-      # To rotate: appstoreconnect.apple.com → Users and Access → Integrations → App Store Connect API →
-      # generate new key (App Manager role) → update Key ID / Issuer ID / .p8 in Codemagic.
-      app_store_connect: Byte2eat_admin
+      # App Store Connect API key — stored in Codemagic Personal Account → Integrations.
+      # Current key name: byte2eat_codemagic_2026-06  (created June 2026)
+      # ROTATE EVERY 6 MONTHS — Apple gives no expiry warning; an expired key causes 401 NOT_AUTHORIZED.
+      # Full rotation checklist: docs/asc-key-rotation.md
+      app_store_connect: byte2eat_codemagic_2026-06
 
     environment:
       groups:

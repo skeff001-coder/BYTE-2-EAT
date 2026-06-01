@@ -62,6 +62,13 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
 - Project imported from GitHub: https://github.com/skeff001-coder/culinary-scan-assist
 - Original app name: Bite (culinary AI recipe app)
 
+## ASC API Key Rotation
+
+The App Store Connect API key used by Codemagic (`byte2eat_codemagic_2026-06`) **must be rotated every 6 months**. Apple issues no expiry warning — an expired key silently breaks every CI build.
+
+- **Full checklist:** `docs/asc-key-rotation.md`
+- **Next rotation due:** December 2026 — set a recurring calendar reminder
+
 ## App Store Submission Checklist
 
 - **Version: 1.0.2** — tracked in `codemagic.yaml` `APP_VERSION`. Current floor: **1.0.1** (last approved in App Store Connect). Every release build MUST ship a version strictly higher than the last approved version or Apple will reject it with "CFBundleShortVersionString must be higher than previously approved version".
