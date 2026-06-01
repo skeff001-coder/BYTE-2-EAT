@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, TriangleAlert } from "lucide-react";
+import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, ShoppingBag, TriangleAlert } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
@@ -35,9 +35,16 @@ function Home() {
     if (!expiry) return false;
     return localStorage.getItem(`bite_expiry_dismissed_${expiry}`) === "1";
   });
+  const [lowScanDismissed, setLowScanDismissed] = useState<boolean>(() => {
+    return localStorage.getItem("bite_low_scan_dismissed") === "1";
+  });
 
   useEffect(() => {
     setExpiryDays(getDaysUntilExpiry());
+    if (credits > 1) {
+      localStorage.removeItem("bite_low_scan_dismissed");
+      setLowScanDismissed(false);
+    }
   }, [credits]);
 
   const showExpiryBanner =
@@ -52,6 +59,15 @@ function Home() {
       localStorage.setItem(`bite_expiry_dismissed_${expiry}`, "1");
     }
     setExpiryBannerDismissed(true);
+  };
+
+  const isPaidCredit = localStorage.getItem("bite_scan_expiry") !== null;
+  const showLowScanBanner = !lowScanDismissed && credits === 1 && isPaidCredit;
+
+  const dismissLowScanBanner = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    localStorage.setItem("bite_low_scan_dismissed", "1");
+    setLowScanDismissed(true);
   };
 
   const q = query.trim().toLowerCase();
@@ -207,6 +223,31 @@ function Home() {
 
         <GoalModeSelector selected={goalMode} onChange={setGoalMode} />
       </header>
+
+      {showLowScanBanner && (
+        <button
+          onClick={() => setShowPaywall(true)}
+          className="mx-5 mt-3 mb-1 flex w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-violet-50 px-4 py-3 text-left ring-1 ring-violet-300 active:scale-[0.98] transition-transform"
+          aria-label="Top up scans — only 1 remaining"
+        >
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-violet-100">
+            <ShoppingBag className="h-5 w-5 text-violet-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-violet-800">Only 1 scan left — top up now</p>
+            <p className="text-[11px] text-violet-700 leading-snug mt-0.5">
+              Don't run out mid-cook. Tap to grab another pack.
+            </p>
+          </div>
+          <button
+            onClick={dismissLowScanBanner}
+            aria-label="Dismiss"
+            className="flex-shrink-0 text-violet-400 hover:text-violet-600 text-lg leading-none px-1"
+          >
+            ×
+          </button>
+        </button>
+      )}
 
       {showExpiryBanner && (
         <button
