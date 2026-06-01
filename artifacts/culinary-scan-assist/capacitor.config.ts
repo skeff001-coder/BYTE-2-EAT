@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "Com.bitecooking.app",
+  appId: "com.owenskeffington.bite",
   appName: "Byte 2 Eat",
   webDir: "dist/public",
   server: {
