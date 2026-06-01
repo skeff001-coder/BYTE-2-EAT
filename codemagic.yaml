@@ -20,8 +20,9 @@ workflows:
       vars:
         XCODE_WORKSPACE: "artifacts/culinary-scan-assist/ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
-        BUNDLE_ID: "Com.bitecooking.app"
+        BUNDLE_ID: "com.owenskeffington.bite"
         APP_VERSION: "1.0.0"
+        BUILD_NUMBER: "54"
       node: "22"
       xcode: latest
       cocoapods: default
@@ -46,7 +47,7 @@ workflows:
         script: |
           cd artifacts/culinary-scan-assist/ios/App
           agvtool new-marketing-version $APP_VERSION
-          agvtool new-version -all $PROJECT_BUILD_NUMBER
+          agvtool new-version -all $BUILD_NUMBER
 
       - name: Fetch signing files
         script: |
