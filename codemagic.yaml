@@ -17,7 +17,7 @@ workflows:
       # upload failures. Name keys with the creation date in App Store Connect (e.g. byte2eat_codemagic_YYYY-MM).
       # To rotate: appstoreconnect.apple.com → Users and Access → Integrations → App Store Connect API →
       # generate new key (App Manager role) → update Key ID / Issuer ID / .p8 in Codemagic.
-      app_store_connect: byte2eat_asc_new
+      app_store_connect: Byte2eat_admin
 
     environment:
       groups:
