@@ -109,6 +109,13 @@ export function useScanCredits() {
   }, []);
 
   const purchasePlan = useCallback((plan: ScanPlan) => {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith("bite_low_scan_dismissed_")) keysToRemove.push(key);
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+
     const toAdd = PLAN_CREDITS[plan];
     const c = readCredits();
     const next = c + toAdd;

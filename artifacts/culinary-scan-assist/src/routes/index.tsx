@@ -45,15 +45,18 @@ function Home() {
     return localStorage.getItem(`bite_expiry_dismissed_${expiry}`) === "1";
   });
   const [lowScanDismissed, setLowScanDismissed] = useState<boolean>(() => {
-    return localStorage.getItem("bite_low_scan_dismissed") === "1";
+    const expiry = localStorage.getItem("bite_scan_expiry");
+    if (!expiry) return false;
+    return localStorage.getItem(`bite_low_scan_dismissed_${expiry}`) === "1";
   });
 
   useEffect(() => {
     setExpiryDays(getDaysUntilExpiry());
-    if (credits > 1) {
-      localStorage.removeItem("bite_low_scan_dismissed");
-      setLowScanDismissed(false);
-    }
+    const expiry = localStorage.getItem("bite_scan_expiry");
+    const dismissed = expiry
+      ? localStorage.getItem(`bite_low_scan_dismissed_${expiry}`) === "1"
+      : false;
+    setLowScanDismissed(dismissed);
   }, [credits]);
 
   const showExpiryBanner =
@@ -75,7 +78,10 @@ function Home() {
 
   const dismissLowScanBanner = (e: React.MouseEvent) => {
     e.stopPropagation();
-    localStorage.setItem("bite_low_scan_dismissed", "1");
+    const expiry = localStorage.getItem("bite_scan_expiry");
+    if (expiry) {
+      localStorage.setItem(`bite_low_scan_dismissed_${expiry}`, "1");
+    }
     setLowScanDismissed(true);
   };
 
