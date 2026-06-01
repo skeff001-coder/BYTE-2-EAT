@@ -1,11 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, ShoppingBag, TriangleAlert } from "lucide-react";
+import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, ShoppingBag, TriangleAlert, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { useScanCredits, getDaysUntilExpiry, type ScanPlan } from "@/lib/use-scan-credits";
 import { PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
+import { EFFORTLESS_BURN_NAME, EFFORTLESS_BURN_APP_STORE_URL } from "@/lib/app-info";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
@@ -28,6 +30,13 @@ function Home() {
   const { credits, canScan, purchasePlan } = useScanCredits();
   const { goalMode, setGoalMode } = useGoalMode();
   const { monthly } = useSavingsTracker();
+  const [sisterDismissed, setSisterDismissed] = useState(() =>
+    localStorage.getItem("bite_sister_banner_dismissed") === "1"
+  );
+  const dismissSister = () => {
+    localStorage.setItem("bite_sister_banner_dismissed", "1");
+    setSisterDismissed(true);
+  };
 
   const [expiryDays, setExpiryDays] = useState<number | null>(() => getDaysUntilExpiry());
   const [expiryBannerDismissed, setExpiryBannerDismissed] = useState<boolean>(() => {
@@ -315,6 +324,39 @@ function Home() {
           </div>
         </button>
       </section>
+
+      {!sisterDismissed && (
+        <a
+          href={EFFORTLESS_BURN_APP_STORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-6 mt-6 flex items-center gap-3 rounded-2xl bg-rose-50 px-4 py-3 ring-1 ring-rose-200 active:scale-[0.98] transition-transform"
+          onClick={(e) => {
+            if (Capacitor.isNativePlatform()) {
+              e.preventDefault();
+              window.open(EFFORTLESS_BURN_APP_STORE_URL, '_system');
+            }
+          }}
+        >
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-rose-100">
+            <span className="text-lg">✨</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-rose-800">Love cooking? Burn it off.</p>
+            <p className="text-[11px] text-rose-700 leading-snug mt-0.5">
+              Try {EFFORTLESS_BURN_NAME} — our sister app for calorie tracking &amp; exercise.
+            </p>
+          </div>
+          <ExternalLink className="h-4 w-4 flex-shrink-0 text-rose-400" />
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); dismissSister(); }}
+            aria-label="Dismiss"
+            className="flex-shrink-0 text-rose-400 hover:text-rose-600 text-lg leading-none px-1"
+          >
+            ×
+          </button>
+        </a>
+      )}
 
       <section className="mt-10 px-6">
         <div className="flex items-center justify-between">
