@@ -4,6 +4,7 @@ import { cancelExpiryNotification, scheduleExpiryNotification } from "./scan-exp
 
 const STORAGE_KEY        = "bite_scan_credits";
 const STORAGE_EXPIRY_KEY = "bite_scan_expiry";
+const PREMIUM_OWNED_KEY  = "bite_premium_owned";
 const CREDITS_CHANGED    = "bite_credits_changed";
 
 function addDays(days: number): string {
@@ -127,5 +128,11 @@ export function useScanCredits() {
     scheduleExpiryNotification(expiryIso);
   }, []);
 
-  return { credits, canScan, hasExpiry, consumeCredit, purchasePlan };
+  const unlockPremiumCredits = useCallback(() => {
+    if (localStorage.getItem(PREMIUM_OWNED_KEY) === "1") return;
+    localStorage.setItem(PREMIUM_OWNED_KEY, "1");
+    purchasePlan("scan10");
+  }, [purchasePlan]);
+
+  return { credits, canScan, hasExpiry, consumeCredit, purchasePlan, unlockPremiumCredits };
 }

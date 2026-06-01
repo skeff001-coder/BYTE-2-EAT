@@ -5,7 +5,7 @@ import { Capacitor } from "@capacitor/core";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
-import { useScanCredits, getDaysUntilExpiry, type ScanPlan } from "@/lib/use-scan-credits";
+import { useScanCredits, getDaysUntilExpiry } from "@/lib/use-scan-credits";
 import { PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 import { EFFORTLESS_BURN_NAME, EFFORTLESS_BURN_APP_STORE_URL } from "@/lib/app-info";
 import { useGoalMode } from "@/lib/use-goal-mode";
@@ -27,7 +27,7 @@ function Home() {
   const navigate = useNavigate();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
-  const { credits, canScan, purchasePlan } = useScanCredits();
+  const { credits, canScan, purchasePlan, unlockPremiumCredits } = useScanCredits();
   const { goalMode, setGoalMode } = useGoalMode();
   const { monthly } = useSavingsTracker();
   const [sisterDismissed, setSisterDismissed] = useState(() =>
@@ -135,11 +135,11 @@ function Home() {
         <PaywallModal
           onClose={() => setShowPaywall(false)}
           onUnlock={(productId: PurchasedProduct) => {
-            const planMap: Record<PurchasedProduct, ScanPlan> = {
-              [PRODUCT_SCAN1]:  "scan1",
-              [PRODUCT_SCAN10]: "scan10",
-            };
-            purchasePlan(planMap[productId]);
+            if (productId === PRODUCT_SCAN10) {
+              unlockPremiumCredits();
+            } else {
+              purchasePlan("scan1");
+            }
             setShowPaywall(false);
           }}
         />

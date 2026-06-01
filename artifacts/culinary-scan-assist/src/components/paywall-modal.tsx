@@ -16,7 +16,7 @@ const PLANS: {
   badge?: string;
 }[] = [
   { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.99", scans: 1,  expiry: "30 days" },
-  { productId: PRODUCT_SCAN10, label: "Monthly Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "1 month", badge: "Best Value" },
+  { productId: PRODUCT_SCAN10, label: "Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "30 days", badge: "Best Value" },
 ];
 
 export function PaywallModal({ onClose, onUnlock }: Props) {

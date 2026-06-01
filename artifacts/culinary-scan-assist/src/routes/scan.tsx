@@ -7,7 +7,7 @@ import type { AnalysisResult } from "@/lib/analyze-fridge";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { useScanCredits, type ScanPlan } from "@/lib/use-scan-credits";
+import { useScanCredits } from "@/lib/use-scan-credits";
 import { PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
@@ -65,7 +65,7 @@ function ScanPage() {
   const router = useRouter();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
-  const { credits, canScan, hasExpiry, consumeCredit, purchasePlan } = useScanCredits();
+  const { credits, canScan, hasExpiry, consumeCredit, purchasePlan, unlockPremiumCredits } = useScanCredits();
   const { goalMode } = useGoalMode();
   const { addSavings } = useSavingsTracker();
   const [showPaywall, setShowPaywall] = useState(false);
@@ -172,11 +172,11 @@ function ScanPage() {
         <PaywallModal
           onClose={() => setShowPaywall(false)}
           onUnlock={(productId: PurchasedProduct) => {
-            const planMap: Record<PurchasedProduct, ScanPlan> = {
-              [PRODUCT_SCAN1]:  "scan1",
-              [PRODUCT_SCAN10]: "scan10",
-            };
-            purchasePlan(planMap[productId]);
+            if (productId === PRODUCT_SCAN10) {
+              unlockPremiumCredits();
+            } else {
+              purchasePlan("scan1");
+            }
             setShowPaywall(false);
           }}
         />
