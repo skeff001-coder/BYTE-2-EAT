@@ -1,0 +1,1 @@
+- [Codemagic + App Store Connect setup](codemagic-asc-setup.md) — key names, bundle ID, IAP product IDs, and git push auth for this project.
