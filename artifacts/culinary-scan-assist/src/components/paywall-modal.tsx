@@ -1,5 +1,5 @@
 import { Loader2, Sparkles, X, ShieldCheck, Zap } from "lucide-react";
-import { useIAP, PRODUCT_SCAN1, PRODUCT_SCAN10, PRODUCT_SCAN30, type PurchasedProduct } from "@/lib/use-iap";
+import { useIAP, PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 
 interface Props {
   onClose: () => void;
@@ -16,8 +16,7 @@ const PLANS: {
   badge?: string;
 }[] = [
   { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.99", scans: 1,  expiry: "30 days" },
-  { productId: PRODUCT_SCAN10, label: "Monthly Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "1 month",  badge: "Popular" },
-  { productId: PRODUCT_SCAN30, label: "30 Scan Saver Pack",        price: "£8.99", scans: 30, expiry: "3 months", badge: "Best Value" },
+  { productId: PRODUCT_SCAN10, label: "Monthly Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "1 month", badge: "Best Value" },
 ];
 
 export function PaywallModal({ onClose, onUnlock }: Props) {
@@ -127,7 +126,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
             </button>
           )}
           <p className="text-center text-[10px] text-muted-foreground leading-relaxed mt-1">
-            Charged to your Apple ID at confirmation of purchase. Scan packs are one-time purchases — no subscription. Single scan and 10-scan pack expire in 1 month; 30-scan pack expires in 3 months. Manage in your Apple ID Account Settings.
+            Charged to your Apple ID at confirmation of purchase. Scan packs are one-time purchases — no subscription. Single scan expires in 30 days; 10-scan pack expires in 1 month. Manage in your Apple ID Account Settings.
           </p>
         </div>
 
