@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { scheduleExpiryNotification } from "./scan-expiry-notification";
+import { cancelExpiryNotification, scheduleExpiryNotification } from "./scan-expiry-notification";
 
 const STORAGE_KEY        = "bite_scan_credits";
 const STORAGE_EXPIRY_KEY = "bite_scan_expiry";
@@ -17,6 +17,7 @@ function readCredits(): number {
   if (expiry && new Date(expiry) < new Date()) {
     localStorage.setItem(STORAGE_KEY, "0");
     localStorage.removeItem(STORAGE_EXPIRY_KEY);
+    void cancelExpiryNotification();
     return 0;
   }
   const val = localStorage.getItem(STORAGE_KEY);
@@ -94,6 +95,9 @@ export function useScanCredits() {
     const next = Math.max(0, c - 1);
     writeCredits(next);
     setCredits(next);
+    if (next === 0) {
+      void cancelExpiryNotification();
+    }
   }, []);
 
   const purchasePlan = useCallback((plan: ScanPlan) => {

@@ -3,6 +3,13 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 const NOTIF_ID = 1001;
 const DAYS_BEFORE = 3;
 
+export async function cancelExpiryNotification(): Promise<void> {
+  try {
+    await LocalNotifications.cancel({ notifications: [{ id: NOTIF_ID }] });
+  } catch {
+  }
+}
+
 export async function scheduleExpiryNotification(
   expiryIso: string
 ): Promise<void> {
