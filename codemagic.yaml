@@ -13,10 +13,10 @@ workflows:
 
     integrations:
       # App Store Connect API key — stored in Codemagic Personal Account → Integrations.
-      # Current key name: Byte2eat_admin  (Admin role, created June 2026)
+      # Current key name: byte2eat_admin  (Admin role, Key: 6587GDLVZP)
       # ROTATE EVERY 6 MONTHS — Apple gives no expiry warning; an expired key causes 401 NOT_AUTHORIZED.
       # Full rotation checklist: docs/asc-key-rotation.md
-      app_store_connect: Byte2eat_admin
+      app_store_connect: byte2eat_admin
 
     environment:
       groups:
