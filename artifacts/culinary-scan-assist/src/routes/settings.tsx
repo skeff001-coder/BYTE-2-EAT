@@ -245,7 +245,7 @@ function SettingsPage() {
           </div>
           <div className="flex items-center justify-between px-5 py-4">
             <span className="text-sm text-foreground">Bundle ID</span>
-            <span className="text-xs text-muted-foreground font-mono">Com.bitecooking.app</span>
+            <span className="text-xs text-muted-foreground font-mono">com.owenskeffington.bite</span>
           </div>
         </div>
 
