@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, ChevronRight, FileText, Shield, Trash2, LogOut, Info, Loader2, Zap } from "lucide-react";
+import { ArrowLeft, ChevronRight, FileText, Shield, Trash2, LogOut, Info, Loader2, Zap, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useScanCredits } from "@/lib/use-scan-credits";
-import { APP_VERSION, BUNDLE_ID, SUPPORT_EMAIL } from "@/lib/app-info";
+import { APP_VERSION, BUNDLE_ID, SUPPORT_EMAIL, EFFORTLESS_BURN_NAME, EFFORTLESS_BURN_APP_STORE_URL } from "@/lib/app-info";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -231,6 +231,23 @@ function SettingsPage() {
             {scansRestored ? "Purchases restored ✓" : "Restore Purchases"}
           </button>
         </div>
+
+        {/* Sister app */}
+        <a
+          href={EFFORTLESS_BURN_APP_STORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between px-5 py-4 rounded-3xl bg-rose-50 ring-1 ring-rose-200 active:scale-[0.98] transition-transform"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-lg">✨</span>
+            <div>
+              <p className="text-sm font-semibold text-rose-800">{EFFORTLESS_BURN_NAME}</p>
+              <p className="text-[11px] text-rose-700">Our sister app for calorie tracking &amp; exercise</p>
+            </div>
+          </div>
+          <ExternalLink className="h-4 w-4 text-rose-400" />
+        </a>
 
         {/* App Info */}
         <div className="rounded-3xl bg-card ring-1 ring-border overflow-hidden">
