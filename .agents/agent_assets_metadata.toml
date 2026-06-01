@@ -11,3 +11,39 @@ id = "fySZ4H8nblvavBIAAIU9E"
 uri = "file://bite-ios.zip"
 type = "unspecified"
 title = "Bite iOS — Final (live API)"
+
+[[outputs]]
+id = "YuyjbYR_HwdrIC1O2z6sq"
+uri = "file://screenshots/home.jpg"
+type = "image"
+title = "Home screen"
+
+[[outputs]]
+id = "KtW-Cvx8ntVxIjqg5lUlZ"
+uri = "file://screenshots/scan.jpg"
+type = "image"
+title = "Scan screen (camera area)"
+
+[[outputs]]
+id = "oQbfDE4aKbvj5NkFSitpV"
+uri = "file://screenshots/scan_scroll.jpg"
+type = "image"
+title = "Scan screen (full, with upload fallback)"
+
+[[outputs]]
+id = "-3MraOhzzAU2c79b7vbD6"
+uri = "file://screenshots/settings.jpg"
+type = "image"
+title = "Settings screen"
+
+[[outputs]]
+id = "uA_fWym2oSWgd5_QZec0L"
+uri = "file://screenshots/favorites.jpg"
+type = "image"
+title = "Favorites screen"
+
+[[outputs]]
+id = "QpklIYJ_10WL9t9v6utNC"
+uri = "file://screenshots/legal.jpg"
+type = "image"
+title = "Legal / Privacy screen"
