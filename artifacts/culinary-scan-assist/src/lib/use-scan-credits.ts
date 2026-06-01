@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { scheduleExpiryNotification } from "./scan-expiry-notification";
 
 const STORAGE_KEY        = "bite_scan_credits";
 const STORAGE_EXPIRY_KEY = "bite_scan_expiry";
@@ -30,7 +31,7 @@ function writeCredits(n: number) {
   localStorage.setItem(STORAGE_KEY, String(n));
 }
 
-export type ScanPlan = "scan1" | "scan10" | "scan30";
+export type ScanPlan = "scan1" | "scan10";
 
 export async function syncCreditsForUser(userId: string): Promise<void> {
   try {
@@ -61,14 +62,20 @@ export async function syncCreditsForUser(userId: string): Promise<void> {
 export const PLAN_CREDITS: Record<ScanPlan, number> = {
   scan1:  1,
   scan10: 10,
-  scan30: 30,
 };
 
 const PLAN_EXPIRY_DAYS: Record<ScanPlan, number> = {
   scan1:  30,
   scan10: 30,
-  scan30: 90,
 };
+
+export function getDaysUntilExpiry(): number | null {
+  const expiry = localStorage.getItem(STORAGE_EXPIRY_KEY);
+  if (!expiry) return null;
+  const msLeft = new Date(expiry).getTime() - Date.now();
+  if (msLeft <= 0) return null;
+  return Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+}
 
 export function useScanCredits() {
   const [credits, setCredits] = useState<number>(() => readCredits());
@@ -95,8 +102,10 @@ export function useScanCredits() {
     const next = c + toAdd;
     writeCredits(next);
     const expiryDays = PLAN_EXPIRY_DAYS[plan];
-    localStorage.setItem(STORAGE_EXPIRY_KEY, addDays(expiryDays));
+    const expiryIso = addDays(expiryDays);
+    localStorage.setItem(STORAGE_EXPIRY_KEY, expiryIso);
     setCredits(next);
+    scheduleExpiryNotification(expiryIso);
   }, []);
 
   return { credits, canScan, consumeCredit, purchasePlan };
