@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 
 export const PRODUCT_SCAN1   = "com.byt2eat.single";
-export const PRODUCT_SCAN10  = "com.owenskeffington.bite.premium";
+export const PRODUCT_SCAN10  = "com.byt2eat.premium10";
 
 export type PurchasedProduct = typeof PRODUCT_SCAN1 | typeof PRODUCT_SCAN10;
 
