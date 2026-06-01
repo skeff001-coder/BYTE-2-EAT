@@ -52,28 +52,28 @@ title = "Legal / Privacy screen"
 id = "e1EYLOZK_ST977ywgqaxn"
 uri = "file://appstore/screenshots/iphone_01_home.jpg"
 type = "image"
-title = "1. Home Screen"
+title = "Home Screen - Trending Recipes with Food Photos"
 
 [[outputs]]
 id = "0f0ddPoK6sDqqs1WzFZIw"
 uri = "file://appstore/screenshots/iphone_02_scan.jpg"
 type = "image"
-title = "2. Scan Screen"
+title = "Scan Your Fridge Screen"
 
 [[outputs]]
 id = "D6NwIDqaQgRdf9MYdNlY3"
 uri = "file://appstore/screenshots/iphone_03_settings.jpg"
 type = "image"
-title = "3. Settings Screen"
+title = "Settings Screen"
 
 [[outputs]]
 id = "gUI2T6q0X2Pgd2GzAihHR"
 uri = "file://appstore/screenshots/iphone_04_favorites.jpg"
 type = "image"
-title = "4. Favorites Screen"
+title = "Favorites Screen"
 
 [[outputs]]
 id = "nAMFcQJXXNY0GpcDNpUJw"
 uri = "file://appstore/screenshots/iphone_05_legal.jpg"
 type = "image"
-title = "5. Legal Screen"
+title = "Legal / Privacy Screen"
