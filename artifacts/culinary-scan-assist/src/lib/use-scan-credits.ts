@@ -78,11 +78,19 @@ export function getDaysUntilExpiry(): number | null {
   return Math.ceil(msLeft / (1000 * 60 * 60 * 24));
 }
 
+function readHasExpiry(): boolean {
+  return localStorage.getItem(STORAGE_EXPIRY_KEY) !== null;
+}
+
 export function useScanCredits() {
   const [credits, setCredits] = useState<number>(() => readCredits());
+  const [hasExpiry, setHasExpiry] = useState<boolean>(() => readHasExpiry());
 
   useEffect(() => {
-    const refresh = () => setCredits(readCredits());
+    const refresh = () => {
+      setCredits(readCredits());
+      setHasExpiry(readHasExpiry());
+    };
     window.addEventListener(CREDITS_CHANGED, refresh);
     return () => window.removeEventListener(CREDITS_CHANGED, refresh);
   }, []);
@@ -112,5 +120,5 @@ export function useScanCredits() {
     scheduleExpiryNotification(expiryIso);
   }, []);
 
-  return { credits, canScan, consumeCredit, purchasePlan };
+  return { credits, canScan, hasExpiry, consumeCredit, purchasePlan };
 }

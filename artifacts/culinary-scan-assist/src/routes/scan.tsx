@@ -65,7 +65,7 @@ function ScanPage() {
   const router = useRouter();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
-  const { credits, canScan, consumeCredit, purchasePlan } = useScanCredits();
+  const { credits, canScan, hasExpiry, consumeCredit, purchasePlan } = useScanCredits();
   const { goalMode } = useGoalMode();
   const { addSavings } = useSavingsTracker();
   const [showPaywall, setShowPaywall] = useState(false);
@@ -411,7 +411,23 @@ function ScanPage() {
             {activeTab === "shopping" && <ShoppingListView items={result.shoppingList} />}
           </div>
 
-          <button onClick={reset} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-secondary py-4 text-sm font-semibold text-secondary-foreground">
+          {credits === 1 && hasExpiry && (
+            <button
+              onClick={() => setShowPaywall(true)}
+              className="mt-6 flex w-full items-center gap-3 rounded-2xl bg-primary/10 px-4 py-3.5 ring-1 ring-primary/30 text-left transition-transform active:scale-[0.98]"
+            >
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-primary-foreground" style={{ background: "var(--gradient-primary)" }}>
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground">Only 1 scan left</p>
+                <p className="text-xs text-muted-foreground">Tap to top up before you run out</p>
+              </div>
+              <Plus className="h-4 w-4 text-primary flex-shrink-0" />
+            </button>
+          )}
+
+          <button onClick={reset} className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-secondary py-4 text-sm font-semibold text-secondary-foreground">
             <RefreshCw className="h-4 w-4" /> Scan again
           </button>
 
