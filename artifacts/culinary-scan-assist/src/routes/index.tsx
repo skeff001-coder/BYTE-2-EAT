@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings } from "lucide-react";
+import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, TriangleAlert } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
-import { useScanCredits, type ScanPlan } from "@/lib/use-scan-credits";
+import { useScanCredits, getDaysUntilExpiry, type ScanPlan } from "@/lib/use-scan-credits";
 import { PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
@@ -28,6 +28,31 @@ function Home() {
   const { credits, canScan, purchasePlan } = useScanCredits();
   const { goalMode, setGoalMode } = useGoalMode();
   const { monthly } = useSavingsTracker();
+
+  const [expiryDays, setExpiryDays] = useState<number | null>(() => getDaysUntilExpiry());
+  const [expiryBannerDismissed, setExpiryBannerDismissed] = useState<boolean>(() => {
+    const expiry = localStorage.getItem("bite_scan_expiry");
+    if (!expiry) return false;
+    return localStorage.getItem(`bite_expiry_dismissed_${expiry}`) === "1";
+  });
+
+  useEffect(() => {
+    setExpiryDays(getDaysUntilExpiry());
+  }, [credits]);
+
+  const showExpiryBanner =
+    !expiryBannerDismissed &&
+    credits > 0 &&
+    expiryDays !== null &&
+    expiryDays <= 7;
+
+  const dismissExpiryBanner = () => {
+    const expiry = localStorage.getItem("bite_scan_expiry");
+    if (expiry) {
+      localStorage.setItem(`bite_expiry_dismissed_${expiry}`, "1");
+    }
+    setExpiryBannerDismissed(true);
+  };
 
   const q = query.trim().toLowerCase();
   const filtered = q
@@ -182,6 +207,26 @@ function Home() {
 
         <GoalModeSelector selected={goalMode} onChange={setGoalMode} />
       </header>
+
+      {showExpiryBanner && (
+        <button
+          onClick={dismissExpiryBanner}
+          className="mx-5 mt-3 mb-1 flex w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-amber-50 px-4 py-3 text-left ring-1 ring-amber-300 active:scale-[0.98] transition-transform"
+          aria-label="Dismiss scan credit expiry warning"
+        >
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-100">
+            <TriangleAlert className="h-5 w-5 text-amber-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-amber-800">
+              {expiryDays === 1 ? "Your scans expire tomorrow!" : `Your scans expire in ${expiryDays} days`}
+            </p>
+            <p className="text-[11px] text-amber-700 leading-snug mt-0.5">
+              Use your remaining {credits === 1 ? "scan" : `${credits} scans`} before they're gone. Tap to dismiss.
+            </p>
+          </div>
+        </button>
+      )}
 
       <section className="px-6">
         <style>{`

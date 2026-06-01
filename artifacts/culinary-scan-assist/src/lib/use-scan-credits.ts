@@ -68,6 +68,14 @@ const PLAN_EXPIRY_DAYS: Record<ScanPlan, number> = {
   scan10: 30,
 };
 
+export function getDaysUntilExpiry(): number | null {
+  const expiry = localStorage.getItem(STORAGE_EXPIRY_KEY);
+  if (!expiry) return null;
+  const msLeft = new Date(expiry).getTime() - Date.now();
+  if (msLeft <= 0) return null;
+  return Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+}
+
 export function useScanCredits() {
   const [credits, setCredits] = useState<number>(() => readCredits());
 
