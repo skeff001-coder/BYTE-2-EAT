@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 
-export const PRODUCT_SCAN1   = "com.byte2eat.single";
-export const PRODUCT_SCAN10  = "com.byte2eat.premium10";
-export const PRODUCT_SCAN30  = "com.byte2eat.saver";
+export const PRODUCT_SCAN1   = "com.owenskeffington.bite.scan1";
+export const PRODUCT_SCAN10  = "com.owenskeffington.bite.premium";
 
-export type PurchasedProduct = typeof PRODUCT_SCAN1 | typeof PRODUCT_SCAN10 | typeof PRODUCT_SCAN30;
+export type PurchasedProduct = typeof PRODUCT_SCAN1 | typeof PRODUCT_SCAN10;
 
 let _initialized = false;
 const _unlockListeners = new Set<(productId: PurchasedProduct) => void>();
@@ -18,7 +17,6 @@ async function initStore() {
     store.register([
       { id: PRODUCT_SCAN1,  platform: Platform.APPLE_APPSTORE, type: ProductType.CONSUMABLE },
       { id: PRODUCT_SCAN10, platform: Platform.APPLE_APPSTORE, type: ProductType.CONSUMABLE },
-      { id: PRODUCT_SCAN30, platform: Platform.APPLE_APPSTORE, type: ProductType.CONSUMABLE },
     ]);
     store.when().approved((transaction) => {
       transaction.finish();
