@@ -8,7 +8,7 @@ import { useFavorites } from "@/lib/favorites";
 import { useAuth } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useScanCredits, type ScanPlan } from "@/lib/use-scan-credits";
-import { PRODUCT_SCAN1, PRODUCT_SCAN10, PRODUCT_SCAN30, type PurchasedProduct } from "@/lib/use-iap";
+import { PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
@@ -175,7 +175,6 @@ function ScanPage() {
             const planMap: Record<PurchasedProduct, ScanPlan> = {
               [PRODUCT_SCAN1]:  "scan1",
               [PRODUCT_SCAN10]: "scan10",
-              [PRODUCT_SCAN30]: "scan30",
             };
             purchasePlan(planMap[productId]);
             setShowPaywall(false);
