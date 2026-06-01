@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 
-export const PRODUCT_SCAN1   = "com.byt2eat.single";
-export const PRODUCT_SCAN10  = "com.byt2eat.premium10";
+export const PRODUCT_SCAN1   = "com.byte2eat.single";
+export const PRODUCT_SCAN10  = "com.byte2eat.premium10";
 
 export type PurchasedProduct = typeof PRODUCT_SCAN1 | typeof PRODUCT_SCAN10;
 
@@ -16,7 +16,7 @@ async function initStore() {
     const { store, ProductType, Platform } = await import("capacitor-plugin-cdv-purchase");
     store.register([
       { id: PRODUCT_SCAN1,  platform: Platform.APPLE_APPSTORE, type: ProductType.CONSUMABLE },
-      { id: PRODUCT_SCAN10, platform: Platform.APPLE_APPSTORE, type: ProductType.NON_CONSUMABLE },
+      { id: PRODUCT_SCAN10, platform: Platform.APPLE_APPSTORE, type: ProductType.CONSUMABLE },
     ]);
     store.when().approved((transaction) => {
       transaction.finish();

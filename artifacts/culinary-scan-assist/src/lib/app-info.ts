@@ -8,5 +8,5 @@ export const EFFORTLESS_BURN_NAME = "Effortless Burn";
 export const EFFORTLESS_BURN_APP_STORE_URL = "https://apps.apple.com/app/effortless-burn"; // Update with real App Store link when available
 
 // IAP product IDs — must match App Store Connect exactly
-export const PRODUCT_SCAN1_ID = "com.byt2eat.single";
-export const PRODUCT_SCAN10_ID = "com.byt2eat.premium10";
+export const PRODUCT_SCAN1_ID = "com.byte2eat.single";
+export const PRODUCT_SCAN10_ID = "com.byte2eat.premium10";
