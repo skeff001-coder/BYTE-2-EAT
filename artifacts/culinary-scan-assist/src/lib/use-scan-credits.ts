@@ -30,7 +30,7 @@ function writeCredits(n: number) {
   localStorage.setItem(STORAGE_KEY, String(n));
 }
 
-export type ScanPlan = "scan1" | "scan10" | "scan30";
+export type ScanPlan = "scan1" | "scan10";
 
 export async function syncCreditsForUser(userId: string): Promise<void> {
   try {
@@ -61,13 +61,11 @@ export async function syncCreditsForUser(userId: string): Promise<void> {
 export const PLAN_CREDITS: Record<ScanPlan, number> = {
   scan1:  1,
   scan10: 10,
-  scan30: 30,
 };
 
 const PLAN_EXPIRY_DAYS: Record<ScanPlan, number> = {
   scan1:  30,
   scan10: 30,
-  scan30: 90,
 };
 
 export function useScanCredits() {

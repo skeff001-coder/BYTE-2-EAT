@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { useScanCredits, type ScanPlan } from "@/lib/use-scan-credits";
-import { PRODUCT_SCAN1, PRODUCT_SCAN10, PRODUCT_SCAN30, type PurchasedProduct } from "@/lib/use-iap";
+import { PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 import { useGoalMode } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
@@ -54,6 +54,25 @@ function Home() {
     credits === 0 ? "No scans left" :
                     `${credits} scans remaining`;
 
+  const TAGLINES = [
+    "Get Instant Recipes",
+    "Zero Waste. Maximum Taste.",
+    "Know What's in Your Fridge",
+  ];
+  const [taglineIdx, setTaglineIdx] = useState(0);
+  const [taglineFading, setTaglineFading] = useState(false);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setTaglineFading(true);
+      setTimeout(() => {
+        setTaglineIdx((i) => (i + 1) % TAGLINES.length);
+        setTaglineFading(false);
+      }, 380);
+    }, 2600);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <main className="min-h-screen bg-background pb-12">
       {showPaywall && (
@@ -63,7 +82,6 @@ function Home() {
             const planMap: Record<PurchasedProduct, ScanPlan> = {
               [PRODUCT_SCAN1]:  "scan1",
               [PRODUCT_SCAN10]: "scan10",
-              [PRODUCT_SCAN30]: "scan30",
             };
             purchasePlan(planMap[productId]);
             setShowPaywall(false);
@@ -166,26 +184,48 @@ function Home() {
       </header>
 
       <section className="px-6">
+        <style>{`
+          @keyframes cameraFlicker {
+            0%, 82%, 100% { opacity: 1; transform: scale(1); filter: brightness(1); }
+            85% { opacity: 0.35; transform: scale(0.90); filter: brightness(3); }
+            88% { opacity: 1; transform: scale(1.08); filter: brightness(1.6); }
+            91% { opacity: 0.55; transform: scale(0.95); filter: brightness(2.2); }
+            95% { opacity: 1; transform: scale(1.02); filter: brightness(1.1); }
+          }
+          .hero-camera-flicker { animation: cameraFlicker 2.6s ease-in-out infinite; }
+        `}</style>
         <button
           onClick={handleScanPress}
-          className="group relative flex w-full items-center justify-between overflow-hidden rounded-3xl p-6 text-primary-foreground transition-transform active:scale-[0.98]"
+          className="group relative flex w-full flex-col overflow-hidden rounded-3xl p-6 text-primary-foreground transition-transform active:scale-[0.98]"
           style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-soft)" }}
         >
-          <div className="text-left">
-            <div className="text-[10px] font-bold uppercase tracking-widest opacity-80">📸 Point. Snap. Cook.</div>
-            <div className="mt-1.5 text-2xl font-extrabold leading-tight">
-              Scan Your Fridge<br />
-              <span className="text-yellow-300">Get Instant Recipes</span>
+          <div className="flex w-full items-start justify-between gap-3">
+            <div className="flex-1 min-w-0 text-left">
+              <div className="text-[10px] font-bold uppercase tracking-widest opacity-75">📸 Point. Snap. Cook.</div>
+              <div className="mt-2 text-[1.75rem] font-black leading-none tracking-tight uppercase">
+                SCAN YOUR<br />FRIDGE
+              </div>
+              <div
+                style={{
+                  minHeight: "1.75rem",
+                  transition: "opacity 0.38s ease, transform 0.38s ease",
+                  opacity: taglineFading ? 0 : 1,
+                  transform: taglineFading ? "translateY(-5px)" : "translateY(0)",
+                }}
+                className="mt-2 text-base font-extrabold text-yellow-300 leading-tight"
+              >
+                {TAGLINES[taglineIdx]}
+              </div>
+              <div className="mt-1.5 text-[0.8rem] opacity-80 leading-snug">
+                AI builds your personalised meal plan in seconds
+              </div>
+              <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${credits === 0 ? "bg-red-500/40" : "bg-white/25"}`}>
+                {credits === 0 ? "⛔ " : "⚡ "}{creditLabel}
+              </div>
             </div>
-            <div className="mt-1.5 text-sm opacity-90 leading-snug">
-              AI reads your ingredients &amp; builds<br />a personalised meal plan in seconds
+            <div className="hero-camera-flicker flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm ring-2 ring-white/30">
+              <Camera className="h-8 w-8" />
             </div>
-            <div className={`mt-2.5 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${credits === 0 ? "bg-red-500/40" : "bg-white/25"}`}>
-              {credits === 0 ? "⛔ " : "⚡ "}{creditLabel}
-            </div>
-          </div>
-          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm ring-2 ring-white/30">
-            <Camera className="h-8 w-8" />
           </div>
         </button>
       </section>
