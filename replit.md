@@ -28,7 +28,7 @@ An AI-powered iOS app that scans your fridge with the camera and suggests person
   - `src/lib/analyze-fridge.ts` — client-side function calling the API
   - `src/integrations/supabase/` — Supabase client + types
   - `src/components/BlockBuilder.tsx` — **PROTECTED ASSET** (see below)
-  - `capacitor.config.ts` — Capacitor config (appId: com.bitecooking.app)
+  - `capacitor.config.ts` — Capacitor config (appId: com.owenskeffington.bite)
   - `ios/` — Generated Xcode project (open with Xcode on a Mac)
 - `artifacts/api-server/src/routes/analyze-fridge.ts` — AI fridge analysis endpoint
 

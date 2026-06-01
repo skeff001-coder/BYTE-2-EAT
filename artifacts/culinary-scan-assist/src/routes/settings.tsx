@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useScanCredits } from "@/lib/use-scan-credits";
+import { APP_VERSION, BUNDLE_ID, SUPPORT_EMAIL } from "@/lib/app-info";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -44,7 +45,7 @@ function SettingsPage() {
       if (!res.ok) {
         const data = await res.json().catch(() => ({})) as { error?: string };
         if (res.status !== 503) {
-          throw new Error(data.error ?? "Account deletion failed. Please contact support@byte2eat.app.");
+          throw new Error(data.error ?? `Account deletion failed. Please contact ${SUPPORT_EMAIL}.`);
         }
       }
 
@@ -241,11 +242,11 @@ function SettingsPage() {
               <Info className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               Version
             </div>
-            <span className="text-sm text-muted-foreground">1.0.0</span>
+            <span className="text-sm text-muted-foreground">{APP_VERSION}</span>
           </div>
           <div className="flex items-center justify-between px-5 py-4">
             <span className="text-sm text-foreground">Bundle ID</span>
-            <span className="text-xs text-muted-foreground font-mono">com.owenskeffington.bite</span>
+            <span className="text-xs text-muted-foreground font-mono">{BUNDLE_ID}</span>
           </div>
         </div>
 
