@@ -1,0 +1,120 @@
+Publishing
+1m 8s
+
+
+
+Showing the last 50 lines. Click this button to load the full log
+        }
+      ],
+      "user-info" : {
+        "NSLocalizedDescription" : "Invalid Pre-Release Train. The train version '1.0.2' is closed for new build submissions",
+        "NSLocalizedFailureReason" : "The server’s response was: ‘{\n    code = 90186;\n    description = \"Invalid Pre-Release Train. The train version '1.0.2' is closed for new build submissions\";\n}’.",
+        "NSUnderlyingError" : "Error Domain=IrisAPI Code=-19241 \"A server error occurred.\" UserInfo={code=90186, NSLocalizedDescription=A server error occurred., description=Invalid Pre-Release Train. The train version '1.0.2' is closed for new build submissions}",
+        "iris-code" : "90186"
+      }
+    },
+    {
+      "code" : 90062,
+      "message" : "This bundle is invalid. The value for key CFBundleShortVersionString [1.0.2] in the Info.plist file must contain a higher version than that of the previously approved version [1.0.2]. Please find more information about CFBundleShortVersionString at https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring",
+      "underlying-errors" : [
+        {
+          "code" : -19241,
+          "message" : "A server error occurred.",
+          "underlying-errors" : [
+
+          ],
+          "user-info" : {
+            "NSLocalizedDescription" : "A server error occurred.",
+            "code" : "90062",
+            "description" : "This bundle is invalid. The value for key CFBundleShortVersionString [1.0.2] in the Info.plist file must contain a higher version than that of the previously approved version [1.0.2]. Please find more information about CFBundleShortVersionString at https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring"
+          }
+        }
+      ],
+      "user-info" : {
+        "NSLocalizedDescription" : "This bundle is invalid. The value for key CFBundleShortVersionString [1.0.2] in the Info.plist file must contain a higher version than that of the previously approved version [1.0.2]. Please find more information about CFBundleShortVersionString at https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring",
+        "NSLocalizedFailureReason" : "The server’s response was: ‘{\n    code = 90062;\n    description = \"This bundle is invalid. The value for key CFBundleShortVersionString [1.0.2] in the Info.plist file must contain a higher version than that of the previously approved version [1.0.2]. Please find more information about CFBundleShortVersionString at https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring\";\n}’.",
+        "NSUnderlyingError" : "Error Domain=IrisAPI Code=-19241 \"A server error occurred.\" UserInfo={code=90062, NSLocalizedDescription=A server error occurred., description=This bundle is invalid. The value for key CFBundleShortVersionString [1.0.2] in the Info.plist file must contain a higher version than that of the previously approved version [1.0.2]. Please find more information about CFBundleShortVersionString at https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring}",
+        "iris-code" : "90062"
+      }
+    }
+  ],
+  "tool-path" : "/Applications/Xcode-26.4.app/Contents/SharedFrameworks/ContentDelivery.framework/Resources",
+  "tool-version" : "26.30.4 (173004)"
+}
+
+Failed to upload archive at "/Users/builder/clone/build/ios/ipa/App.ipa"
+Failed to publish /Users/builder/clone/build/ios/ipa/App.ipa
+
+Failed to publish App.ipa to App Store Connect.
+
+Build failed :|
+
+
+Publishing failed :|
+Failed to publish App.ipa to App Store Connect.
+
+
+Personal Account
+Personal Account
+Personal Account
+Personal Account
+Create new team
+Applications
+Builds
+OTA Updates
+NEW
+App Preview
+Settings
+Billing
+All systems operational
+
+Account settings
+skeff001@yahoo.com
+
+Log out
+BYTE-2-EAT
+BYTE-2-EAT
+github.com/skeff001-coder/BYTE-2-EAT
+
+
+Start new build
+Build overview
+ID:
+6a2725321163ab62622be0de
+
+Please provide this ID when you contact our support team
+Index:
+63
+Status:
+failed
+Workflow:
+Byte 2 Eat — iOS App Store Release
+Started by:
+skeff001@yahoo.com
+
+skeff001@yahoo.com
+Started:
+10 minutes ago
+Jun 8th, 2026 at 21:25 BST
+Duration:
+4m 33s
+Machine:
+Mac mini M2
+Branch:
+main
+Commit:
+2641156
+Artifacts
+App.ipa
+[7.54 MB]
+App.app.dSYM.zip
+[739.14 KB]
+Capacitor.framework.dSYM.zip
+[1.22 MB]
+Cordova.framework.dSYM.zip
+[465.16 KB]
+CapacitorLocalNotifications.framework.dSYM.zip
+[813.43 KB]
+CapacitorPluginCdvPurchase.framework.dSYM.zip
+[792.71 KB]
+BYTE-2-EAT_63

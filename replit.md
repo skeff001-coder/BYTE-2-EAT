@@ -71,7 +71,7 @@ The App Store Connect API key used by Codemagic (`byte2eat_codemagic_2026-06`) *
 
 ## App Store Submission Checklist
 
-- **Version: 1.0.2** — tracked in `codemagic.yaml` `APP_VERSION`. Current floor: **1.0.1** (last approved in App Store Connect). Every release build MUST ship a version strictly higher than the last approved version or Apple will reject it with "CFBundleShortVersionString must be higher than previously approved version".
+- **Version: 1.0.3** — tracked in `codemagic.yaml` `APP_VERSION`. Current floor: **1.0.2** (last approved in App Store Connect). Every release build MUST ship a version strictly higher than the last approved version or Apple will reject it with "CFBundleShortVersionString must be higher than previously approved version".
 - **Before every release build:** bump `APP_VERSION` (semver, e.g. 1.0.2 → 1.0.3) AND `BUILD_NUMBER` (integer, e.g. 55 → 56) in `codemagic.yaml`. Never reuse a version string that has already been submitted or approved in App Store Connect.
 - Premium IAP: £4.99 one-time, product ID `com.owenskeffington.bite.premium` (NON_CONSUMABLE)
 - Trial: 1 free scan on first launch via `bite_scan_credits` in localStorage
