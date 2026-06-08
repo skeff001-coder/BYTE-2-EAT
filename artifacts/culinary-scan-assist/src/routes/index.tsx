@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, ShoppingBag, TriangleAlert, ExternalLink } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, ShoppingBag, TriangleAlert, ExternalLink, Sparkles, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { Capacitor } from "@capacitor/core";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
+import { searchRecipesAI } from "@/lib/search-recipes";
 import { useFavorites } from "@/lib/favorites";
 import { useAuth, signOut } from "@/lib/use-auth";
 import { useScanCredits, getDaysUntilExpiry } from "@/lib/use-scan-credits";
@@ -24,6 +25,10 @@ function Home() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [recipes] = useState<Recipe[]>(() => getTrendingRecipes(4));
+  const [aiRecipes, setAiRecipes] = useState<Recipe[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
   const { isFavorite, toggle, isAuthed } = useFavorites();
   const { user } = useAuth();
@@ -86,7 +91,7 @@ function Home() {
   };
 
   const q = query.trim().toLowerCase();
-  const filtered = q
+  const localFiltered = q
     ? recipes.filter(
         (r) =>
           r.title.toLowerCase().includes(q) ||
@@ -96,6 +101,36 @@ function Home() {
           r.steps.some((step) => step.toLowerCase().includes(q)),
       )
     : recipes;
+
+  const isSearching = q.length >= 2;
+  const filtered = isSearching ? (aiRecipes.length > 0 ? aiRecipes : localFiltered) : recipes;
+
+  useEffect(() => {
+    if (q.length < 2) {
+      setAiRecipes([]);
+      setAiError(null);
+      setAiLoading(false);
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+      return;
+    }
+    setAiLoading(true);
+    setAiError(null);
+    setAiRecipes([]);
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(async () => {
+      try {
+        const results = await searchRecipesAI(q, goalMode);
+        setAiRecipes(results);
+      } catch {
+        setAiError("Couldn't load recipes right now. Try again.");
+      } finally {
+        setAiLoading(false);
+      }
+    }, 600);
+    return () => {
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    };
+  }, [q, goalMode]);
 
   const handleScanPress = () => {
     if (canScan) {
@@ -367,19 +402,35 @@ function Home() {
       <section className="mt-10 px-6">
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-bold text-foreground">
-            <Flame className="h-5 w-5 text-primary" />
-            Trending Recipes
+            {isSearching ? (
+              <><Sparkles className="h-5 w-5 text-primary" />AI Recipes</>
+            ) : (
+              <><Flame className="h-5 w-5 text-primary" />Trending Recipes</>
+            )}
           </h2>
-          <span className="text-xs font-medium text-muted-foreground">This week</span>
+          <span className="text-xs font-medium text-muted-foreground">
+            {isSearching ? `for "${query}"` : "This week"}
+          </span>
         </div>
 
         <ul className="mt-4 space-y-3">
-          {filtered.length === 0 && (
-            <li className="rounded-2xl bg-card p-4 text-center text-sm text-muted-foreground ring-1 ring-border">
-              No recipes match "{query}". Try scanning your fridge instead.
+          {aiLoading && (
+            <li className="flex items-center justify-center gap-3 rounded-2xl bg-card p-6 ring-1 ring-border">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <span className="text-sm text-muted-foreground">Finding the best recipes for "{query}"…</span>
             </li>
           )}
-          {filtered.map((r) => (
+          {!aiLoading && aiError && (
+            <li className="rounded-2xl bg-card p-4 text-center text-sm text-red-500 ring-1 ring-border">
+              {aiError}
+            </li>
+          )}
+          {!aiLoading && !aiError && filtered.length === 0 && (
+            <li className="rounded-2xl bg-card p-4 text-center text-sm text-muted-foreground ring-1 ring-border">
+              No recipes found. Try scanning your fridge instead.
+            </li>
+          )}
+          {!aiLoading && filtered.map((r) => (
             <li
               key={r.id}
               className="flex items-center gap-4 rounded-2xl bg-card p-3 shadow-sm ring-1 ring-border transition-shadow hover:shadow-md active:scale-[0.98]"
@@ -390,7 +441,7 @@ function Home() {
                 aria-label={`View ${r.title} recipe`}
               >
                 <img
-                  src={r.image}
+                  src={r.image || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&auto=format`}
                   alt={r.title}
                   width={768}
                   height={512}
