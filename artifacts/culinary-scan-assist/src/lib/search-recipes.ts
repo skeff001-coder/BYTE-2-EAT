@@ -1,8 +1,7 @@
 import type { Recipe } from "./recipes";
 
 export async function searchRecipesAI(query: string, goalMode?: string): Promise<Recipe[]> {
-  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-  const res = await fetch(`${base}/api/search-recipes`, {
+  const res = await fetch(`/api/search-recipes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, goalMode }),

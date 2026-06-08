@@ -26,7 +26,7 @@ workflows:
         XCODE_SCHEME: "App"
         BUNDLE_ID: "Com.bitecooking.app"
         APP_VERSION: "1.0.2"
-        BUILD_NUMBER: "56"
+        BUILD_NUMBER: "57"
       node: "22"
       xcode: latest
       cocoapods: default

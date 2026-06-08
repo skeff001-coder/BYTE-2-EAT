@@ -129,23 +129,37 @@ function ScanPage() {
     if (!imageDataUrl) return;
     if (!canScan) { setShowPaywall(true); return; }
     setStage("loading");
-    consumeCredit();
+    // Credit is NOT consumed here — only consumed after a successful scan.
+    // This ensures users never lose a credit due to a network or server error.
     try {
       const res = await analyzeFridge(imageDataUrl, goalMode);
+      if (res.error) {
+        // Server returned an error in the response — do NOT consume the credit
+        setResult(res);
+        setStage("result");
+        return;
+      }
+      // Success — now consume the credit
+      consumeCredit();
       setResult(res);
       setIngredients(res.ingredients ?? []);
       setExpiringIngredients(res.expiringIngredients ?? []);
       if (res.estimatedSavings > 0) addSavings(res.estimatedSavings);
-      if (user && !res.error && (res.ingredients?.length ?? 0) > 0) {
+      if (user && (res.ingredients?.length ?? 0) > 0) {
         supabase.from("scans").insert({
           user_id: user.id, ingredients: res.ingredients,
           health_score: res.healthScore, health_tip: res.healthTip, recipes: res.recipes,
         }).then(({ error }) => { if (error) console.error("save scan", error); });
       }
-      if (res.error || (res.ingredients?.length ?? 0) === 0) setStage("result");
+      if ((res.ingredients?.length ?? 0) === 0) setStage("result");
       else setStage("ingredients");
     } catch {
-      setResult({ error: "Something went wrong. Please try again.", ingredients: [], expiringIngredients: [], healthScore: null, healthTip: null, recipes: [], mealPlan: [], shoppingList: [], estimatedSavings: 0 });
+      // Network / connection failure — credit NOT consumed, user keeps their scan
+      setResult({
+        error: "Couldn't connect to the server. Your scan credit has NOT been used — please try again.",
+        ingredients: [], expiringIngredients: [], healthScore: null, healthTip: null,
+        recipes: [], mealPlan: [], shoppingList: [], estimatedSavings: 0,
+      });
       setStage("result");
     }
   };
