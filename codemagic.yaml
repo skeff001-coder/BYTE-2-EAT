@@ -26,7 +26,8 @@ workflows:
         XCODE_SCHEME: "App"
         BUNDLE_ID: "Com.bitecooking.app"
         APP_VERSION: "1.0.3"
-        BUILD_NUMBER: "58"
+        BUILD_NUMBER: "59"
+        VITE_API_BASE_URL: "https://e68b2bb8-301d-4b24-a4e3-e2f3be3f7296-00-2lc1j4bagzw9p.picard.replit.dev"
       node: "22"
       xcode: latest
       cocoapods: default
@@ -36,6 +37,10 @@ workflows:
       - name: Install workspace dependencies
         script: |
           npx --yes pnpm@10.26.1 install --no-frozen-lockfile
+
+      - name: Build web app for Capacitor
+        script: |
+          pnpm --filter @workspace/culinary-scan-assist run build:capacitor
 
       - name: Sync Capacitor iOS project
         script: |
