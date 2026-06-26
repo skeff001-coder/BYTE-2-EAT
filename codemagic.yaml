@@ -26,7 +26,7 @@ workflows:
         XCODE_SCHEME: "App"
         BUNDLE_ID: "Com.bitecooking.app"
         APP_VERSION: "1.0.4"
-        BUILD_NUMBER: "65"
+        BUILD_NUMBER: "66"
         VITE_API_BASE_URL: "https://byte-2-eat-production.up.railway.app"
       node: "22"
       xcode: latest
@@ -40,7 +40,7 @@ workflows:
       - name: Build web app
         script: |
           cd artifacts/culinary-scan-assist
-          npx pnpm run build:capacitor
+          npx --yes vite build --config vite.config.ts --base /
       - name: Sync Capacitor iOS project
         script: |
           cd artifacts/culinary-scan-assist
