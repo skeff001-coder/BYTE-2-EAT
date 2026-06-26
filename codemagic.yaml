@@ -25,7 +25,7 @@ workflows:
         XCODE_WORKSPACE: "artifacts/culinary-scan-assist/ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
         BUNDLE_ID: "Com.bitecooking.app"
-        APP_VERSION: "1.0.3"
+        APP_VERSION: "1.0.4"
         BUILD_NUMBER: "64"
         VITE_API_BASE_URL: "https://byte-2-eat-production.up.railway.app"
       node: "22"
