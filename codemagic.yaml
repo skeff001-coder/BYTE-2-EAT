@@ -26,7 +26,7 @@ workflows:
         XCODE_SCHEME: "App"
         BUNDLE_ID: "Com.bitecooking.app"
         APP_VERSION: "1.0.4"
-        BUILD_NUMBER: "66"
+        BUILD_NUMBER: "67"
         VITE_API_BASE_URL: "https://byte-2-eat-production.up.railway.app"
       node: "22"
       xcode: latest
@@ -37,10 +37,13 @@ workflows:
       - name: Install workspace dependencies
         script: |
           npx --yes pnpm@10.26.1 install --no-frozen-lockfile
-      - name: Build web app
+
+      - name: Patch API URL
         script: |
           cd artifacts/culinary-scan-assist
-          npx --yes vite build --config vite.config.ts --base /
+          sed -i '' 's|https://capacitor-i-os-builder.replit.app|https://byte-2-eat-production.up.railway.app|g' dist/public/assets/scan-C_fmS9f0.js
+          sed -i '' 's|https://capacitor-i-os-builder.replit.app|https://byte-2-eat-production.up.railway.app|g' dist/public/assets/index-e6Upotub.js
+
       - name: Sync Capacitor iOS project
         script: |
           cd artifacts/culinary-scan-assist
@@ -89,9 +92,6 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        # Build is uploaded to TestFlight internal testing. External testing submission
-        # requires App Review info (First Name, Last Name, Phone Number, Email).
-        # Manually submit for external testing in App Store Connect later.
         submit_to_testflight: false
         submit_to_app_store: false
       email:
