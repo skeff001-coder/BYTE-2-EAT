@@ -34,11 +34,10 @@ workflows:
         script: |
           npx --yes pnpm@10.26.1 install --no-frozen-lockfile
 
-      - name: Patch API URL
+      - name: Build web app
         script: |
           cd artifacts/culinary-scan-assist
-          sed -i '' 's|https://capacitor-i-os-builder.replit.app|https://byte-2-eat-production.up.railway.app|g' dist/public/assets/scan-C_fmS9f0.js
-          sed -i '' 's|https://capacitor-i-os-builder.replit.app|https://byte-2-eat-production.up.railway.app|g' dist/public/assets/index-e6Upotub.js
+          npx --yes pnpm@10.26.1 run build:capacitor
 
       - name: Sync Capacitor iOS project
         script: |
