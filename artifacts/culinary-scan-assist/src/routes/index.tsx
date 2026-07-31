@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, ShoppingBag, TriangleAlert, ExternalLink, Sparkles, Loader2 } from "lucide-react";
+import { Camera, Clock, Flame, Heart, Search, PiggyBank, Settings, ShoppingBag, TriangleAlert, ExternalLink, Sparkles, Loader2, SlidersHorizontal } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Capacitor } from "@capacitor/core";
 import { getTrendingRecipes, type Recipe } from "@/lib/recipes";
@@ -9,11 +9,9 @@ import { useAuth, signOut } from "@/lib/use-auth";
 import { useScanCredits, getDaysUntilExpiry } from "@/lib/use-scan-credits";
 import { PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 import { EFFORTLESS_BURN_NAME, EFFORTLESS_BURN_APP_STORE_URL } from "@/lib/app-info";
-import { useGoalMode } from "@/lib/use-goal-mode";
+import { useGoalMode, GOAL_MODES } from "@/lib/use-goal-mode";
 import { useSavingsTracker } from "@/lib/use-savings-tracker";
 import { PaywallModal } from "@/components/paywall-modal";
-import { GoalModeSelector } from "@/components/goal-mode-selector";
-import { BrandLogo } from "@/components/brand-logo";
 import { RecipeModal } from "@/components/recipe-modal";
 
 export const Route = createFileRoute("/")({
@@ -145,25 +143,6 @@ function Home() {
     credits === 0 ? "No scans left" :
                     `${credits} scans remaining`;
 
-  const TAGLINES = [
-    "Get Instant Recipes",
-    "Zero Waste. Maximum Taste.",
-    "Know What's in Your Fridge",
-  ];
-  const [taglineIdx, setTaglineIdx] = useState(0);
-  const [taglineFading, setTaglineFading] = useState(false);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setTaglineFading(true);
-      setTimeout(() => {
-        setTaglineIdx((i) => (i + 1) % TAGLINES.length);
-        setTaglineFading(false);
-      }, 380);
-    }, 2600);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <main className="min-h-screen bg-background pb-12">
       {showPaywall && (
@@ -183,83 +162,54 @@ function Home() {
         <RecipeModal recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
       )}
 
+      {/* Header */}
       <header className="px-5 pt-8 pb-4">
-        {/* Icon row — sits above the logo so the logo gets full width */}
-        <div className="flex items-center justify-end gap-2 mb-4">
-          <Link
-            to="/settings"
-            aria-label="Settings"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-primary ring-1 ring-border"
-          >
-            <Settings className="h-4 w-4" />
-          </Link>
-          <Link
-            to="/favorites"
-            aria-label="Favourites"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-primary ring-1 ring-border"
-          >
-            <Heart className="h-4 w-4" />
-          </Link>
-          {user ? (
-            <button
-              onClick={() => signOut()}
-              className="rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border"
-            >
-              Sign out
-            </button>
-          ) : (
-            <Link
-              to="/auth"
-              className="rounded-full px-3 py-1.5 text-xs font-semibold text-primary-foreground"
-              style={{ background: "var(--gradient-primary)" }}
-            >
-              Sign in
-            </Link>
-          )}
-        </div>
-
-        {/* Logo — full width, never competes with buttons */}
-        <BrandLogo size="2xl" variant="primary" shadow3d />
-        <div className="mt-3 flex items-center gap-2">
-          <span style={{ fontSize: "1.7rem" }}>🍳</span>
-          <p
-            style={{
-              fontFamily: "'Righteous', cursive",
-              fontSize: "clamp(0.9rem, 3.4vw, 1.2rem)",
-              letterSpacing: "clamp(0.06em, 0.5vw, 0.16em)",
-              textTransform: "uppercase",
-              background: "linear-gradient(90deg, #4ade80 0%, #22d3ee 50%, #4ade80 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              filter: "drop-shadow(0 0 10px rgba(74,222,128,0.5))",
-              margin: 0,
-              lineHeight: 1.4,
-              fontWeight: 700,
-            }}
-          >
-            Where AI Meets the Frying Pan
-          </p>
-          <span style={{ fontSize: "1.7rem" }}>✨</span>
-        </div>
-
-        {monthly > 0 && (
-          <div className="mt-4 flex items-center gap-3 rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-200">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100">
-              <PiggyBank className="h-5 w-5 text-emerald-600" />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-emerald-800">Money Saved This Month</p>
-              <p className="text-lg font-extrabold text-emerald-700">~£{monthly.toFixed(0)}</p>
-            </div>
-            <p className="ml-auto text-[10px] text-emerald-600 text-right leading-tight max-w-[100px]">
-              by using food already in your fridge
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 style={{ fontFamily: "var(--app-font-serif)" }} className="text-4xl font-medium tracking-tight text-foreground">
+              Byte <span className="text-primary">2</span> Eat
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              AI meets your ingredients 🔍
             </p>
           </div>
-        )}
+          <div className="flex items-center gap-2 pt-1">
+            <Link
+              to="/favorites"
+              aria-label="Favourites"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground ring-1 ring-border"
+            >
+              <Heart className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/settings"
+              aria-label="Settings"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground ring-1 ring-border"
+            >
+              <Settings className="h-4 w-4" />
+            </Link>
+            {user ? (
+              <button
+                onClick={() => signOut()}
+                aria-label="Sign out"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold"
+              >
+                {(user.email ?? "?").charAt(0).toUpperCase()}
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                aria-label="Sign in"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-background"
+              >
+                <span className="text-xs font-bold">In</span>
+              </Link>
+            )}
+          </div>
+        </div>
 
-        <div className="mt-4 flex items-center gap-2 rounded-2xl bg-card px-4 py-3 ring-1 ring-border shadow-sm focus-within:ring-2 focus-within:ring-primary">
-          <Search className="h-4 w-4 text-muted-foreground" />
+        <div className="mt-5 flex items-center gap-2 rounded-full bg-card px-4 py-3 ring-1 ring-border shadow-sm focus-within:ring-2 focus-within:ring-primary">
+          <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           <input
             type="search"
             inputMode="search"
@@ -269,30 +219,29 @@ function Home() {
             aria-label="Search ingredients or recipes"
             className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
+          <SlidersHorizontal className="h-4 w-4 text-muted-foreground flex-shrink-0" />
         </div>
-
-        <GoalModeSelector selected={goalMode} onChange={setGoalMode} />
       </header>
 
       {showLowScanBanner && (
         <button
           onClick={() => setShowPaywall(true)}
-          className="mx-5 mt-3 mb-1 flex w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-violet-50 px-4 py-3 text-left ring-1 ring-violet-300 active:scale-[0.98] transition-transform"
+          className="mx-5 mt-1 mb-1 flex w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-white px-4 py-3 text-left ring-1 ring-border shadow-sm active:scale-[0.98] transition-transform"
           aria-label="Top up scans — only 1 remaining"
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-violet-100">
-            <ShoppingBag className="h-5 w-5 text-violet-600" />
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-accent">
+            <ShoppingBag className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-violet-800">Only 1 scan left — top up now</p>
-            <p className="text-[11px] text-violet-700 leading-snug mt-0.5">
+            <p className="text-xs font-bold text-foreground">Only 1 scan left — top up now</p>
+            <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
               Don't run out mid-cook. Tap to grab another pack.
             </p>
           </div>
           <button
             onClick={dismissLowScanBanner}
             aria-label="Dismiss"
-            className="flex-shrink-0 text-violet-400 hover:text-violet-600 text-lg leading-none px-1"
+            className="flex-shrink-0 text-muted-foreground hover:text-foreground text-lg leading-none px-1"
           >
             ×
           </button>
@@ -302,68 +251,62 @@ function Home() {
       {showExpiryBanner && (
         <button
           onClick={dismissExpiryBanner}
-          className="mx-5 mt-3 mb-1 flex w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-amber-50 px-4 py-3 text-left ring-1 ring-amber-300 active:scale-[0.98] transition-transform"
+          className="mx-5 mt-1 mb-1 flex w-[calc(100%-2.5rem)] items-center gap-3 rounded-2xl bg-white px-4 py-3 text-left ring-1 ring-border shadow-sm active:scale-[0.98] transition-transform"
           aria-label="Dismiss scan credit expiry warning"
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-100">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-50">
             <TriangleAlert className="h-5 w-5 text-amber-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-amber-800">
+            <p className="text-xs font-bold text-foreground">
               {expiryDays === 1 ? "Your scans expire tomorrow!" : `Your scans expire in ${expiryDays} days`}
             </p>
-            <p className="text-[11px] text-amber-700 leading-snug mt-0.5">
+            <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
               Use your remaining {credits === 1 ? "scan" : `${credits} scans`} before they're gone. Tap to dismiss.
             </p>
           </div>
         </button>
       )}
 
-      <section className="px-6">
-        <style>{`
-          @keyframes cameraFlicker {
-            0%, 82%, 100% { opacity: 1; transform: scale(1); filter: brightness(1); }
-            85% { opacity: 0.35; transform: scale(0.90); filter: brightness(3); }
-            88% { opacity: 1; transform: scale(1.08); filter: brightness(1.6); }
-            91% { opacity: 0.55; transform: scale(0.95); filter: brightness(2.2); }
-            95% { opacity: 1; transform: scale(1.02); filter: brightness(1.1); }
-          }
-          .hero-camera-flicker { animation: cameraFlicker 2.6s ease-in-out infinite; }
-        `}</style>
-        <button
-          onClick={handleScanPress}
-          className="group relative flex w-full flex-col overflow-hidden rounded-3xl p-6 text-primary-foreground transition-transform active:scale-[0.98]"
-          style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-soft)" }}
-        >
-          <div className="flex w-full items-start justify-between gap-3">
-            <div className="flex-1 min-w-0 text-left">
-              <div className="text-[10px] font-bold uppercase tracking-widest opacity-75">📸 Point. Snap. Cook.</div>
-              <div className="mt-2 text-[1.75rem] font-black leading-none tracking-tight uppercase">
-                SCAN YOUR<br />FRIDGE
-              </div>
-              <div
-                style={{
-                  minHeight: "1.75rem",
-                  transition: "opacity 0.38s ease, transform 0.38s ease",
-                  opacity: taglineFading ? 0 : 1,
-                  transform: taglineFading ? "translateY(-5px)" : "translateY(0)",
-                }}
-                className="mt-2 text-base font-extrabold text-yellow-300 leading-tight"
+      {/* Hero */}
+      <section className="px-5 mt-3">
+        <div className="relative overflow-hidden rounded-3xl bg-accent" style={{ boxShadow: "var(--shadow-soft)" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2">
+            <div className="p-6 sm:p-7">
+              <h2
+                style={{ fontFamily: "var(--app-font-serif)", lineHeight: 1.05 }}
+                className="text-[2rem] font-medium tracking-tight text-foreground"
               >
-                {TAGLINES[taglineIdx]}
+                See what<br />you can make
+              </h2>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
+                Scan your fridge and get personalised meal ideas in seconds.
+              </p>
+              <button
+                onClick={handleScanPress}
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-bold text-background transition-transform active:scale-[0.97]"
+              >
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/90">
+                  <Camera className="h-3.5 w-3.5 text-primary-foreground" />
+                </span>
+                Scan your fridge
+              </button>
+              <div className="mt-4 flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Zero waste. Maximum taste.</span>
               </div>
-              <div className="mt-1.5 text-[0.8rem] opacity-80 leading-snug">
-                AI builds your personalised meal plan in seconds
-              </div>
-              <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${credits === 0 ? "bg-red-500/40" : "bg-white/25"}`}>
+              <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${credits === 0 ? "bg-red-100 text-red-700" : "bg-white text-foreground ring-1 ring-border"}`}>
                 {credits === 0 ? "⛔ " : "⚡ "}{creditLabel}
               </div>
             </div>
-            <div className="hero-camera-flicker flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm ring-2 ring-white/30">
-              <Camera className="h-8 w-8" />
+            <div className="relative h-48 sm:h-auto">
+              <img
+                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=600&fit=crop&auto=format"
+                alt="Fresh ingredients ready to be scanned"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
-        </button>
+        </div>
       </section>
 
       {!sisterDismissed && (
@@ -371,7 +314,7 @@ function Home() {
           href={EFFORTLESS_BURN_APP_STORE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-6 mt-6 flex items-center gap-3 rounded-2xl bg-rose-50 px-4 py-3 ring-1 ring-rose-200 active:scale-[0.98] transition-transform"
+          className="mx-5 mt-4 flex items-center gap-3 rounded-2xl bg-white px-4 py-3 ring-1 ring-border shadow-sm active:scale-[0.98] transition-transform"
           onClick={(e) => {
             if (Capacitor.isNativePlatform()) {
               e.preventDefault();
@@ -379,100 +322,141 @@ function Home() {
             }
           }}
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-rose-100">
-            <span className="text-lg">✨</span>
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-accent">
+            <Sparkles className="h-4 w-4 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-rose-800">Love cooking? Burn it off.</p>
-            <p className="text-[11px] text-rose-700 leading-snug mt-0.5">
+            <p className="text-xs font-bold text-foreground">Love cooking? Burn it off.</p>
+            <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
               Try {EFFORTLESS_BURN_NAME} — our sister app for calorie tracking &amp; exercise.
             </p>
           </div>
-          <ExternalLink className="h-4 w-4 flex-shrink-0 text-rose-400" />
+          <ExternalLink className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); dismissSister(); }}
             aria-label="Dismiss"
-            className="flex-shrink-0 text-rose-400 hover:text-rose-600 text-lg leading-none px-1"
+            className="flex-shrink-0 text-muted-foreground hover:text-foreground text-lg leading-none px-1"
           >
             ×
           </button>
         </a>
       )}
 
-      <section className="mt-10 px-6">
-        <div className="flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-foreground">
-            {isSearching ? (
-              <><Sparkles className="h-5 w-5 text-primary" />AI Recipes</>
-            ) : (
-              <><Flame className="h-5 w-5 text-primary" />Trending Recipes</>
-            )}
+      {/* Goals */}
+      <section className="mt-8 px-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold text-foreground">Your goals</h2>
+        </div>
+        <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
+          {GOAL_MODES.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setGoalMode(m.id)}
+              className={`flex-shrink-0 flex flex-col items-center justify-center gap-1.5 rounded-2xl px-4 py-3 min-w-[84px] text-center transition-all ${
+                goalMode === m.id
+                  ? "bg-accent ring-2 ring-primary/40"
+                  : "bg-card ring-1 ring-border"
+              }`}
+              title={m.description}
+            >
+              <span className="text-xl leading-none">{m.emoji}</span>
+              <span className="text-[11px] font-semibold leading-tight text-foreground whitespace-nowrap">{m.label}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* This month stats */}
+      {monthly > 0 && (
+        <section className="mt-6 px-5">
+          <div className="rounded-2xl bg-card ring-1 ring-border p-5 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">This month</p>
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-accent">
+                <PiggyBank className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">£{monthly.toFixed(2)}</p>
+                <p className="text-xs text-muted-foreground">saved vs takeaways</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Recipes */}
+      <section className="mt-8 px-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+            {isSearching ? "AI Recipes" : "For you"}
           </h2>
           <span className="text-xs font-medium text-muted-foreground">
             {isSearching ? `for "${query}"` : "This week"}
           </span>
         </div>
 
-        <ul className="mt-4 space-y-3">
-          {aiLoading && (
-            <li className="flex items-center justify-center gap-3 rounded-2xl bg-card p-6 ring-1 ring-border">
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
-              <span className="text-sm text-muted-foreground">Finding the best recipes for "{query}"…</span>
-            </li>
-          )}
-          {!aiLoading && aiError && (
-            <li className="rounded-2xl bg-card p-4 text-center text-sm text-red-500 ring-1 ring-border">
-              {aiError}
-            </li>
-          )}
-          {!aiLoading && !aiError && filtered.length === 0 && (
-            <li className="rounded-2xl bg-card p-4 text-center text-sm text-muted-foreground ring-1 ring-border">
-              No recipes found. Try scanning your fridge instead.
-            </li>
-          )}
-          {!aiLoading && filtered.map((r) => (
-            <li
-              key={r.id}
-              className="flex items-center gap-4 rounded-2xl bg-card p-3 shadow-sm ring-1 ring-border transition-shadow hover:shadow-md active:scale-[0.98]"
-            >
+        {aiLoading && (
+          <div className="flex items-center justify-center gap-3 rounded-2xl bg-card p-6 ring-1 ring-border">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            <span className="text-sm text-muted-foreground">Finding the best recipes for "{query}"…</span>
+          </div>
+        )}
+        {!aiLoading && aiError && (
+          <div className="rounded-2xl bg-card p-4 text-center text-sm text-red-500 ring-1 ring-border">
+            {aiError}
+          </div>
+        )}
+        {!aiLoading && !aiError && filtered.length === 0 && (
+          <div className="rounded-2xl bg-card p-4 text-center text-sm text-muted-foreground ring-1 ring-border">
+            No recipes found. Try scanning your fridge instead.
+          </div>
+        )}
+
+        {!aiLoading && filtered.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {filtered.map((r) => (
               <button
+                key={r.id}
                 onClick={() => setSelectedRecipe(r)}
-                className="flex flex-1 items-center gap-4 min-w-0 text-left"
-                aria-label={`View ${r.title} recipe`}
+                className="text-left rounded-2xl overflow-hidden bg-card ring-1 ring-border shadow-sm active:scale-[0.98] transition-transform"
               >
-                <img
-                  src={r.image || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&auto=format`}
-                  alt={r.title}
-                  width={768}
-                  height={512}
-                  loading="lazy"
-                  className="h-20 w-20 flex-shrink-0 rounded-xl object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
-                    {r.tag}
-                  </div>
-                  <h3 className="mt-1 truncate text-base font-semibold text-foreground">{r.title}</h3>
-                  <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {r.time}</span>
-                    <span>{r.difficulty}</span>
+                <div className="relative h-28 w-full">
+                  <img
+                    src={r.image || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300&h=200&fit=crop&auto=format`}
+                    alt={r.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                  <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-semibold text-foreground">
+                    <Clock className="h-3 w-3" /> {r.time}
+                  </span>
+                  <button
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (!isAuthed) { navigate({ to: "/auth" }); return; }
+                      await toggle({ key: `trending:${r.id}`, title: r.title, time: r.time, image: r.image, tag: r.tag });
+                    }}
+                    aria-label={isFavorite(`trending:${r.id}`) ? `Remove ${r.title} from favourites` : `Save ${r.title} to favourites`}
+                    className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/95"
+                  >
+                    <Heart className={`h-3.5 w-3.5 text-primary ${isFavorite(`trending:${r.id}`) ? "fill-current" : ""}`} />
+                  </button>
+                </div>
+                <div className="p-3">
+                  <h3 className="text-sm font-semibold text-foreground leading-snug line-clamp-2">{r.title}</h3>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">
+                      {r.tag}
+                    </span>
+                    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                      {r.difficulty}
+                    </span>
                   </div>
                 </div>
               </button>
-              <button
-                onClick={async () => {
-                  if (!isAuthed) { navigate({ to: "/auth" }); return; }
-                  await toggle({ key: `trending:${r.id}`, title: r.title, time: r.time, image: r.image, tag: r.tag });
-                }}
-                aria-label={isFavorite(`trending:${r.id}`) ? `Remove ${r.title} from favourites` : `Save ${r.title} to favourites`}
-                aria-pressed={isFavorite(`trending:${r.id}`)}
-                className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-secondary text-primary transition-colors hover:bg-primary/10"
-              >
-                <Heart className={`h-5 w-5 ${isFavorite(`trending:${r.id}`) ? "fill-current" : ""}`} />
-              </button>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Footer */}
