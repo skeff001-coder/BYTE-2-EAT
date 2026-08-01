@@ -6,13 +6,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { redirect } = Route.useSearch();
   const { user, loading } = useAuth();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -22,9 +26,9 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: "/" });
+      navigate({ to: redirect ?? "/" });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, redirect]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,24 +85,34 @@ function AuthPage() {
         <div className="flex items-center gap-2">
           <BrandLogo size="md" />
         </div>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {mode === "signin"
-            ? "Sign in to access your favourites and scan history."
-            : "Create an account to save your fridge scans and favourite recipes."}
-        </p>
+
+        {redirect === "/scan" && mode === "signup" ? (
+          <div className="mt-3 rounded-2xl bg-accent px-4 py-3 ring-1 ring-primary/20">
+            <p className="text-sm font-bold text-accent-foreground">🎁 Your first scan is free</p>
+            <p className="mt-0.5 text-xs text-accent-foreground/80">
+              Create a free account with your email to unlock it — takes 10 seconds.
+            </p>
+          </div>
+        ) : (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {mode === "signin"
+              ? "Sign in to access your favourites and scan history."
+              : "Create an account to save your fridge scans and favourite recipes."}
+          </p>
+        )}
 
         <div className="mt-6 inline-flex rounded-full bg-secondary p-1">
-          <button
-            onClick={() => setMode("signin")}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold ${mode === "signin" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}
-          >
-            Sign in
-          </button>
           <button
             onClick={() => setMode("signup")}
             className={`rounded-full px-4 py-1.5 text-sm font-semibold ${mode === "signup" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}
           >
             Sign up
+          </button>
+          <button
+            onClick={() => setMode("signin")}
+            className={`rounded-full px-4 py-1.5 text-sm font-semibold ${mode === "signin" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}
+          >
+            Sign in
           </button>
         </div>
 
@@ -161,7 +175,7 @@ function AuthPage() {
             style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-soft)" }}
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === "signin" ? "Sign in" : "Create account"}
+            {mode === "signin" ? "Sign in" : redirect === "/scan" ? "Create account & get free scan" : "Create account"}
           </button>
         </form>
       </section>
