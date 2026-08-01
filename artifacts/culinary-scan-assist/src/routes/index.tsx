@@ -130,12 +130,8 @@ function Home() {
     };
   }, [q, goalMode]);
 
-  const handleScanPress = () => {
-    if (canScan) {
-      navigate({ to: "/scan" });
-    } else {
-      setShowPaywall(true);
-    }
+      const handleScanPress = () => {
+    navigate({ to: "/scan" });
   };
 
   const creditLabel =
