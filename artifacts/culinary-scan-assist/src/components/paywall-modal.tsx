@@ -1,9 +1,10 @@
-import { Loader2, Sparkles, X, ShieldCheck, Zap } from "lucide-react";
+import { Loader2, Sparkles, X, ShieldCheck, Zap, Check } from "lucide-react";
 import { useIAP, PRODUCT_SCAN1, PRODUCT_SCAN10, type PurchasedProduct } from "@/lib/use-iap";
 
 interface Props {
   onClose: () => void;
   onUnlock: (productId: PurchasedProduct) => void;
+  variant?: "default" | "post-trial";
 }
 
 const PLANS: {
@@ -16,10 +17,17 @@ const PLANS: {
   badge?: string;
 }[] = [
   { productId: PRODUCT_SCAN1,  label: "Single Scan Top-up",        price: "£0.99", scans: 1,  expiry: "30 days" },
-  { productId: PRODUCT_SCAN10, label: "Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "30 days", badge: "Best Value" },
+  { productId: PRODUCT_SCAN10, label: "Premium 10 Scans",  price: "£4.99", scans: 10, expiry: "30 days", perScan: "Just 50p a scan", badge: "Best Value" },
 ];
 
-export function PaywallModal({ onClose, onUnlock }: Props) {
+const VALUE_PROPS = [
+  "10 AI fridge scans — a full month of meal ideas",
+  "Full meal plans & shopping lists included",
+  "Money-saved tracking so you can see the difference",
+  "No subscription — pay once, use anytime in 30 days",
+];
+
+export function PaywallModal({ onClose, onUnlock, variant = "default" }: Props) {
   const { purchase, restore, reset, state, errorMsg, isNative } = useIAP(onUnlock);
 
   const isPurchasing = state === "purchasing";
@@ -37,7 +45,7 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm px-4 pb-6"
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
-      <div className="w-full max-w-md rounded-3xl bg-background shadow-2xl overflow-hidden">
+      <div className="w-full max-w-md rounded-3xl bg-background shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
         <div
@@ -54,11 +62,42 @@ export function PaywallModal({ onClose, onUnlock }: Props) {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 mb-3">
             <Sparkles className="h-7 w-7" />
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">Get More Scans</h2>
-          <p className="mt-1 text-sm opacity-90">
-            Choose a scan pack — use them before they expire.
-          </p>
+          {variant === "post-trial" ? (
+            <>
+              <h2 className="text-xl font-extrabold tracking-tight">That's your free scan used!</h2>
+              <p className="mt-1 text-sm opacity-90 max-w-xs">
+                You just saw how fast it works. Keep it going for less than the price of one takeaway.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-extrabold tracking-tight">Get More Scans</h2>
+              <p className="mt-1 text-sm opacity-90">
+                Choose a scan pack — use them before they expire.
+              </p>
+            </>
+          )}
         </div>
+
+        {variant === "post-trial" && !isSuccess && (
+          <div className="px-6 pt-5">
+            <ul className="space-y-2">
+              {VALUE_PROPS.map((v) => (
+                <li key={v} className="flex items-start gap-2 text-sm text-foreground">
+                  <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                    <Check className="h-3 w-3" />
+                  </span>
+                  {v}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-3 rounded-xl bg-accent px-3 py-2 text-center">
+              <p className="text-xs font-bold text-accent-foreground">
+                £4.99 for 10 scans works out at 50p each — most people save more than that on food waste in a single week.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Plan options */}
         {isSuccess ? (
