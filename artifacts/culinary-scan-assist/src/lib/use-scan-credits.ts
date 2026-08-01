@@ -21,12 +21,15 @@ function readCredits(): number {
     void cancelExpiryNotification();
     return 0;
   }
-  const val = localStorage.getItem(STORAGE_KEY);
+    const val = localStorage.getItem(STORAGE_KEY);
   if (val === null) {
-    localStorage.setItem(STORAGE_KEY, "1");
-    return 1;
+    // No free scan until the user registers — see syncCreditsForUser,
+    // which grants 1 free credit once they sign up with an email.
+    localStorage.setItem(STORAGE_KEY, "0");
+    return 0;
   }
   return Number(val);
+
 }
 
 function writeCredits(n: number) {
