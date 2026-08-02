@@ -305,7 +305,8 @@ function Home() {
         </div>
       </section>
 
-      {!sisterDismissed && (
+            {false && (
+
         <a
           href={EFFORTLESS_BURN_APP_STORE_URL}
           target="_blank"
