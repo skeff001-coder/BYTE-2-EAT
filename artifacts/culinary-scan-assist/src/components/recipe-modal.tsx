@@ -18,7 +18,7 @@ export function RecipeModal({ recipe, onClose }: RecipeModalProps) {
       >
         <div className="relative h-52 w-full flex-shrink-0">
           <img
-            src={recipe.image}
+                        src={recipe.image || "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg"}
             alt={recipe.title}
             className="h-full w-full object-cover rounded-t-3xl"
           />
